@@ -7,33 +7,47 @@ import { FaRegUser } from "react-icons/fa6";
 import { FiLogOut, FiPlusCircle } from "react-icons/fi";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import UploadPost from "../UploadPost/UploadPost";
 import { useLogoutMutation } from "@/src/hooks/useAuth";
+import useAuthStore from "../../store/useAuthStore";
+import ConfirmLogout from "./ConfirmLogout";
+import DarkModeToggle from "../Navbar/DarkMode";
 
 const SideBar = () => {
-  const [resizeSideBar, setResizeSideBar] = useState<boolean>(false);
   const pathname = usePathname();
   const [confirmLogout, setConfirmLogout] = useState<boolean>(false);
   const [isUploadPost, setIsUploadPost] = useState<boolean>(false);
+  const [resizeSideBar, setResizeSideBar] = useState<boolean>(false);
   const router = useRouter();
-
   const { mutate: logout } = useLogoutMutation();
+  const { user, fetchUser, isLoading } = useAuthStore();
 
-  const handleLogout = () => {
-    setConfirmLogout(true);
-  };
+  useEffect(() => {
+    setResizeSideBar(pathname === "/message" || pathname.startsWith("/profile") || pathname.startsWith("/members"));
+  }, [pathname]);
+
+  const handleLogout = () => setConfirmLogout(true);
+
   const sureLogout = () => {
     logout();
+    setConfirmLogout(false)
     router.replace("/login");
   };
 
+  const isLogin = localStorage.getItem("isLogin");
+  const theme = localStorage.getItem("theme");
+  useEffect(() => {
+    if (isLogin) {
+      fetchUser();
+    }
+  }, [isLogin]);
+
   if (
-    pathname === "/login" ||
-    pathname === "/register" ||
-    pathname === "/forgot-password" ||
-    pathname === "/reset-password"
+    ["/login", "/register", "/forgot-password", "/reset-password"].includes(
+      pathname
+    )
   ) {
     return null;
   }
@@ -42,93 +56,93 @@ const SideBar = () => {
     <>
       {isUploadPost && <UploadPost onClose={() => setIsUploadPost(false)} />}
       {confirmLogout && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-30">
-          <div className="bg-white dark:bg-gray-900 dark:text-white p-6 w-96 rounded-2xl shadow-lg">
-            <h2 className="text-xl font-semibold text-center mb-4">
-              Are you sure you want to logout?
-            </h2>
-            <div className="flex justify-center gap-4">
-              <button
-                className="px-4 py-2 rounded-lg bg-gray-300 hover:bg-gray-400 dark:bg-gray-700 dark:hover:bg-gray-600 transition"
-                onClick={() => setConfirmLogout(false)}
-              >
-                Cancel
-              </button>
-              <button
-                className="px-4 py-2 rounded-lg bg-red-500 hover:bg-red-600 text-white transition"
-                onClick={sureLogout}
-              >
-                Sure
-              </button>
-            </div>
-          </div>
-        </div>
+        <ConfirmLogout
+          setConfirmLogout={setConfirmLogout}
+          sureLogout={sureLogout}
+        />
       )}
-
       <div
         className={`z-10 fixed border-r ${
-          resizeSideBar ? "w-20" : "w-[200px]"
-        } h-full top-16 transition-all  ease-in-out bg-white dark:bg-gray-900 dark:text-white dark:border-0`}
+          resizeSideBar ? "w-20 shadow-md" : "w-[230px]"
+        } h-full top-0 transition-all ease-in-out bg-background dark:bg-gray-900 text-white dark:border-0`}
       >
-        <span onClick={() => setResizeSideBar(!resizeSideBar)}>
-          <LuLayoutDashboard
-            className={`${
-              resizeSideBar ? "rotate-90" : "rotate-180"
-            } text-2xl cursor-pointer mt-7 ml-8 transition-all`}
-          />
-        </span>
-        <div className="flex flex-col justify-between h-[70%] mt-14 flex-wrap ml-3 ">
+        <div className="flex flex-col justify-between h-[92%] mt-4 flex-wrap ml-3">
           <div className="flex flex-col gap-3 mx-4">
             <Link href="/">
-              <div
-                className={`${
-                  pathname === "/" && "bg-slate-200 dark:bg-gray-600"
-                } flex items-center p-2 rounded-md gap-4 h-10 cursor-pointer`}
-              >
-                <SlHome className="text-lg" />
-                {!resizeSideBar && <h3>Home</h3>}
+              <img
+                src={
+                  resizeSideBar
+                    ? theme === "light"
+                      ? "/zk-white.png"
+                      : "/zk-dark.png"
+                    : theme === "dark"
+                    ? "/zynk-dark.png"
+                    : "/zynk-white.png"
+                }
+                alt="Logo"
+                className={`h-20 w-24 object-cover text-gray-600 ${
+                  pathname !== "/message" ? "" : ""
+                }`}
+              />
+            </Link>
+            <Link href="/">
+              <div className="flex items-center p-2 rounded-md gap-3 h-10 cursor-pointer">
+                <SlHome className="text-lg text-gray-200" />
+                {!resizeSideBar && (
+                  <h3 className="text-base font-medium">Home</h3>
+                )}
               </div>
             </Link>
-
+            {/* Profile Link */}
             <Link href="/profile">
-              <div
-                className={`${
-                  pathname?.startsWith("/profile") &&
-                  "bg-slate-200 dark:bg-gray-600"
-                } flex items-center p-2 rounded-md gap-4 h-10 cursor-pointer`}
-              >
-                <FaRegUser className="text-lg" />
-                {!resizeSideBar && <h3>Profile</h3>}
+              <div className="flex items-center p-2 rounded-md gap-3 h-10 cursor-pointer">
+                <FaRegUser className="text-lg text-gray-200" />
+                {!resizeSideBar && (
+                  <h3 className="text-base font-medium">Profile</h3>
+                )}
               </div>
             </Link>
 
-            <Link href="/chat">
-              <div
-                className={`${
-                  pathname === "/chat" && "bg-slate-200 dark:bg-gray-600"
-                } flex items-center p-2 rounded-md gap-4 h-10 cursor-pointer`}
-              >
-                <LuMessageSquareText className="text-lg" />
-                {!resizeSideBar && <h3>Message</h3>}
+            {/* Chat Link */}
+            <Link href="/message">
+              <div className="flex items-center p-2 rounded-md gap-3 h-10 cursor-pointer">
+                <LuMessageSquareText className="text-lg text-gray-200" />
+                {!resizeSideBar && (
+                  <h3 className="text-base font-medium">Message</h3>
+                )}
               </div>
             </Link>
 
+            {/* Create Link */}
             <div
               onClick={() => setIsUploadPost(true)}
-              className={`${
-                pathname === "/create" && "bg-slate-200 dark:bg-gray-600"
-              } flex items-center p-2 rounded-md gap-4 h-10 cursor-pointer`}
+              className="flex items-center p-2 rounded-md gap-3 h-10 cursor-pointer"
             >
-              <FiPlusCircle className="text-lg" />
-              {!resizeSideBar && <h3>Create</h3>}
+              <FiPlusCircle className="text-lg text-gray-200" />
+              {!resizeSideBar && (
+                <h3 className="text-base font-medium">Create</h3>
+              )}
             </div>
           </div>
-          <div
-            className="flex items-center p-2 rounded-md hover:bg-slate-600 dark:text-white gap-4 h-10 cursor-pointer mx-4"
-            onClick={handleLogout}
-          >
-            <FiLogOut className="text-lg" />
-            {!resizeSideBar && <button>Logout</button>}
+
+          {/* Logout */}
+          <div className="flex justify-between items-center border-t border-t-gray-300 dark:border-t-gray-600 pt-5 mx-2 mr-5">
+            {!resizeSideBar && (
+              <div className="flex items-center  gap-2">
+                <img
+                  src={user?.profilePicture || "/person-demo.jpg"}
+                  className="h-8 rounded-full w-8 object-cover"
+                  alt=""
+                />
+                <p className="text-sm font-medium">
+                  {user?.fullname || "Unknown"}
+                </p>
+              </div>
+            )}
+            <FiLogOut
+              onClick={handleLogout}
+              className="text-xl mx-auto font-semibold text-white cursor-pointer"
+            />
           </div>
         </div>
       </div>

@@ -14,7 +14,7 @@ const Page = () => {
     <div className="mt-10 pb-5">
       <div className="flex justify-between bg-white dark:bg-gray-900 dark:text-white items-center shadow border dark:border-0 py-3 px-6 rounded-md">
         <div className="space-x-5">
-          <button>Freinds</button>
+          <button>Freinds / {connectionType}</button>
         </div>
         <div className="flex flex-row gap-4">
           <input

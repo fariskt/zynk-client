@@ -25,19 +25,25 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  
   return (
     <html lang="en">
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <QueryProvider>
-          <div className="flex dark:bg-gray-800">
-            <SideBar />
-            <div className="ml-[230px] mt-10 w-[75%]">
+          <div className="flex dark:bg-gray-900">
+            {/* Sidebar - 1/6 width */}
+            <div className="">
+              <SideBar />
+            </div>
+
+            {/* Navbar - 5/6 width */}
+            <div className="flex-1 dark:bg-gray-950">
               <Navbar />
-              <Toaster position="top-right" reverseOrder={false} />
-              <main>{children}</main>
+              <div>
+                <Toaster position="top-right" reverseOrder={false} />
+                <main>{children}</main>
+              </div>
             </div>
           </div>
         </QueryProvider>

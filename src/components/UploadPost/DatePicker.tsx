@@ -15,8 +15,6 @@ export default function DateTimePickerComponent({
   const [selectedDate, setSelectedDate] = useState<Dayjs | null>(dayjs());
 
   const handleDateChange = (newDate: Dayjs | null) => {
-    console.log("picker ", newDate);
-
     setSelectedDate(newDate);
     if (onChange) {
       onChange(newDate ? newDate.toISOString() : null);

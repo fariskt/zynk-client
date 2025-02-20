@@ -9,6 +9,7 @@ import { PulseLoader } from "react-spinners";
 import UploadPostAnimation from "@/src/utils/Animations/UploadPostAnimation";
 import ImageCropper from "./ImageCropper";
 import DateTimePickerComponent from "./DatePicker";
+import useAuthStore from "../../store/useAuthStore";
 
 interface UploadPostProps {
   onClose: () => void;
@@ -24,6 +25,7 @@ type EditFormType = {
 
 const UploadPost: React.FC<UploadPostProps> = ({ onClose }) => {
   const { refetch } = useFetchPosts();
+  const{fetchUser}= useAuthStore()
   const [postData, setPostData] = useState<EditFormType>({
     image: "",
     content: "",
@@ -59,6 +61,7 @@ const UploadPost: React.FC<UploadPostProps> = ({ onClose }) => {
     },
     onSuccess: () => {
       refetch();
+      fetchUser();
       toast.success("Post Uploaded Successfully!");
       onClose();
     },

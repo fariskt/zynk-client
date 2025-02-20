@@ -2,7 +2,7 @@
 
 import UserPostCard from "@/src/components/PostDetails/UserPostCard";
 import Activity from "@/src/components/Profile/Activity";
-import useAuthStore from "@/src/components/store/useAuthStore";
+import useAuthStore from "@/src/store/useAuthStore";
 import { BsPersonStanding } from "react-icons/bs";
 import { FaBirthdayCake } from "react-icons/fa";
 import { FaGlobe } from "react-icons/fa6";
@@ -12,7 +12,7 @@ import { RiUserFill } from "react-icons/ri";
 export default function ProfilePage() {
   const {user} = useAuthStore()
   return (
-    <div>
+    <div >
       <div className="flex justify-around gap-4">
         <div className="flex flex-col bg-white dark:bg-gray-900 dark:text-gray-200 gap-4 shadow border dark:border-0 w-3/6 mt-5 rounded-md h-fit pb-4">
           <h3 className="text-left my-4 mx-4 pb-2 border-b dark:border-b-gray-500 font-semibold text-gray-700 dark:text-gray-200">

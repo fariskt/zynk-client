@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Rethink+Sans:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,300;0,400;0,700;0,900;1,300;1,400;1,700;1,900&family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -9,9 +9,7 @@
 body {
   color: var(--foreground);
   background: var(--background);
-  font-family:'Rethink Sans', sans-serif;
 }
-
 
 /* Hide scrollbar but allow scrolling */
 .custom-scrollbar::-webkit-scrollbar {
@@ -21,4 +19,37 @@ body {
 .custom-scrollbar {
   -ms-overflow-style: none;  /* Hide scrollbar for IE and Edge */
   scrollbar-width: none;  /* Hide scrollbar for Firefox */
+}
+
+/* Custom scrollbar for chat */
+.custom-scrollbar-chat {
+  overflow-y: auto; /* Allow vertical scrolling */
+  scrollbar-width: thin; /* For Firefox */
+  scrollbar-color: #4a5568 #1a202c; /* Thumb and Track color */
+}
+
+/* Webkit Scrollbar (Chrome, Safari, Edge) */
+.custom-scrollbar-chat::-webkit-scrollbar {
+  width: 6px; /* Adjust width */
+}
+
+.custom-scrollbar-chat::-webkit-scrollbar-track {
+  background: #1a202c; /* Dark background */
+  border-radius: 10px;
+}
+
+.custom-scrollbar-chat::-webkit-scrollbar-thumb {
+  background: #4a5568; /* Gray thumb */
+  border-radius: 10px;
+}
+
+.custom-scrollbar-chat::-webkit-scrollbar-thumb:hover {
+  background: #718096; /* Lighter gray on hover */
+}
+
+/* Optionally, you can apply the custom scrollbar class to a container like this: */
+.custom-scrollbar-chat-container {
+  max-height: 300px;
+  padding: 10px;
+  background-color: #2d3748;
 }

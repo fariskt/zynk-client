@@ -25,7 +25,7 @@ export default function DarkModeToggle() {
          router.refresh()
     }
     }
-      className="p-2 rounded-lg"
+      className=" rounded-full p-2"
     >
       {darkMode ? <MdDarkMode/>: <MdOutlineDarkMode/>}
     </button>

@@ -1,6 +1,6 @@
 "use client";
 
-import useAuthStore from "@/src/components/store/useAuthStore";
+import useAuthStore from "@/src/store/useAuthStore";
 import AxiosInstance from "@/src/lib/axiosInstance";
 import { PulseLoader } from "react-spinners";
 import { useMutation } from "@tanstack/react-query";

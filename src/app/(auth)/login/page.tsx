@@ -38,99 +38,118 @@ const Login = () => {
   };
 
   return (
-    <div className="flex border rounded-2xl justify-between h-full w-full shadow mt-10">
-      <div className="rounded-2xl md:w-3/5 flex flex-col justify-center items-center dark:bg-gray-600 bg-[#e5eaf5] shadow-lg">
-        <div className="w-full max-w-md py-10 px-10">
-          <img
-            src="/white-logo.png"
-            alt="Logo"
-            className="relative right-5 bottom-5 h-20 mb-4"
-          />
-          <div className="flex flex-col items-center mb-6">
-            <h2 className="text-2xl font-semibold">Sign In</h2>
-            <p className="text-gray-500 mt-1">
-              Welcome back! Please enter your details
-            </p>
-          </div>
-
-          <Formik
-            initialValues={{ email: "", password: "" }}
-            validationSchema={validationSchema}
-            onSubmit={handleSubmit}
-          >
-            {({ isSubmitting }) => (
-              <Form className="space-y-4">
-                <div>
-                  <Field
-                    type="email"
-                    name="email"
-                    placeholder="Enter your email"
-                    className="w-full p-3 rounded-md border border-gray-300 outline-none focus:ring-1 focus:ring-gray-800"
-                    autoComplete="email"
-                  />
-                  <ErrorMessage
-                    name="email"
-                    component="div"
-                    className="text-red-400 text-xs mt-1"
-                  />
-                </div>
-
-                <div>
-                  <Field
-                    type="password"
-                    name="password"
-                    placeholder="Enter your password"
-                    className="w-full p-3 rounded-md border border-gray-300 outline-none focus:ring-1 focus:ring-gray-800"
-                    autoComplete="current-password"
-                  />
-                  <ErrorMessage
-                    name="password"
-                    component="div"
-                    className="text-red-400 text-xs mt-1"
-                  />
-                </div>
-
-                <div className="text-sm">
-                  <Link href="/forgot-password" className=" hover:underline">
-                    Forgot password?
-                  </Link>
-                </div>
-
-                <button
-                  type="submit"
-                  className="w-full bg-black text-white p-3 rounded-md hover:bg-gray-800 transition"
-                  disabled={isPending}
-                >
-                  {isPending ? (
-                    <PulseLoader color="white" size={5} />
-                  ) : (
-                    "Sign In"
-                  )}
-                </button>
-              </Form>
-            )}
-          </Formik>
-          {loginError && <p className="my-2 text-red-600">{loginError}</p>}
-
-          <p className="text-center mt-6 text-gray-500">
-            Don't have an account?{" "}
-            <Link
-              href="/register"
-              className="text-blue-600 font-semibold hover:underline"
-            >
-              Sign up
-            </Link>
-          </p>
-        </div>
-      </div>
-      <div className=" md:flex py-5 w-4/5 items-center justify-center">
-        <img
-          src="/green-login.jpg"
-          alt="Sales Report"
-          className=" rounded-lg object-contain h-[500px]"
-        />
-      </div>
+    <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-blue-400 to-purple-500">
+  <div className="flex bg-white/20 backdrop-blur-md shadow-xl rounded-3xl overflow-hidden w-10/12 max-w-4xl border border-white/30">
+    {/* Left Side - Image */}
+    <div className="hidden md:flex items-center justify-center w-1/2 relative">
+      <img
+        src="/login-illu.jpg"
+        alt="Illustration"
+        className="object-cover h-full w-full"
+      />
+      <div className="absolute inset-0 bg-black/10 rounded-l-3xl"></div>
     </div>
+
+    {/* Right Side - Form */}
+    <div className="w-full md:w-1/2 p-8 text-white">
+      <h2 className="text-3xl font-bold text-center">Sign In</h2>
+      <p className="text-gray-200 text-center mt-1 text-sm">
+        Welcome back! Please enter your details.
+      </p>
+
+      <Formik
+        initialValues={{ email: "", password: "" }}
+        validationSchema={validationSchema}
+        onSubmit={handleSubmit}
+      >
+        {({ isSubmitting, errors, touched }) => (
+          <Form className="space-y-4 mt-6">
+            {/* Email */}
+            <div>
+              <Field
+                type="email"
+                name="email"
+                placeholder="Email"
+                className={`w-full px-3 py-2 bg-white/10 text-white text-sm border ${
+                  errors.email && touched.email
+                    ? "border-red-500"
+                    : "border-transparent"
+                } rounded-md focus:outline-none focus:ring-2 focus:ring-purple-400 placeholder-gray-300`}
+              />
+              <div className="h-4 mt-1">
+                <span
+                  className={`text-red-400 text-xs ${
+                    errors.email && touched.email ? "visible" : "invisible"
+                  }`}
+                >
+                  {errors.email || "Placeholder"}
+                </span>
+              </div>
+            </div>
+
+            {/* Password */}
+            <div>
+              <Field
+                type="password"
+                name="password"
+                placeholder="Password"
+                className={`w-full px-3 py-2 bg-white/10 text-white text-sm border ${
+                  errors.password && touched.password
+                    ? "border-red-500"
+                    : "border-transparent"
+                } rounded-md focus:outline-none focus:ring-2 focus:ring-purple-400 placeholder-gray-300`}
+              />
+              <div className="h-4 mt-1">
+                <span
+                  className={`text-red-400 text-xs ${
+                    errors.password && touched.password ? "visible" : "invisible"
+                  }`}
+                >
+                  {errors.password || "Placeholder"}
+                </span>
+              </div>
+            </div>
+
+            {/* Remember Me & Forgot Password */}
+            <div className="flex items-center justify-between text-sm">
+              <label className="flex items-center text-gray-200">
+                <input
+                  type="checkbox"
+                  className="form-checkbox text-purple-400 mr-2"
+                />
+                Remember me
+              </label>
+              <Link
+                href="/forgot-password"
+                className="text-purple-300 hover:underline"
+              >
+                Forgot password?
+              </Link>
+            </div>
+
+            {/* Submit Button */}
+            <button
+              type="submit"
+              className="w-full bg-purple-600 hover:bg-purple-700 transition duration-300 text-white py-2 rounded-md text-sm shadow-md"
+              disabled={isSubmitting}
+            >
+              {isSubmitting ? "Signing in..." : "Log In"}
+            </button>
+          </Form>
+        )}
+      </Formik>
+
+      {/* Create Account Link */}
+      <p className="mt-4 text-center text-gray-200 text-sm">
+        Don't have an account?{" "}
+        <Link href="/register" className="text-purple-300 hover:underline">
+          Sign Up
+        </Link>
+      </p>
+    </div>
+  </div>
+</div>
+
   );
 };
 

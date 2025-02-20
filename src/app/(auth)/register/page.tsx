@@ -46,7 +46,7 @@ const Register = () => {
       },
       onError: (error: any) => {
         console.log(error);
-        
+
         const catchError =
           error.response?.data?.message || "Registration failed";
         toast.error(catchError);
@@ -56,128 +56,154 @@ const Register = () => {
   };
 
   return (
-    <div className="flex border rounded-lg justify-between shadow mt-5">
-      <div className=" md:flex  w-4/5 items-center justify-center">
-        <img
-          src="/orange-login.jpg"
-          alt="Sales Report"
-          className=" rounded-lg object-contain h-[450px]"
-        />
-      </div>
-      <div className="rounded-2xl md:w-3/5 flex flex-col justify-center items-center bg-[#E5EAF5]  shadow-md">
-        <div className="w-full max-w-md py-5 px-10">
-          <img
-            src="/white-logo.png"
-            alt="Logo"
-            className="relative right-5 h-20 mb-4"
-          />
-          <div className="flex flex-col  mb-3">
-            <h2 className="text-2xl font-semibold text-center">
-              Create Account
-            </h2>
-            <p className="text-gray-500 mt-1 text-center">
-              Please enter your details
-            </p>
-          </div>
-
-          <Formik
-            initialValues={{
-              fullname: "",
-              email: "",
-              password: "",
-              confirmPassword: "",
-            }}
-            validationSchema={registerUserSchema}
-            onSubmit={handleSubmit}
-          >
-            {({ isSubmitting }) => (
-              <Form className="flex flex-col gap-4">
-                <div>
-                  <Field
-                    type="text"
-                    name="fullname"
-                    placeholder="enter your fullname"
-                    className="w-full p-3 rounded-md shadow-inner border border-gray-300 outline-none focus:ring-1 focus:ring-gray-800"
-                    autoComplete="fullname"
-                  />
-                  <ErrorMessage
-                    name="fullname"
-                    component="div"
-                    className="text-red-400 text-xs mt-1"
-                  />
-                </div>
-                <div>
-                  <Field
-                    type="email"
-                    name="email"
-                    placeholder="enter your email"
-                    className="w-full p-3 rounded-md shadow-inner border border-gray-300 outline-none focus:ring-1 focus:ring-gray-800"
-                    autoComplete="email"
-                  />
-                  <ErrorMessage
-                    name="email"
-                    component="div"
-                    className="text-red-400 text-xs mt-1"
-                  />
-                </div>
-
-                <div>
-                  <Field
-                    type="password"
-                    name="password"
-                    placeholder="enter your password"
-                    className="w-full p-3 rounded-md border shadow-inner border-gray-300 outline-none focus:ring-1 focus:ring-gray-800"
-                    autoComplete="current-password"
-                  />
-                  <ErrorMessage
-                    name="password"
-                    component="div"
-                    className="text-red-400 text-xs mt-1"
-                  />
-                </div>
-                <div>
-                  <Field
-                    type="password"
-                    name="confirmPassword"
-                    placeholder="confirm password"
-                    className="w-full p-3 rounded-md border shadow-inner border-gray-300 outline-none focus:ring-1 focus:ring-gray-800"
-                    autoComplete="new-password"
-                  />
-                  <ErrorMessage
-                    name="confirmPassword"
-                    component="div"
-                    className="text-red-400 text-xs mt-1"
-                  />
-                </div>
-
-                <button
-                  type="submit"
-                  className="mt-2 bg-black hover:bg-gray-800 shadow-lg  text-white p-3 rounded-md"
-                  disabled={isPending}
-                >
-                  {isPending ? (
-                    <PulseLoader color="#ffffff" size={5} />
-                  ) : (
-                    "Create Account"
-                  )}
-                </button>
-              </Form>
-            )}
-          </Formik>
-          {signupError && <p className="my-2 text-red-600">{signupError}</p>}
-
-          <p className="text-center mt-6 text-gray-500">
-            Already have an account?{" "}
-            <Link
-              href="/login"
-              className="text-blue-600 font-semibold hover:underline"
-            >
-              Login
-            </Link>
-          </p>
-        </div>
-      </div>
+    <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-blue-400 to-purple-500">
+  <div className="flex bg-white/20 backdrop-blur-md shadow-xl rounded-3xl overflow-hidden w-10/12 max-w-4xl border border-white/30">
+    {/* Left Side - Image */}
+    <div className="hidden md:flex items-center justify-center w-1/2 relative">
+      <img
+        src="/register-illu.jpg"
+        alt="Illustration"
+        className="object-cover h-full w-full"
+      />
+      <div className="absolute inset-0 bg-black/10 rounded-l-3xl"></div>
     </div>
+
+    {/* Right Side - Form */}
+    <div className="w-full md:w-1/2 p-8 text-white">
+      <h2 className="text-3xl font-bold text-center">Sign Up</h2>
+      <p className="text-gray-200 text-center mt-1 text-sm">
+        Join us today!
+      </p>
+
+      <Formik
+        initialValues={{
+          fullname: "",
+          email: "",
+          password: "",
+          confirmPassword: "",
+        }}
+        validationSchema={registerUserSchema}
+        onSubmit={handleSubmit}
+      >
+        {({ isSubmitting, touched, errors }) => (
+          <Form className="space-y-4 mt-6">
+            {/* Fullname */}
+            <div>
+              <Field
+                type="text"
+                name="fullname"
+                placeholder="Your Name"
+                className={`w-full px-3 py-2 bg-white/10 text-white text-sm border ${
+                  errors.fullname && touched.fullname
+                    ? "border-red-500"
+                    : "border-transparent"
+                } rounded-md focus:outline-none focus:ring-2 focus:ring-purple-400 placeholder-gray-300`}
+              />
+              <div className="h-4 mt-1">
+                <span
+                  className={`text-red-400 text-xs ${
+                    errors.fullname && touched.fullname ? "visible" : "invisible"
+                  }`}
+                >
+                  {errors.fullname || "Placeholder"}
+                </span>
+              </div>
+            </div>
+
+            {/* Email */}
+            <div>
+              <Field
+                type="email"
+                name="email"
+                placeholder="Email Address"
+                className={`w-full px-3 py-2 bg-white/10 text-white text-sm border ${
+                  errors.email && touched.email
+                    ? "border-red-500"
+                    : "border-transparent"
+                } rounded-md focus:outline-none focus:ring-2 focus:ring-purple-400 placeholder-gray-300`}
+              />
+              <div className="h-4 mt-1">
+                <span
+                  className={`text-red-400 text-xs ${
+                    errors.email && touched.email ? "visible" : "invisible"
+                  }`}
+                >
+                  {errors.email || "Placeholder"}
+                </span>
+              </div>
+            </div>
+
+            {/* Password */}
+            <div>
+              <Field
+                type="password"
+                name="password"
+                placeholder="Password"
+                className={`w-full px-3 py-2 bg-white/10 text-white text-sm border ${
+                  errors.password && touched.password
+                    ? "border-red-500"
+                    : "border-transparent"
+                } rounded-md focus:outline-none focus:ring-2 focus:ring-purple-400 placeholder-gray-300`}
+              />
+              <div className="h-4 mt-1">
+                <span
+                  className={`text-red-400 text-xs ${
+                    errors.password && touched.password ? "visible" : "invisible"
+                  }`}
+                >
+                  {errors.password || "Placeholder"}
+                </span>
+              </div>
+            </div>
+
+            {/* Confirm Password */}
+            <div>
+              <Field
+                type="password"
+                name="confirmPassword"
+                placeholder="Confirm Password"
+                className={`w-full px-3 py-2 bg-white/10 text-white text-sm border ${
+                  errors.confirmPassword && touched.confirmPassword
+                    ? "border-red-500"
+                    : "border-transparent"
+                } rounded-md focus:outline-none focus:ring-2 focus:ring-purple-400 placeholder-gray-300`}
+              />
+              <div className="h-4 mt-1">
+                <span
+                  className={`text-red-400 text-xs ${
+                    errors.confirmPassword && touched.confirmPassword
+                      ? "visible"
+                      : "invisible"
+                  }`}
+                >
+                  {errors.confirmPassword || "Placeholder"}
+                </span>
+              </div>
+            </div>
+
+            {/* Submit Button */}
+            <button
+              type="submit"
+              className="w-full bg-purple-600 hover:bg-purple-700 transition duration-300 text-white py-2 rounded-md text-sm shadow-md"
+              disabled={isSubmitting}
+            >
+              {isSubmitting ? "Signing up..." : "Sign Up"}
+            </button>
+          </Form>
+        )}
+      </Formik>
+
+      {/* Redirect to Login */}
+      <p className="mt-4 text-center text-gray-200 text-sm">
+        Already have an account?{" "}
+        <Link href="/login" className="text-purple-300 hover:underline">
+          Log In
+        </Link>
+      </p>
+    </div>
+  </div>
+</div>
+
   );
 };
 

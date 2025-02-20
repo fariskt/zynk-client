@@ -7,15 +7,17 @@ const fetchAllPosts = async ({ pageParam = 1 }) => {
 };
 
 const fetchUserPost = async ({userId, pageParam=1}: {userId: string, pageParam: number}) => {
-    const res = await AxiosInstance.get(`/post/user/${userId}?page=${pageParam}&limit=10`); 
-    console.log(res.data);
-       
+    const res = await AxiosInstance.get(`/post/user/${userId}?page=${pageParam}&limit=10`);     
     return res.data;
 };
 
 const fetchPostById = async ({postId}: {postId:string})=> {    
+  console.log("id ",postId);
+  
     const res = await AxiosInstance.get(`/post/${postId}`)
-    console.log(res.data);
+    
+    console.log("where ",res.data);
+    
     return res.data
 }
 
@@ -24,12 +26,18 @@ const likePost = async ({ userId,postId }: { userId: string; postId: string}) =>
     return res.data;
 };
 
-
 const commentOnPost = async ({userId, postId, text}: {userId: string, postId : string, text:string})=> {
-    const res = await AxiosInstance.patch(`/post/comment/${userId}`, {postId, text})
-    console.log(res.data);
-    return res.data;
-    
+  const res = await AxiosInstance.post(`/post/comment/${userId}`, {postId, text})
+  return res.data;
+}
+
+const fetchCommentsById = async ({postId}: {postId: string})=> {
+  const res = await AxiosInstance.get(`/post/comment/${postId}`)  
+  return res.data
+}
+const fetchAllComments = async ()=> {
+  const res = await AxiosInstance.get("/post/comment/comments")
+  return res.data
 }
 
 export const useFetchPosts = () => {
@@ -68,7 +76,23 @@ export const useFetchPostById = (postId: string) => {
     });
 };
 
-//simple one =>  rely update from backend 
+export const useFetchAllComments = () => {
+  return useQuery({
+    queryKey: ["allComments"],
+    queryFn: fetchAllComments,
+  });
+};
+
+
+export const useFetchCommentsById = (postId: string) => {  
+    return useQuery({
+        queryKey: ["comments", postId],
+        queryFn: () => fetchCommentsById({ postId }),
+        enabled: !!postId,
+    });
+};
+
+//simple one =>  rely on backend update 
 // export const useLikePost = (pathname: string) => {
 //     const queryClient = useQueryClient();
 //     return useMutation({
@@ -88,14 +112,13 @@ export const useLikePost = (pathname: string) => {
   
     return useMutation({
       mutationFn: likePost,
-      onMutate: async ({ userId, postId }) => {
+      onMutate: async ({ userId, postId }) => {        
         const queryKey = pathname === "/profile" ? ["userPosts"] : ["allPosts"];
         await queryClient.cancelQueries({ queryKey });
-  
         const previousData = queryClient.getQueryData(queryKey);
-  
         queryClient.setQueryData(queryKey, (oldData: any) => {
           if (!oldData) return oldData;
+          console.log(oldData);
           return {
             ...oldData,
             pages: oldData.pages.map((page: any) => ({
@@ -143,3 +166,5 @@ export const useCommentOnPost = (pathname: string) => {
       },
     });
 };
+
+
