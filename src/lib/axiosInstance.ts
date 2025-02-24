@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const AxiosInstance = axios.create({
-  baseURL: "http://localhost:5000/api",
+  baseURL: "https://zynk-server.onrender.com/api",
   withCredentials: true,
   headers: {
     "Content-Type": "application/json",
@@ -16,7 +16,7 @@ AxiosInstance.interceptors.response.use(
       if (!isLoginPage) {
         window.location.href = "/login";
       }
-      // localStorage.removeItem("isLogin")
+      localStorage.removeItem("isLogin")
     }
     return Promise.reject(error);
   }
