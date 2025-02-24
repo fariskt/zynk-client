@@ -61,8 +61,8 @@ const PostEditForm: React.FC<PostEditFormProps> = ({ post, onClose  }) => {
   });
 
   return (
-    <div className="fixed inset-0 flex justify-center items-center bg-gray-400 dark:bg-gray-950/5 bg-opacity-5 backdrop-blur-sm z-50 p-4">
-      <div className="relative bg-white dark:bg-gray-800 shadow-lg rounded-lg p-8 w-full max-w-md">
+    <div className="fixed inset-0 flex justify-center items-center bg-gray-400 dark:bg-gray-950/5 bg-opacity-5 backdrop-blur-sm z-50 p-4" onClick={onClose}>
+      <div onClick={(e)=> e.stopPropagation()} className="relative bg-white dark:bg-gray-800 shadow-lg rounded-lg p-8 w-full max-w-md">
         {/* Close Button */}
         <button
           className="absolute top-2 right-2 text-gray-700 dark:text-gray-200 text-2xl"

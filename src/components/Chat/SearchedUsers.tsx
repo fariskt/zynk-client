@@ -1,15 +1,10 @@
+import { useChatStore } from "@/src/store/useChatStore";
+import { User } from "@/src/types";
 import ConnectionListSkeleton from "@/src/utils/SkeltonUi/ConnectionListSkelton";
 import React from "react";
 import { AiOutlineClose } from "react-icons/ai";
 
-interface User {
-  _id: string;
-  fullname: string;
-  profilePicture?: string;
-}
-
 interface SearchUsersProps {
-  setSelectChatUser: (user: User | null) => void;
   searchedUsers?: { data?: User[] };
   searchUser: string;
   onClose: () => void;
@@ -18,19 +13,18 @@ interface SearchUsersProps {
 }
 
 const SearchedUsers: React.FC<SearchUsersProps> = ({
-  setSelectChatUser,
   searchedUsers,
   searchUser,
   onClose,
   setSearchUser,
   searchLoading,
 }) => {
-    
-    const handleSelectUser = (person: User)=>{
-      setSelectChatUser(person)
-        onClose()
-        setSearchUser("")
-    }
+  const { setSelectChatUser } = useChatStore();
+  const handleSelectUser = (person: User) => {
+    setSelectChatUser(person);
+    onClose();
+    setSearchUser("");
+  };
 
   return (
     <div className="fixed inset-0 flex justify-center items-center bg-gray-400 dark:bg-gray-900/80 bg-opacity-5 backdrop-blur-sm z-50 p-4">
@@ -60,7 +54,7 @@ const SearchedUsers: React.FC<SearchUsersProps> = ({
               <div
                 key={person._id}
                 className="flex items-center gap-3 py-3 px-5 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-900/20 rounded-lg"
-                onClick={() => handleSelectUser(person) }
+                onClick={() => handleSelectUser(person)}
               >
                 <img
                   src={person.profilePicture || "/person-demo.jpg"}

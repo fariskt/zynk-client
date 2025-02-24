@@ -1,6 +1,7 @@
 export interface User {
   _id: string;
   profilePicture: string | null;
+  coverPhoto?: string | null;
   fullname: string;
   email: string;
   birthday: string;
@@ -49,7 +50,8 @@ export interface Comment {
   createdAt: string;
   likes: string[];
   text: string;
-  user: {
+  parentCommentId:null| string;
+  userId: {
     fullname: string;
     profilePicture: string;
   };

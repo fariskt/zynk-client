@@ -1,6 +1,5 @@
 "use client";
 
-import { LuLayoutDashboard } from "react-icons/lu";
 import { SlHome } from "react-icons/sl";
 import { LuMessageSquareText } from "react-icons/lu";
 import { FaRegUser } from "react-icons/fa6";
@@ -13,7 +12,6 @@ import UploadPost from "../UploadPost/UploadPost";
 import { useLogoutMutation } from "@/src/hooks/useAuth";
 import useAuthStore from "../../store/useAuthStore";
 import ConfirmLogout from "./ConfirmLogout";
-import DarkModeToggle from "../Navbar/DarkMode";
 
 const SideBar = () => {
   const pathname = usePathname();
@@ -62,10 +60,11 @@ const SideBar = () => {
         />
       )}
       <div
-        className={`z-10 fixed border-r ${
+        className={`z-10 fixed hidden md:block md border-r ${
           resizeSideBar ? "w-20 shadow-md" : "w-[230px]"
         } h-full top-0 transition-all ease-in-out bg-background dark:bg-gray-900 text-white dark:border-0`}
       >
+        
         <div className="flex flex-col justify-between h-[92%] mt-4 flex-wrap ml-3">
           <div className="flex flex-col gap-3 mx-4">
             <Link href="/">
@@ -80,7 +79,7 @@ const SideBar = () => {
                     : "/zynk-white.png"
                 }
                 alt="Logo"
-                className={`h-20 w-24 object-cover text-gray-600 ${
+                className={`h-20 w-28 object-cover text-gray-600 ${
                   pathname !== "/message" ? "" : ""
                 }`}
               />

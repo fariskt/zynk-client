@@ -1,4 +1,4 @@
-import { BsThreeDots } from "react-icons/bs";
+import { BsThreeDots, BsThreeDotsVertical } from "react-icons/bs";
 import { CiHeart } from "react-icons/ci";
 import { GoComment } from "react-icons/go";
 import { IoMdHeart } from "react-icons/io";
@@ -18,28 +18,36 @@ import PostModal from "./PostModal";
 import PostEditForm from "./PostEditForm";
 import ConfirmDelete from "./ConfirmDelete";
 import { Post } from "@/src/types";
-
+import { BiLike, BiSolidLike } from "react-icons/bi";
 
 const UserPostCard = () => {
   const params = useParams();
   const pathname = usePathname();
   const { user } = useAuthStore();
-  
+
   const slug = params?.slug as string;
-  
-  const friendId = slug?.split('-').pop(); // e.g., 'john-doe-12345' => '12345'
-  const userID = pathname.startsWith("/members") ? friendId || "" : user?._id || "";
-  
+
+  const friendId = slug?.split("-").pop();
+  const userID = pathname.startsWith("/members")
+    ? friendId || ""
+    : user?._id || "";
+
   const [selectedPost, setSelectedPost] = useState<Post | null>(null);
-  const [showOpenDot, setShowOpenDot] = useState<boolean>(false);
+  const [showOpenDot, setShowOpenDot] = useState<string | null>(null);
   const [showPostModal, setShowPostModal] = useState<boolean>(false);
   const [showEditForm, setShowEditForm] = useState<boolean>(false);
   const [showDeleteModal, setShowDeleteModal] = useState<boolean>(false);
-  
-  const { data: userPost, hasNextPage, isFetchingNextPage, fetchNextPage, isLoading } = useFetchUserPosts(userID ||"");
-  
 
-  const postToShow = userPost?.pages.flatMap((page: { posts: Post[] }) => page.posts) || []
+  const {
+    data: userPost,
+    hasNextPage,
+    isFetchingNextPage,
+    fetchNextPage,
+    isLoading,
+  } = useFetchUserPosts(userID || "");
+
+  const postToShow =
+    userPost?.pages.flatMap((page: { posts: Post[] }) => page.posts) || [];
 
   const handleScroll = () => {
     if (!hasNextPage || isFetchingNextPage) return;
@@ -64,6 +72,10 @@ const UserPostCard = () => {
     likePostMutation.mutate({ userId: userID, postId });
   };
 
+  const toggleDotMenu = (postId: string)=> {
+    setShowOpenDot((prevID)=> prevID === postId ? null : postId)
+  }
+
   return (
     <div>
       {isLoading && <SkeletonUserPostCard count={3} />}
@@ -74,11 +86,10 @@ const UserPostCard = () => {
               !post.isScheduled || dayjs(post.scheduleTime).isBefore(dayjs())
           )
           .map((post: Post) => {
-
             return (
               <div
                 key={post._id}
-                className="dark:bg-gray-900 dark:text-white bg-white mt-5 shadow dark:border-0 border rounded-xl py-1 max-w-xl min-w-[530px] min-h-44 mb-5"
+                className="dark:bg-gray-900 dark:text-white bg-white mt-5 shadow dark:border-0 border rounded-xl py-1 max-w-xl md:min-w-[530px] min-h-44 mb-5 mx-4 md:mx-0"
               >
                 <div className="flex justify-between items-center p-2 border-b dark:border-b-gray-600">
                   <div className="flex items-center gap-4 pl-3">
@@ -104,35 +115,42 @@ const UserPostCard = () => {
                       />
                     )}
                     <span
-                      className="mr-5 cursor-pointer"
-                      onClick={() => setShowOpenDot(!showOpenDot)}
+                      className="mr-5 cursor-pointer rotate-12"
+                      onClick={() => toggleDotMenu(post._id)}
                     >
-                      <BsThreeDots />
+                      <BsThreeDotsVertical />
                     </span>
-                    {showOpenDot && (
+                    {showOpenDot === post._id && !pathname.startsWith("/members") && (
                       <div className="absolute w-28 -ml-20 mb-4 space-y-3 p-2 rounded-xl bg-gray-100 border dark:border-0  dark:bg-gray-600">
                         <h3
                           className="cursor-pointer hover:text-gray-700 dark:hover:text-gray-300"
                           onClick={() => {
                             setShowEditForm(true);
                             setSelectedPost(post);
-                            setShowOpenDot(false);
+                            setShowOpenDot(null);
                           }}
                         >
-                          edit
+                          Edit
                         </h3>
                         <h3
                           className="cursor-pointer hover:text-gray-700 dark:hover:text-gray-300"
                           onClick={() => {
                             setSelectedPost(post);
                             setShowDeleteModal(true);
-                            setShowOpenDot(false);
+                            setShowOpenDot(null);
                           }}
                         >
-                          delete
+                          Delete
                         </h3>
                         <h3 className="hover:text-gray-700 dark:hover:text-gray-300">
-                          report
+                          Report
+                        </h3>
+                      </div>
+                    )}
+                    {showOpenDot === post._id && pathname.startsWith("/members") && (
+                      <div className="absolute w-28 -ml-20 mb-4 space-y-3 p-2 rounded-xl bg-gray-100 border dark:border-0  dark:bg-gray-600">
+                        <h3 className="hover:text-gray-700 dark:hover:text-gray-300">
+                          Report
                         </h3>
                       </div>
                     )}
@@ -152,32 +170,32 @@ const UserPostCard = () => {
                 </div>
 
                 {post.image && (
-                  <div className="flex justify-center">
+                  <div className="flex justify-center mx-2 md-mx-0">
                     <img
                       src={post.image}
                       onDoubleClick={() => handleLike(post._id)}
-                      className="h-[380px] w-[600px] object-cover"
+                      className="md:w-[500px] max-h-[450px] aspect-square object-cover border dark:border-0 rounded-3xl"
                       alt="post-image"
                     />
                   </div>
                 )}
 
-                <div className="flex gap-4 my-4 pl-3">
+                <div className="flex gap-7 my-4 pl-3">
                   <div className="flex items-center gap-1">
                     <span
                       className={`${
                         post?.likes?.includes(userID) &&
-                        "text-red-600 scale-110 transition-transform duration-300"
-                      } text-2xl cursor-pointer`}
+                        "text-gray-800 focus:text-lg focus:scale-150 duration-300"
+                      } text-xl text-gray-800 dark:text-gray-300 cursor-pointer`}
                       onClick={() => handleLike(post._id)}
                     >
                       {post?.likes?.includes(userID) ? (
-                        <IoMdHeart />
+                        <BiSolidLike />
                       ) : (
-                        <CiHeart />
+                        <BiLike />
                       )}
                     </span>
-                    <p>{post?.likes?.length || 0}</p>
+                    <p className="text-sm md:text-base">{post?.likes?.length || 0} Likes</p>
                   </div>
 
                   <div
@@ -190,7 +208,7 @@ const UserPostCard = () => {
                     <span className="text-xl">
                       <GoComment />
                     </span>
-                    <p>{post?.commentCount || 0}</p>
+                    <p className="text-sm md:text-base">{post?.commentCount || 0} Comments</p>
                   </div>
                 </div>
 

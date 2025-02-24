@@ -4,6 +4,8 @@ import QueryProvider from "@/src/providers/QueryProvider";
 import SideBar from "@/src/components/Sidebar/SideBar";
 import Navbar from "@/src/components/Navbar/Navbar";
 import { Toaster } from "react-hot-toast";
+import MobileSideBar from "../components/Sidebar/MobileSideBar";
+import MobileNavbar from "../components/Navbar/MobileNavbar";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -32,19 +34,18 @@ export default function RootLayout({
       >
         <QueryProvider>
           <div className="flex dark:bg-gray-900">
-            {/* Sidebar - 1/6 width */}
-            <div className="">
+            <div>
               <SideBar />
             </div>
-
-            {/* Navbar - 5/6 width */}
             <div className="flex-1 dark:bg-gray-950">
               <Navbar />
+              <MobileNavbar/>
               <div>
                 <Toaster position="top-right" reverseOrder={false} />
                 <main>{children}</main>
               </div>
             </div>
+            
           </div>
         </QueryProvider>
       </body>

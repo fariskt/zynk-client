@@ -1,12 +1,7 @@
 import { formatMessageDate } from "@/src/utils/DateFormater/DateFormat";
 import React, { useEffect, useState } from "react";
 import useAuthStore from "../../store/useAuthStore";
-
-interface User {
-  _id: string;
-  fullname: string;
-  profilePicture?: string;
-}
+import { User } from "@/src/types";
 
 interface Message {
   senderId: string;
@@ -65,9 +60,9 @@ const MessageArea: React.FC<MessageAreaProps> = ({ messages, selectChatUser, mes
                   </p>
                 )}
                 <div
-                  className={`flex flex-row items-end gap-2 ${isSameSender && !isSender && "ml-10"}  px-2 py-2 ${isSender ? "bg-blue-500 dark:bg-blue-900 text-white rounded-tl-lg rounded-tr-none rounded-bl-lg rounded-br-2xl" : "bg-gray-100 dark:bg-gray-800 dark:text-gray-200  text-black rounded-tl-none rounded-tr-lg rounded-bl-2xl rounded-br-lg"}`}
+                  className={`flex flex-row items-end gap-2 max-w-xs ${isSameSender && !isSender && "ml-10"}  px-2 py-2 ${isSender ? "bg-blue-500 dark:bg-blue-900 text-white rounded-tl-lg rounded-tr-none rounded-bl-lg rounded-br-2xl" : "bg-gray-100 dark:bg-gray-800 dark:text-gray-200  text-black rounded-tl-none rounded-tr-lg rounded-bl-2xl rounded-br-lg"}`}
                 >
-                  <p className="max-w-md">{msg.text}</p>
+                  <p className="md:max-w-md">{msg.text}</p>
                   <small className="text-[10px] text-gray-700 dark:text-gray-400">
                     {formatMessageDate(msg.timestamp || "")}
                   </small>

@@ -41,7 +41,7 @@ export default function DateTimePickerComponent({
                 },
                 "&.Mui-focused fieldset": {
                   borderColor: "blue",
-                  ".dark &": { borderColor: "white" },
+                  ".dark &": { borderColor: "" },
                 },
               },
               "& .MuiInputBase-input": {
@@ -58,7 +58,7 @@ export default function DateTimePickerComponent({
             sx: {
               color: "gray", // Default icon color
               ".dark &": { color: "white" }, // White icon in dark mode
-              "&:hover": { color: "#ddd" },
+              "&:hover": { color: "black" },
             },
           },
         }}

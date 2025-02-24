@@ -5,6 +5,7 @@ import AxiosInstance from "@/src/lib/axiosInstance";
 import { PulseLoader } from "react-spinners";
 import { useMutation } from "@tanstack/react-query";
 import React, { useEffect, useState } from "react";
+import { useUpdateProfilePhotos } from "@/src/hooks/useUser";
 
 const EditProfile = () => {
   const { user } = useAuthStore();
@@ -12,7 +13,6 @@ const EditProfile = () => {
   const [isEditing, setIsEditing] = useState<boolean>(false);
 
   type EditFormType = {
-    profilePicture: File | string | null;
     fullname: string;
     email: string;
     birthday: string;
@@ -22,7 +22,6 @@ const EditProfile = () => {
   };
 
   const [formData, setFormData] = useState<EditFormType>({
-    profilePicture: null,
     fullname: "",
     email: "",
     birthday: "",
@@ -31,11 +30,23 @@ const EditProfile = () => {
     bio: "",
   });
 
+    const {mutate:updatePhotos,isPending} = useUpdateProfilePhotos()
+    const [profilePicture, setProfilePreview] = useState(user?.profilePicture)
+
+    useEffect(()=> {
+      setProfilePreview(user?.profilePicture || "/person-demo.jpg");
+    },[user])
+  
+
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files.length > 0) {
-      setFormData({ ...formData, profilePicture: e.target.files[0] });
-      setIsEditing(true);
-    }
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setProfilePreview(URL.createObjectURL(file))
+    updatePhotos({profilePicture: file}, {
+      onSuccess: ()=> {
+        fetchUser()
+      }
+    })
   };
 
   const editProfileMutation = useMutation({
@@ -55,9 +66,6 @@ const EditProfile = () => {
   const handleSumbit = async (e: React.ChangeEvent<HTMLFormElement>) => {
     e.preventDefault();
     const editDataToSend = new FormData();
-    if (formData.profilePicture && formData.profilePicture !== user?.profilePicture) {
-      editDataToSend.append("profilePicture", formData.profilePicture);
-    }
     if(formData.fullname && formData.fullname !== user?.fullname){
       editDataToSend.append("fullname", formData.fullname);
     }
@@ -80,7 +88,6 @@ const EditProfile = () => {
   useEffect(() => {
     if (user) {
       setFormData({
-        profilePicture: user?.profilePicture || null,
         fullname: user?.fullname || "",
         email: user?.email || "",
         birthday: user?.birthday
@@ -99,8 +106,8 @@ const EditProfile = () => {
       <div className="flex items-center justify-between gap-4 my-5">
         <div className="flex items-center gap-4">
           <img
-            src={user?.profilePicture ? user.profilePicture : "/person-demo.jpg"}
-            className="w-16 h-16 border rounded-full"
+            src={profilePicture || "/person-demo.jpg"}
+            className={`${isPending && "animate-pulse"} w-16 h-16 border rounded-full`}
             alt="profile-pic"
           />
           <label>
@@ -112,7 +119,7 @@ const EditProfile = () => {
             />
           </label>
           <h3 className="border p-2 text-sm shadow-md border-gray-400 rounded">
-            Change Picture
+           {isPending ? "Uploading..." : "Change Picture"}
           </h3>
         </div>
         <div>

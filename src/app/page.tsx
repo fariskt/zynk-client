@@ -7,7 +7,7 @@ import { useQuery } from "@tanstack/react-query";
 import useAuthStore from "../store/useAuthStore";
 import SuggestedFreinds from "../components/Profile/SuggestedFreinds";
 import UploadPost from "../components/UploadPost/UploadPost";
-import Navbar from "../components/Navbar/Navbar";
+import MobileSideBar from "../components/Sidebar/MobileSideBar";
 
 const fetchAllUsers = async () => {
   const res = await AxiosInstance.get("/user/users?limit=10");
@@ -26,24 +26,20 @@ export default function Home() {
     queryFn: fetchAllUsers,
   });
 
-  console.log(loggedUser?.followers);
-
   return (
     <>
-    <div className="flex mt-24 justify-between ml-36 dark:bg-gray-950">
-      {showUpload && <UploadPost onClose={() => setShowUplaod(false)} />}
-      <div className="space-y-5 ml-44">
-        <PostCard />
+      <div className="flex md:flex-row flex-col mt-24 justify-between md:ml-36 dark:bg-gray-950">
+        {showUpload && <UploadPost onClose={() => setShowUplaod(false)} />}
+        <div className="space-y-5  md:ml-44">
+          <PostCard />
+        </div>
+        <div>
+          {!isLoading && (
+            <SuggestedFreinds users={users} isLoading={isLoading} />
+          )}
+        </div>
       </div>
-      <div >
-        {!isLoading && (
-          <SuggestedFreinds
-          users={users}
-          isLoading={isLoading}
-          />
-        )}
-      </div>
-    </div>
-        </>
+      <MobileSideBar />
+    </>
   );
 }

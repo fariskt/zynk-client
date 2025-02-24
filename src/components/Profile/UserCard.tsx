@@ -7,33 +7,23 @@ import { useUserConnections } from "@/src/hooks/useUser";
 import useAuthStore from "../../store/useAuthStore";
 import { useParams, usePathname } from "next/navigation";
 import Link from "next/link";
+import MobileUserCard from "./MobileUserCard";
 
-const UserCard = ({
-  connectionType,
-}: {
-  connectionType: "followers" | "following";
-}) => {
+const UserCard = ({ connectionType,}: {  connectionType: "followers" | "following"}) => {
   const pathname = usePathname();
   const params = useParams();
   const { user } = useAuthStore();
 
   const slug = params?.slug as string;
   const friendId = slug?.split("-").pop();
-  const userID = pathname.startsWith("/members")
-    ? friendId || ""
-    : user?._id || "";
+  const userID = pathname.startsWith("/members") ? friendId || "" : user?._id || "";
 
   const [page, setPage] = useState(1);
   const limit = 4;
 
-  const { data: connectionsData, isLoading } = useUserConnections(
-    userID,
-    limit,
-    page
-  );
+  const { data: connectionsData, isLoading } = useUserConnections( userID, limit, page);
 
-  const currentConnections = connectionsData?.[connectionType]?.length || 0;
-  const disableNextPage = currentConnections < limit;
+  const disableNextPage = page * limit >= connectionsData?.[connectionType]?.length;
 
   const handlePrev = () => setPage((prev) => Math.max(prev - 1, 1));
 
@@ -45,15 +35,16 @@ const UserCard = ({
   const slugify = (fullname: string) => fullname.toLowerCase().replace(/\s+/g, "-");
 
   return (
-    <div className="w-full flex flex-col items-center p-4 gap-6 max-w-7xl mx-auto">
+    <div className="w-full flex flex-col items-center md:p-4 gap-6 max-w-7xl mx-auto">
       <div className="w-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
         {isLoading && <UserCardSkelton />}
 
         {connectionsData?.[connectionType].length > 0 ? (
           connectionsData?.[connectionType]?.map((person: any) => (
+            <div key={person._id}>
             <div
               key={person._id}
-              className="w-full max-w-[250px] bg-white dark:bg-gray-800 border dark:border-gray-600 shadow-lg rounded-lg p-6"
+              className="md:block hidden w-full max-w-[250px] bg-white dark:bg-gray-800 border dark:border-gray-600 shadow-lg rounded-lg p-6"
             >
               <div className="flex flex-col items-center space-y-4">
                 <img
@@ -93,7 +84,6 @@ const UserCard = ({
                   </div>
                 </div>
 
-                {/* Action Buttons */}
                 <div className="flex justify-between gap-4 w-full mt-5">
                   <div className="w-5/6 py-2 text-center text-sm bg-gray-200 dark:bg-gray-700 dark:text-white rounded-md hover:bg-gray-300 dark:hover:bg-gray-600 transition duration-300">
                   <Link href={person._id === user?._id ? "/profile" : `/members/${slugify(person.fullname)}-${person._id}`}>
@@ -107,6 +97,8 @@ const UserCard = ({
                   </button>
                 </div>
               </div>
+            </div>
+            <MobileUserCard person={person}/>
             </div>
           ))
         ) : (

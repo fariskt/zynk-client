@@ -12,8 +12,8 @@ import useAuthStore from "../../store/useAuthStore";
 const AboutUser = () => {
   const {user} = useAuthStore();
   return (
-    <div className="flex justify-between gap-4 pb-5">
-      <div className="flex flex-col gap-4 shadow border dark:border-gray-600 w-3/6 mt-5 rounded-md h-fit pb-4 bg-white dark:bg-gray-900 dark:text-white">
+    <div className="flex md:flex-row flex-col justify-between gap-4 pb-5">
+      <div className="flex flex-col gap-4 shadow border dark:border-gray-600 md:w-3/6 mx-5 md:mx-0 mt-5 rounded-md h-fit pb-4 bg-white dark:bg-gray-900 dark:text-white">
         <h3 className="text-left my-4 pb-2 mx-4 border-b font-semibold text-gray-700 dark:text-white">
           Personal info
         </h3>
@@ -67,7 +67,7 @@ const AboutUser = () => {
           <p className="text-sm ml-6 text-gray-600 dark:text-gray-400">{user?.country}</p>
         </div>
       </div>
-      <div className="shadow border w-full mt-5 rounded-md bg-white dark:bg-gray-900 dark:border-gray-600">
+      <div className="shadow border md:w-full mt-5 mx-5 md:mx-0 rounded-md bg-white dark:bg-gray-900 dark:border-gray-600">
         <h3 className="text-left my-4 mx-4 pb-2 border-b font-semibold text-gray-700 dark:text-white">
           General Info
         </h3>
@@ -112,7 +112,6 @@ const AboutUser = () => {
               eius doloremque nesciunt deleniti, blanditiis dolor explicabo!
             </p>
           </div>
-          <div></div>
         </div>
       </div>
     </div>

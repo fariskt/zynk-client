@@ -11,13 +11,8 @@ const fetchUserPost = async ({userId, pageParam=1}: {userId: string, pageParam: 
     return res.data;
 };
 
-const fetchPostById = async ({postId}: {postId:string})=> {    
-  console.log("id ",postId);
-  
-    const res = await AxiosInstance.get(`/post/${postId}`)
-    
-    console.log("where ",res.data);
-    
+const fetchPostById = async ({postId}: {postId:string})=> {      
+    const res = await AxiosInstance.get(`/post/${postId}`)    
     return res.data
 }
 

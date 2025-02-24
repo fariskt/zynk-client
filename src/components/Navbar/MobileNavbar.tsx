@@ -18,7 +18,7 @@ import UploadPost from "../UploadPost/UploadPost";
 import { useSearchUsers } from "@/src/hooks/useUser";
 import SearchUsers from "./SearchUsers";
 
-const Navbar = () => {
+const MobileNavbar = () => {
   const [showProfile, setShowProfile] = useState(false);
   const [showUploadModal, setShowUploadModal] = useState<boolean>(false);
   const [showNotification, setShowNotification] = useState(false);
@@ -41,8 +41,9 @@ const Navbar = () => {
     setShowProfile(false);
   }, [pathName]);
 
-  const { data: searchedUsers, isLoading: searchLoading } = useSearchUsers(searchInput);
-
+  const theme = localStorage.getItem("theme");
+  const { data: searchedUsers, isLoading: searchLoading } =
+    useSearchUsers(searchInput);
 
   if (
     pathName === "/login" ||
@@ -55,70 +56,40 @@ const Navbar = () => {
 
   return (
     <nav
-      className={`hidden md:flex fixed top-0 ${
-        pathName === "/message" || pathName.startsWith("/profile") || pathName.startsWith("/members") ? "left-[80px] w-[95%]" : "w-[85%]"
-      } left-[230px] z-20 bg-gray-50 dark:bg-gray-900 dark:text-white dark:border-gray-800 border flex justify-between pl-3`}
+      className={`${pathName === "/message" && "hidden"} md:hidden w-screen fixed top-0 $ z-20 bg-gray-50 dark:bg-gray-900 dark:text-white dark:border-gray-800 border flex justify-between pl-3`}
     >
       {showUploadModal && (
         <UploadPost onClose={() => setShowUploadModal(false)} />
       )}
-      <div className="flex items-center p-3 justify-between px-10 w-full">
-        <div className="flex items-center w-3/6">
-          <input
-            type="text"
-            placeholder="search here..."
-            value={searchInput}
-            onChange={(e) => setSearchInput(e.target.value)}
-            className="border border-[#b5b3b3] pl-4 pb-1 h-10 dark:bg-gray-800 dark:border-gray-500 w-full rounded-full outline-none"
+      <div className="flex items-center p-3 justify-between px-2">
+        <Link href="/">
+          <img
+            src={theme === "dark" ? "/zynk-dark.png" : "/zynk-mobile.png"}
+            alt="Logo"
+            className={`h-14 w-20 object-cover text-gray-600 }`}
           />
-          <span className="relative right-8 text-xl text-gray-600">
-            <IoSearch />
-          </span>
-        </div>
+        </Link>
 
-        <div
-          className="flex items-center bg-background rounded-full px-2 cursor-pointer"
-          onClick={() => setShowUploadModal(true)}
-        >
-          <button className="text-sm  py-2 pl-2 font-semibold text-white">
-            Add New Post
-          </button>
-          <span className="px-2 text-white text-lg">
-            <FiPlus />
-          </span>
-        </div>
         {searchInput && (
           <div className="absolute top-8 w-4 left-9 h-14 border-l-2 border-t-2 border-gray-400 dark:border-gray-500 rounded-tl-lg"></div>
         )}
       </div>
 
-      {searchInput && (
-        <SearchUsers searchInput={searchInput} searchLoading={searchLoading} setSearchInput={setSearchInput} searchedUsers={searchedUsers}/>
-      )}
+      <div className="flex items-center gap-3 md:gap-2 pl-4 px-2">
+        <span className="md:text-2xl cursor-pointer border rounded-full  hover:bg-gray-100 dark:hover:bg-gray-700">
+          <DarkModeToggle />
+        </span>
 
-      <div className="flex items-center justify-between w-[40%] gap-4 mr-5 p-3 border-l dark:border-l-gray-800">
-        <div className="flex items-center gap-2 pl-4">
-          <span className="text-2xl cursor-pointer border rounded-full  hover:bg-gray-100 dark:hover:bg-gray-700">
-            <DarkModeToggle />
-          </span>
-
-          <span
-            className="text-2xl cursor-pointer border rounded-full p-2 hover:bg-gray-100 dark:hover:bg-gray-700"
-            onClick={() => {
-              setShowNotification(!showNotification);
-              setShowProfile(false);
-            }}
-          >
-            <IoMdNotificationsOutline />
-          </span>
-          <span className="text-2xl cursor-pointer border rounded-full p-2 hover:bg-gray-100 dark:hover:bg-gray-700">
-            <Link href="/profile/settings">
-              <CiSettings />
-            </Link>
-          </span>
-        </div>
-
-        <div className="relative">
+        <span
+          className="md:text-2xl cursor-pointer border rounded-full p-2 hover:bg-gray-100 dark:hover:bg-gray-700"
+          onClick={() => {
+            setShowNotification(!showNotification);
+            setShowProfile(false);
+          }}
+        >
+          <IoMdNotificationsOutline />
+        </span>
+        <div className="">
           {isLogin !== "" && (
             <span
               className={isLoading ? "animate-pulse" : "cursor-pointer"}
@@ -127,12 +98,11 @@ const Navbar = () => {
                 setShowNotification(false);
               }}
             >
-              <span className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-white rounded-full"></span>
               {user?.profilePicture ? (
                 <img
                   src={user?.profilePicture}
                   alt="profile"
-                  className="w-10 h-10 border-2 border-gray-400 rounded-full object-cover"
+                  className="md:w-10 w-9 h-9 md:h-10 border-2 border-gray-400 rounded-full object-cover"
                 />
               ) : (
                 <FaCircleUser className="w-10 h-10" />
@@ -142,7 +112,9 @@ const Navbar = () => {
         </div>
       </div>
 
-      {showNotification && <Notification onClose={()=> setShowNotification(false)}/>}
+      {showNotification && (
+        <Notification onClose={() => setShowNotification(false)} />
+      )}
       {showProfile && (
         <div className="absolute right-3 mt-[70px] w-56 bg-gray-50 dark:bg-gray-800 shadow-lg rounded-xl border border-gray-200 dark:border-gray-600 p-3">
           <div className="flex items-center gap-3 p-3 rounded-lg bg-gray-200 dark:bg-gray-600">
@@ -190,4 +162,4 @@ const Navbar = () => {
   );
 };
 
-export default Navbar;
+export default MobileNavbar;
