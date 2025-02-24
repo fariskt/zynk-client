@@ -21,20 +21,24 @@ const SideBar = () => {
   const [resizeSideBar, setResizeSideBar] = useState<boolean>(false);
   const [isLogin, setIsLogin] = useState<string>(""); // State for isLogin
   const [theme, setTheme] = useState<string>("light");
-  
+
   const router = useRouter();
   const { mutate: logout } = useLogoutMutation();
   const { user, fetchUser } = useAuthStore();
 
   useEffect(() => {
-    setResizeSideBar(pathname === "/message" || pathname.startsWith("/profile") || pathname.startsWith("/members"));
+    setResizeSideBar(
+      pathname === "/message" ||
+        pathname.startsWith("/profile") ||
+        pathname.startsWith("/members")
+    );
   }, [pathname]);
 
   const handleLogout = () => setConfirmLogout(true);
 
   const sureLogout = () => {
     logout();
-    setConfirmLogout(false)
+    setConfirmLogout(false);
     router.replace("/login");
   };
 
@@ -73,28 +77,25 @@ const SideBar = () => {
           resizeSideBar ? "w-20 shadow-md" : "w-[230px]"
         } h-full top-0 transition-all ease-in-out bg-background dark:bg-gray-900 text-white dark:border-0`}
       >
-        
         <div className="flex flex-col justify-between h-[92%] mt-4 flex-wrap ml-3">
           <div className="flex flex-col gap-3 mx-4">
             <Link href="/">
               <Image
-                src={
-                  resizeSideBar
-                    ? theme === "light"
-                      ? "/zk-white.png"
-                      : "/zk-dark.png"
-                    : theme === "dark"
-                    ? "/zynk-dark.png"
-                    : "/zynk-white.png"
-                }
-                height={80}
+                src="/zynk-dark.png"
+                height={60}
                 width={112}
-                alt="Logo"
-                className={`h-20 w-28 object-cover text-gray-600 ${
-                  pathname !== "/message" ? "" : ""
-                }`}
+                alt="Dark Logo"
+                className="hidden h-20 object-cover w-28 dark:block"
+              />
+              <Image
+                src="/zynk-white.png"
+                height={60}
+                width={112}
+                alt="Light Logo"
+                className="block h-20 object-cover w-28 dark:hidden"
               />
             </Link>
+
             <Link href="/">
               <div className="flex items-center p-2 rounded-md gap-3 h-10 cursor-pointer">
                 <SlHome className="text-lg text-gray-200" />

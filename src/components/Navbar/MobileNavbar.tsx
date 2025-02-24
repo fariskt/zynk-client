@@ -45,7 +45,6 @@ const MobileNavbar = () => {
     }
   }, []);
 
-
   if (
     pathName === "/login" ||
     pathName === "/register" ||
@@ -66,12 +65,18 @@ const MobileNavbar = () => {
       )}
       <div className="flex items-center p-3 justify-between px-2">
         <Link href="/">
-          <div className="relative w-28 h-[75px] ">
+          <div className="relative w-28 h-[79px] ">
             <Image
-              src={theme === "dark" ? "/zynk-dark.png" : "/zynk-mobile.png"}
-              alt="Logo"
+              src="/zynk-mobile.png"
+              alt="Light Logo"
               fill
-              className="object-contain text-gray-600"
+              className="object-contain text-gray-600 dark:hidden"
+            />
+            <Image
+              src="/zynk-dark.png"
+              alt="Dark Logo"
+              fill
+              className="object-contain text-gray-600 hidden dark:block"
             />
           </div>
         </Link>

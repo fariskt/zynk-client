@@ -49,7 +49,7 @@ export default function ProfileLayout({
         <div className="">
           <button 
           onClick={()=> coverInputRef?.current?.click()}
-           className="absolute right-5 mt-8 bg-gray-200 border border-gray-400 dark:border-0 h-8 px-2 rounded-md">
+           className="absolute md:right-52 right-5 mt-5 bg-gray-200 border border-gray-400 dark:border-0 h-8 px-2 rounded-md">
             <LuPencilLine />
           </button>
           <Image
