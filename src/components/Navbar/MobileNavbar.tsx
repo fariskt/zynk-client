@@ -6,28 +6,25 @@ import { IoMdNotificationsOutline } from "react-icons/io";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { RiUser3Line } from "react-icons/ri";
-import { IoSearch, IoSettingsOutline } from "react-icons/io5";
+import { IoSettingsOutline } from "react-icons/io5";
 import { IoLogOutOutline } from "react-icons/io5";
 import { useLogoutMutation } from "@/src/hooks/useAuth";
 import useAuthStore from "../../store/useAuthStore";
 import DarkModeToggle from "./DarkMode";
 import Notification from "./Notification";
-import { CiSettings } from "react-icons/ci";
-import { FiPlus } from "react-icons/fi";
 import UploadPost from "../UploadPost/UploadPost";
-import { useSearchUsers } from "@/src/hooks/useUser";
-import SearchUsers from "./SearchUsers";
+import Image from "next/image";
 
 const MobileNavbar = () => {
   const [showProfile, setShowProfile] = useState(false);
   const [showUploadModal, setShowUploadModal] = useState<boolean>(false);
   const [showNotification, setShowNotification] = useState(false);
+  const [isLogin, setIsLogin] = useState<string>(""); // State for isLogin
+  const [theme, setTheme] = useState<string>("light");
+
   const pathName = usePathname();
   const router = useRouter();
-  const [searchInput, setSearchInput] = useState<string>("");
   const { mutate: logout } = useLogoutMutation();
-
-  const isLogin = localStorage.getItem("isLogin") || "";
 
   const { user, isLoading } = useAuthStore();
 
@@ -41,9 +38,13 @@ const MobileNavbar = () => {
     setShowProfile(false);
   }, [pathName]);
 
-  const theme = localStorage.getItem("theme");
-  const { data: searchedUsers, isLoading: searchLoading } =
-    useSearchUsers(searchInput);
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      setIsLogin(localStorage.getItem("isLogin") || "");
+      setTheme(localStorage.getItem("theme") || "light");
+    }
+  }, []);
+
 
   if (
     pathName === "/login" ||
@@ -56,23 +57,24 @@ const MobileNavbar = () => {
 
   return (
     <nav
-      className={`${pathName === "/message" && "hidden"} md:hidden w-screen fixed top-0 $ z-20 bg-gray-50 dark:bg-gray-900 dark:text-white dark:border-gray-800 border flex justify-between pl-3`}
+      className={`${
+        pathName === "/message" && "hidden"
+      } md:hidden w-screen fixed top-0 $ z-20 h-20 bg-gray-50 dark:bg-gray-900 dark:text-white dark:border-gray-800 border flex justify-between pl-3`}
     >
       {showUploadModal && (
         <UploadPost onClose={() => setShowUploadModal(false)} />
       )}
       <div className="flex items-center p-3 justify-between px-2">
         <Link href="/">
-          <img
-            src={theme === "dark" ? "/zynk-dark.png" : "/zynk-mobile.png"}
-            alt="Logo"
-            className={`h-14 w-20 object-cover text-gray-600 }`}
-          />
+          <div className="relative w-28 h-[75px] ">
+            <Image
+              src={theme === "dark" ? "/zynk-dark.png" : "/zynk-mobile.png"}
+              alt="Logo"
+              fill
+              className="object-contain text-gray-600"
+            />
+          </div>
         </Link>
-
-        {searchInput && (
-          <div className="absolute top-8 w-4 left-9 h-14 border-l-2 border-t-2 border-gray-400 dark:border-gray-500 rounded-tl-lg"></div>
-        )}
       </div>
 
       <div className="flex items-center gap-3 md:gap-2 pl-4 px-2">
@@ -99,9 +101,11 @@ const MobileNavbar = () => {
               }}
             >
               {user?.profilePicture ? (
-                <img
+                <Image
                   src={user?.profilePicture}
                   alt="profile"
+                  width={40}
+                  height={40}
                   className="md:w-10 w-9 h-9 md:h-10 border-2 border-gray-400 rounded-full object-cover"
                 />
               ) : (
@@ -119,9 +123,11 @@ const MobileNavbar = () => {
         <div className="absolute right-3 mt-[70px] w-56 bg-gray-50 dark:bg-gray-800 shadow-lg rounded-xl border border-gray-200 dark:border-gray-600 p-3">
           <div className="flex items-center gap-3 p-3 rounded-lg bg-gray-200 dark:bg-gray-600">
             <div className="w-10 h-10 bg-blue-500 text-white flex items-center justify-center rounded-full text-lg font-bold">
-              <img
+              <Image
                 src={user?.profilePicture || "/person-demo.jpg"}
                 alt="profile"
+                width={40}
+                height={40}
                 className="border rounded-full object-cover w-10 h-10"
               />
             </div>

@@ -2,18 +2,15 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import React, { useState } from "react";
-import { FaUser } from "react-icons/fa";
-import { RiLockPasswordFill } from "react-icons/ri";
-import { Formik, Form, Field, ErrorMessage } from "formik";
+import React from "react";
+import { Formik, Form, Field } from "formik";
 import * as Yup from "yup";
-import { PulseLoader } from "react-spinners";
 import { useRegisterMutation } from "@/src/hooks/useAuth";
 import toast from "react-hot-toast";
+import Image from "next/image";
 
 const Register = () => {
   const router = useRouter();
-  const [signupError, setSignupError] = useState(null);
 
   const registerUserSchema = Yup.object({
     fullname: Yup.string()
@@ -31,7 +28,7 @@ const Register = () => {
       .required("Confirm password is required"),
   });
 
-  const { mutate: register, isPending } = useRegisterMutation();
+  const { mutate: register } = useRegisterMutation();
 
   const handleSubmit = (formInputs: {
     fullname: string;
@@ -42,15 +39,11 @@ const Register = () => {
     register(formInputs, {
       onSuccess: () => {
         router.replace("/login");
-        setSignupError(null);
       },
       onError: (error: any) => {
-        console.log(error);
 
-        const catchError =
-          error.response?.data?.message || "Registration failed";
+        const catchError = error.response?.data?.message || "Registration failed";
         toast.error(catchError);
-        setSignupError(catchError);
       },
     });
   };
@@ -58,9 +51,9 @@ const Register = () => {
   return (
     <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-blue-400 to-purple-500">
   <div className="flex bg-white/20 backdrop-blur-md shadow-xl rounded-3xl overflow-hidden w-10/12 max-w-4xl border border-white/30">
-    {/* Left Side - Image */}
     <div className="hidden md:flex items-center justify-center w-1/2 relative">
-      <img
+      <Image
+      fill
         src="/register-illu.jpg"
         alt="Illustration"
         className="object-cover h-full w-full"
@@ -68,7 +61,6 @@ const Register = () => {
       <div className="absolute inset-0 bg-black/10 rounded-l-3xl"></div>
     </div>
 
-    {/* Right Side - Form */}
     <div className="w-full md:w-1/2 p-8 text-white">
       <h2 className="text-3xl font-bold text-center">Sign Up</h2>
       <p className="text-gray-200 text-center mt-1 text-sm">
@@ -87,7 +79,6 @@ const Register = () => {
       >
         {({ isSubmitting, touched, errors }) => (
           <Form className="space-y-4 mt-6">
-            {/* Fullname */}
             <div>
               <Field
                 type="text"
@@ -110,7 +101,6 @@ const Register = () => {
               </div>
             </div>
 
-            {/* Email */}
             <div>
               <Field
                 type="email"
@@ -133,7 +123,6 @@ const Register = () => {
               </div>
             </div>
 
-            {/* Password */}
             <div>
               <Field
                 type="password"
@@ -156,7 +145,6 @@ const Register = () => {
               </div>
             </div>
 
-            {/* Confirm Password */}
             <div>
               <Field
                 type="password"
@@ -181,7 +169,6 @@ const Register = () => {
               </div>
             </div>
 
-            {/* Submit Button */}
             <button
               type="submit"
               className="w-full bg-purple-600 hover:bg-purple-700 transition duration-300 text-white py-2 rounded-md text-sm shadow-md"

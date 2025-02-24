@@ -1,6 +1,6 @@
 import React from "react";
 
-const page = () => {
+const Page = () => {
   return (
     <div>
       <h2 className="text-xl font-semibold text-gray-700 dark:text-gray-200">General Settings</h2>
@@ -26,4 +26,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default Page;

@@ -1,4 +1,4 @@
-import { format } from "date-fns"; // Install with: npm install date-fns
+import { format } from "date-fns";
 
 interface Message {
     senderId: string;

@@ -2,6 +2,7 @@
 
 import { useUpdateProfilePhotos } from "@/src/hooks/useUser";
 import useAuthStore from "@/src/store/useAuthStore";
+import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { LuPencilLine } from "react-icons/lu";
@@ -51,7 +52,9 @@ export default function ProfileLayout({
            className="absolute right-5 mt-8 bg-gray-200 border border-gray-400 dark:border-0 h-8 px-2 rounded-md">
             <LuPencilLine />
           </button>
-          <img
+          <Image
+          height={56}
+          width={100}
             src={coverPreview || "/cover-sample.jpg"}
             className="w-full h-56 rounded-md object-cover"
             alt="Cover"
@@ -67,7 +70,9 @@ export default function ProfileLayout({
 
         <div className="flex md:flex-row flex-col justify-between px-6 py-4 bg-white dark:bg-gray-900 dark:text-white">
           <div className="flex items-center">
-            <img
+            <Image
+            height={128}
+            width={128}
             onClick={()=> profileInputRef?.current?.click()}
             title="change picture"
               src={profilePreview || "/person-demo.jpg"}

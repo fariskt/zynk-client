@@ -4,7 +4,6 @@ import QueryProvider from "@/src/providers/QueryProvider";
 import SideBar from "@/src/components/Sidebar/SideBar";
 import Navbar from "@/src/components/Navbar/Navbar";
 import { Toaster } from "react-hot-toast";
-import MobileSideBar from "../components/Sidebar/MobileSideBar";
 import MobileNavbar from "../components/Navbar/MobileNavbar";
 
 const geistSans = Geist({

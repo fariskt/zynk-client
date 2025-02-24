@@ -8,6 +8,7 @@ import React, { useState } from "react";
 import { CiHeart } from "react-icons/ci";
 import { IoMdHeart, IoMdArrowDropdown, IoMdArrowDropright } from "react-icons/io";
 import CommentReply from "./CommentReplies";
+import Image from "next/image";
 
 interface CommentProps {
   comment: Comment;
@@ -62,9 +63,10 @@ const Comments: React.FC<CommentProps> = ({ comment, userID }) => {
 
   return (
     <div className="pb-2 mt-2 md:pl-0 pl-4">
-      {/* Main Comment */}
       <div className="flex gap-4 items-start">
-        <img
+        <Image
+        height={32}
+        width={32}
           src={comment?.userId?.profilePicture || "/person-demo.jpg"}
           alt="profile"
           className="h-8 w-8 rounded-full object-cover"
@@ -132,7 +134,6 @@ const Comments: React.FC<CommentProps> = ({ comment, userID }) => {
                   <CommentReply
                     key={reply._id}
                     reply={reply}
-                    userID={userID}
                     refetchReplies={refetch}
                   />
                 ))

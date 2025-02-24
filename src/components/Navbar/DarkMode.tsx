@@ -1,33 +1,46 @@
-import { useRouter } from "next/navigation";
+"use client";
+
 import { useEffect, useState } from "react";
 import { MdDarkMode, MdOutlineDarkMode } from "react-icons/md";
 
 export default function DarkModeToggle() {
-    const router = useRouter()
-  const [darkMode, setDarkMode] = useState(
-    localStorage.getItem("theme") === "dark"
-  );
+  const [darkMode, setDarkMode] = useState<boolean | null>(null);
 
   useEffect(() => {
-    if (darkMode) {
-      document.documentElement.classList.add("dark");
-      localStorage.setItem("theme", "dark");
-    } else {
-      document.documentElement.classList.remove("dark");
-      localStorage.setItem("theme", "light");
+    if (typeof window !== "undefined" && typeof document !== "undefined") {
+      const storedTheme = localStorage.getItem("theme") || "light";
+      const isDark = storedTheme === "dark";
+      setDarkMode(isDark);
+
+      if (isDark) {
+        document.documentElement.classList.add("dark");
+      } else {
+        document.documentElement.classList.remove("dark");
+      }
     }
-  }, [darkMode]);
+  }, []);
+
+  const toggleDarkMode = () => {
+    if (typeof window !== "undefined" && typeof document !== "undefined") {
+      setDarkMode((prev) => {
+        const newMode = !prev;
+        if (newMode) {
+          document.documentElement.classList.add("dark");
+          localStorage.setItem("theme", "dark");
+        } else {
+          document.documentElement.classList.remove("dark");
+          localStorage.setItem("theme", "light");
+        }
+        return newMode;
+      });
+    }
+  };
+
+  if (darkMode === null) return null; // Prevent SSR hydration issues
 
   return (
-    <button
-      onClick={() => {
-        setDarkMode(!darkMode)
-         router.refresh()
-    }
-    }
-      className=" rounded-full p-2"
-    >
-      {darkMode ? <MdDarkMode/>: <MdOutlineDarkMode/>}
+    <button onClick={toggleDarkMode} className="rounded-full p-2">
+      {darkMode ? <MdDarkMode /> : <MdOutlineDarkMode />}
     </button>
   );
 }

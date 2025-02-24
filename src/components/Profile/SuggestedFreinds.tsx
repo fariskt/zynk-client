@@ -2,12 +2,12 @@ import React, { useState } from "react";
 import useAuthStore from "../../store/useAuthStore";
 import Suggestion from "../SuggestList/Suggestion";
 import Image from "next/image";
-import { FaArrowRightLong, FaPlus } from "react-icons/fa6";
+import { FaArrowRightLong } from "react-icons/fa6";
 import { useFetchUserActivity, useSendFolllowReq } from "@/src/hooks/useUser";
 import Link from "next/link";
 import Activity from "./Activity";
 
-const SuggestedFriends = ({ isLoading, users}: { isLoading: boolean; users: any}) => {
+const SuggestedFriends = ({ users}: { users: any}) => {
   const { fetchUser , user: loggedUser} = useAuthStore();
   const [showModal, setShowModal] = useState(false);
 
@@ -107,7 +107,7 @@ const SuggestedFriends = ({ isLoading, users}: { isLoading: boolean; users: any}
                     key={index}
                     className="flex items-center gap-2   p-3 rounded-lg "
                   >
-                    <img
+                    <Image
                       src={activity?.user?.profilePicture || "/person-demo.jpg"}
                       alt="profile-pic"
                       width={40}

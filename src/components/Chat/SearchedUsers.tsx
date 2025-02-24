@@ -1,6 +1,7 @@
 import { useChatStore } from "@/src/store/useChatStore";
 import { User } from "@/src/types";
 import ConnectionListSkeleton from "@/src/utils/SkeltonUi/ConnectionListSkelton";
+import Image from "next/image";
 import React from "react";
 import { AiOutlineClose } from "react-icons/ai";
 
@@ -28,7 +29,6 @@ const SearchedUsers: React.FC<SearchUsersProps> = ({
 
   return (
     <div className="fixed inset-0 flex justify-center items-center bg-gray-400 dark:bg-gray-900/80 bg-opacity-5 backdrop-blur-sm z-50 p-4">
-      {/* Close Button */}
       <button
         className="absolute top-20 right-5 text-gray-700 dark:text-gray-200 text-2xl"
         onClick={onClose}
@@ -38,7 +38,6 @@ const SearchedUsers: React.FC<SearchUsersProps> = ({
 
       <div className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-md w-full max-w-md ">
         <h2 className="text-center my-4 text-lg">Add New Chat</h2>
-        {/* Search Input (Moved Outside the Map) */}
         <input
           type="text"
           placeholder="Search users..."
@@ -56,7 +55,9 @@ const SearchedUsers: React.FC<SearchUsersProps> = ({
                 className="flex items-center gap-3 py-3 px-5 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-900/20 rounded-lg"
                 onClick={() => handleSelectUser(person)}
               >
-                <img
+                <Image
+                height={40}
+                width={40}
                   src={person.profilePicture || "/person-demo.jpg"}
                   alt="User"
                   className="h-10 w-10 object-cover rounded-full"

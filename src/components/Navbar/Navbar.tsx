@@ -17,17 +17,23 @@ import { FiPlus } from "react-icons/fi";
 import UploadPost from "../UploadPost/UploadPost";
 import { useSearchUsers } from "@/src/hooks/useUser";
 import SearchUsers from "./SearchUsers";
+import Image from "next/image";
 
 const Navbar = () => {
   const [showProfile, setShowProfile] = useState(false);
   const [showUploadModal, setShowUploadModal] = useState<boolean>(false);
   const [showNotification, setShowNotification] = useState(false);
+  const [isLogin, setIsLogin] = useState<string>("")
   const pathName = usePathname();
   const router = useRouter();
   const [searchInput, setSearchInput] = useState<string>("");
   const { mutate: logout } = useLogoutMutation();
 
-  const isLogin = localStorage.getItem("isLogin") || "";
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      setIsLogin(localStorage.getItem("isLogin") || "");
+    }
+  }, []);
 
   const { user, isLoading } = useAuthStore();
 
@@ -129,7 +135,9 @@ const Navbar = () => {
             >
               <span className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-white rounded-full"></span>
               {user?.profilePicture ? (
-                <img
+                <Image
+                height={40}
+                width={40}
                   src={user?.profilePicture}
                   alt="profile"
                   className="w-10 h-10 border-2 border-gray-400 rounded-full object-cover"
@@ -147,9 +155,11 @@ const Navbar = () => {
         <div className="absolute right-3 mt-[70px] w-56 bg-gray-50 dark:bg-gray-800 shadow-lg rounded-xl border border-gray-200 dark:border-gray-600 p-3">
           <div className="flex items-center gap-3 p-3 rounded-lg bg-gray-200 dark:bg-gray-600">
             <div className="w-10 h-10 bg-blue-500 text-white flex items-center justify-center rounded-full text-lg font-bold">
-              <img
+              <Image
                 src={user?.profilePicture || "/person-demo.jpg"}
                 alt="profile"
+                width={40}
+                height={40}
                 className="border rounded-full object-cover w-10 h-10"
               />
             </div>

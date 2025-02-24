@@ -11,6 +11,7 @@ import { X } from "lucide-react";
 import ImageCropper from "./ImageCropper";
 import DateTimePickerComponent from "./DatePicker";
 import useAuthStore from "../../store/useAuthStore";
+import Image from "next/image";
 
 interface UploadPostProps {
   onClose: () => void;
@@ -134,7 +135,9 @@ const UploadPost: React.FC<UploadPostProps> = ({ onClose }) => {
               <input type="file" className="hidden" id="fileInput" onChange={handleFileChange} />
               <label htmlFor="fileInput">
                 {postData.image instanceof File ? (
-                  <img
+                  <Image
+                  height={200}
+                  width={128}
                     src={URL.createObjectURL(postData.image)}
                     alt="Preview"
                     className="md:max-h-56 max-h-32 object-cover rounded-lg"

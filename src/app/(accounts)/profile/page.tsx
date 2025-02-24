@@ -1,16 +1,28 @@
 "use client";
 
-import UserPostCard from "@/src/components/PostDetails/UserPostCard";
-import Activity from "@/src/components/Profile/Activity";
 import useAuthStore from "@/src/store/useAuthStore";
+import { useEffect, useState } from "react";
 import { BsPersonStanding } from "react-icons/bs";
 import { FaBirthdayCake } from "react-icons/fa";
 import { FaGlobe } from "react-icons/fa6";
 import { IoIosMail } from "react-icons/io";
 import { RiUserFill } from "react-icons/ri";
+import dynamic from "next/dynamic";
 
-export default function ProfilePage() {
+const Activity = dynamic(()=> import("@/src/components/Profile/Activity"),{ssr: false});
+const UserPostCard = dynamic(()=> import("@/src/components/PostDetails/UserPostCard"),{ssr: false})
+
+const ProfilePage=()=> {
+    const [isClient, setIsClient] = useState(false)
+
+    useEffect(()=> {
+      setIsClient(true)
+    },[])
+
+    if(!isClient) return null
+    
   const {user} = useAuthStore()
+
   return (
     <div >
       <div className="flex md:flex-row flex-col justify-around gap-4">
@@ -46,7 +58,7 @@ export default function ProfilePage() {
               <h5 className="text-sm font-semibold text-gray-700 dark:text-gray-200">Birthday</h5>
             </div>
             <p className="text-sm ml-6 text-gray-600 dark:text-gray-400">
-            {user?.birthday && new Date(user.birthday).toISOString().split("T")[0]}
+            {user?.birthday && new Date(user?.birthday).toISOString().split("T")[0]}
             </p>
           </div>
           <div className="ml-4">
@@ -74,3 +86,6 @@ export default function ProfilePage() {
     </div>
   );
 }
+
+
+export default ProfilePage

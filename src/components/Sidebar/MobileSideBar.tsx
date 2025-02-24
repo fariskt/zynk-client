@@ -3,7 +3,7 @@
 import { SlHome } from "react-icons/sl";
 import { LuMessageSquareText } from "react-icons/lu";
 import { FaRegUser } from "react-icons/fa6";
-import { FiLogOut, FiPlusCircle } from "react-icons/fi";
+import {  FiPlusCircle } from "react-icons/fi";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -17,20 +17,11 @@ const MobileSideBar = () => {
   const pathname = usePathname();
   const [confirmLogout, setConfirmLogout] = useState<boolean>(false);
   const [isUploadPost, setIsUploadPost] = useState<boolean>(false);
-  const [resizeSideBar, setResizeSideBar] = useState<boolean>(false);
+  const [isLogin, setIsLogin] = useState<string>("")
+
   const router = useRouter();
   const { mutate: logout } = useLogoutMutation();
-  const { user, fetchUser, isLoading } = useAuthStore();
-
-  useEffect(() => {
-    setResizeSideBar(
-      pathname === "/message" ||
-        pathname.startsWith("/profile") ||
-        pathname.startsWith("/members")
-    );
-  }, [pathname]);
-
-  const handleLogout = () => setConfirmLogout(true);
+  const { fetchUser } = useAuthStore();
 
   const sureLogout = () => {
     logout();
@@ -38,8 +29,12 @@ const MobileSideBar = () => {
     router.replace("/login");
   };
 
-  const isLogin = localStorage.getItem("isLogin");
-  const theme = localStorage.getItem("theme");
+   useEffect(() => {
+    if (typeof window !== "undefined") {
+      setIsLogin(localStorage.getItem("isLogin") || "");
+    }
+  }, []);
+  
   useEffect(() => {
     if (isLogin) {
       fetchUser();

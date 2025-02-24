@@ -1,10 +1,9 @@
 "use client";
 
 import useAuthStore from "@/src/store/useAuthStore";
-import { useSearchUsers, useUserConnections } from "@/src/hooks/useUser";
+import { useSearchUsers } from "@/src/hooks/useUser";
 import AxiosInstance from "@/src/lib/axiosInstance";
 import React, { useEffect, useRef, useState } from "react";
-import { io } from "socket.io-client";
 import { CiSearch } from "react-icons/ci";
 import { LuSend } from "react-icons/lu";
 import { GrEmoji } from "react-icons/gr";
@@ -17,6 +16,7 @@ import { User } from "@/src/types";
 import { getSocket } from "@/src/lib/socket";
 import { IoMdArrowBack } from "react-icons/io";
 import Link from "next/link";
+import Image from "next/image";
 
 interface Message {
   senderId: string;
@@ -176,7 +176,6 @@ const ChatApp = () => {
 
   return (
     <div className="h-screen  fixed md:w-[95%] w-full flex md:ml-20 md:mt-16">
-      {/* Sidebar */}
       <div
         className={`${
           selectChatUser ? "hidden md:block" : "block"
@@ -219,7 +218,9 @@ const ChatApp = () => {
                 onClick={() => setSelectChatUser(user)}
               >
                 <div className="relative">
-                  <img
+                  <Image
+                  height={40}
+                  width={48}
                     src={user?.profilePicture || "/person-demo.jpg"}
                     className="h-10 w-12 rounded-full object-cover"
                     alt="User"
@@ -260,7 +261,6 @@ const ChatApp = () => {
         </div>
       </div>
 
-      {/* Chat Window */}
       <div
         className={`${
           selectChatUser ? "absolute md:static w-full md:w-auto" : "hidden md:block"
@@ -271,7 +271,9 @@ const ChatApp = () => {
             <div className="flex items-center gap-3 relative">
               <span className="md:hidden block text-xl z-10" onClick={()=> setSelectChatUser(null)}><IoMdArrowBack/></span>
               <div className="relative">
-                <img
+                <Image
+                height={40}
+                width={40}
                   src={selectChatUser?.profilePicture || "/person-demo.jpg"}
                   className="h-10 w-10 rounded-full"
                   alt="User"
@@ -303,7 +305,6 @@ const ChatApp = () => {
           </div>
         )}
 
-        {/* Messages */}
         {selectChatUser && (
           <MessageArea
             messageRef={messageRef}

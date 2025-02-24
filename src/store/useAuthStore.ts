@@ -2,8 +2,6 @@ import AxiosInstance from "@/src/lib/axiosInstance";
 import { User } from "@/src/types";
 import { create } from "zustand";
 
-
-
 interface AuthState {
   user: User | null;
   isLoading: boolean;
@@ -14,17 +12,20 @@ interface AuthState {
 const useAuthStore = create<AuthState>((set) => ({
   user: null,
   isLoading: false,
+
   setUser: (user) => set({ user }),
+
   fetchUser: async () => {
+    if (typeof window === "undefined") return;
     set({ isLoading: true });
     try {
-      const { data } = await AxiosInstance.get("/auth/me");                  
+      const { data } = await AxiosInstance.get("/auth/me");
       set({ user: data?.user, isLoading: false });
     } catch (error) {
       console.error("Failed to fetch user:", error);
       set({ isLoading: false });
     }
-  }
+  },
 }));
 
 export default useAuthStore;

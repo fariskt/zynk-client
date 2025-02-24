@@ -1,5 +1,6 @@
 import { User } from '@/src/types';
 import ConnectionListSkeleton from '@/src/utils/SkeltonUi/ConnectionListSkelton'
+import Image from 'next/image';
 import Link from 'next/link';
 import React from 'react'
 import { IoMdArrowBack } from 'react-icons/io'
@@ -32,8 +33,10 @@ const SearchUsers : React.FC<SearchUsersProps>= ({searchLoading,setSearchInput, 
                   key={person._id}
                   className="flex items-center gap-3 py-3 px-5 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
                 >
-                  <img
+                  <Image
                     src={person.profilePicture || "/person-demo.jpg"}
+                    height={40}
+                    width={40}
                     alt="User"
                     className="h-10 w-10 object-cover rounded-full border border-gray-300"
                   />

@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { io } from "socket.io-client";
 import useAuthStore from "../../store/useAuthStore";
 import { useQuery } from "@tanstack/react-query";
 import AxiosInstance from "@/src/lib/axiosInstance";
@@ -7,6 +6,7 @@ import ConnectionListSkeleton from "@/src/utils/SkeltonUi/ConnectionListSkelton"
 import { getRelativeTime } from "@/src/utils/DateFormater/DateFormat";
 import Link from "next/link";
 import { getSocket } from "@/src/lib/socket";
+import Image from "next/image";
 
 interface Notification {
   _id: string;
@@ -56,7 +56,6 @@ const Notification : React.FC<NotificationProps>= ({ onClose }) => {
 
   const slugify = (fullname: string) => fullname?.toLowerCase().replace(/\s+/g, "-");
 
-  console.log(notifications);
 
   return (
     <div className="absolute right-3 mt-[70px] w-96 bg-white dark:bg-gray-900 shadow-lg rounded-xl border border-gray-200 dark:border-gray-700 p-4">
@@ -73,7 +72,9 @@ const Notification : React.FC<NotificationProps>= ({ onClose }) => {
               key={index}
               className="flex items-center gap-2 py-2 rounded-lg hover:bg-gray-50 dark:hover:bg-transparent transition"
             >
-              <img
+              <Image
+              height={40}
+              width={40}
                 src={notification.sender?.profilePicture || "/person-demo.jpg"}
                 alt="profile"
                 className="w-10 h-10 rounded-full object-cover border"

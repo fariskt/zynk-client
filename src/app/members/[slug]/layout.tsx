@@ -4,10 +4,10 @@ import useAuthStore from "@/src/store/useAuthStore";
 import { useFetchUserById, useSendFolllowReq } from "@/src/hooks/useUser";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
-import { LuPencilLine } from "react-icons/lu";
 import { TbMessage } from "react-icons/tb";
 import { useChatStore } from "@/src/store/useChatStore";
 import { User } from "@/src/types";
+import Image from "next/image";
 
 export default function ProfileLayout({
   children,
@@ -20,7 +20,7 @@ export default function ProfileLayout({
   const slug = params?.slug as string;
   const friendId = slug?.split("-").pop() || "";
   
-  const { data: user, isLoading, error } = useFetchUserById(friendId || "");
+  const { data: user } = useFetchUserById(friendId || "");
 
   const { mutate: sendFollowReqMutation } = useSendFolllowReq();
   const {setSelectChatUser} = useChatStore()
@@ -46,7 +46,9 @@ export default function ProfileLayout({
     <div className="max-w-6xl mt-24 mx-auto">
       <div className="w-full border dark:border-0 shadow-md rounded-xl">
         <div className="relative">
-          <img
+          <Image
+          height={224}
+          fill
             src="/cover-sample.jpg"
             className="w-full h-56 rounded-md object-cover"
             alt="Cover"
@@ -55,7 +57,9 @@ export default function ProfileLayout({
 
         <div className="flex justify-between px-6 py-4 bg-white dark:bg-gray-900 dark:text-white">
           <div className="flex">
-            <img
+            <Image
+            height={128}
+            width={128}
               src={user?.user?.profilePicture || "/person-demo.jpg"}
               className="rounded-full h-32 w-32 object-cover z-10 bg-white -mt-16 border-4 border-gray-900"
               alt="Profile"

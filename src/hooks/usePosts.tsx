@@ -30,17 +30,14 @@ const fetchCommentsById = async ({postId}: {postId: string})=> {
   const res = await AxiosInstance.get(`/post/comment/${postId}`)  
   return res.data
 }
-const fetchAllComments = async ()=> {
-  const res = await AxiosInstance.get("/post/comment/comments")
-  return res.data
-}
+
 
 export const useFetchPosts = () => {
     return useInfiniteQuery({
         queryKey: ["allPosts"],
         queryFn: fetchAllPosts,
         initialPageParam: 1,
-        getNextPageParam: (lastPage, allPages) => {
+        getNextPageParam: (lastPage) => {
             if (lastPage.currentPage < lastPage.pageLength) {
                 return lastPage.currentPage + 1;
             }
@@ -54,7 +51,7 @@ export const useFetchUserPosts = (userId: string) => {
         queryKey: ["userPosts", userId],
         queryFn: ({ pageParam = 1 }) => fetchUserPost({ userId, pageParam }),
         initialPageParam: 1,
-        getNextPageParam: (lastPage, allPages) => {            
+        getNextPageParam: (lastPage) => {            
             if (lastPage.currentPage < lastPage.pageLength) {
                 return lastPage.currentPage + 1;
             }
@@ -71,13 +68,6 @@ export const useFetchPostById = (postId: string) => {
     });
 };
 
-export const useFetchAllComments = () => {
-  return useQuery({
-    queryKey: ["allComments"],
-    queryFn: fetchAllComments,
-  });
-};
-
 
 export const useFetchCommentsById = (postId: string) => {  
     return useQuery({
@@ -87,21 +77,7 @@ export const useFetchCommentsById = (postId: string) => {
     });
 };
 
-//simple one =>  rely on backend update 
-// export const useLikePost = (pathname: string) => {
-//     const queryClient = useQueryClient();
-//     return useMutation({
-//       mutationFn: likePost,
-//       onSuccess: () => {
-//         queryClient.invalidateQueries({ queryKey: ["allPosts"] });
-//         if (pathname === "/profile") {
-//           queryClient.invalidateQueries({ queryKey: ["userPosts"] });
-//         }
-//       },
-//     });
-//   };
-
-
+// for optimistic ui update
 export const useLikePost = (pathname: string) => {
     const queryClient = useQueryClient();
   

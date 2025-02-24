@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { BsThreeDots } from "react-icons/bs";
 import UserCardSkelton from "../../utils/SkeltonUi/UserCardSkelton";
 import { useUserConnections } from "@/src/hooks/useUser";
@@ -8,11 +8,15 @@ import useAuthStore from "../../store/useAuthStore";
 import { useParams, usePathname } from "next/navigation";
 import Link from "next/link";
 import MobileUserCard from "./MobileUserCard";
+import Image from "next/image";
 
 const UserCard = ({ connectionType,}: {  connectionType: "followers" | "following"}) => {
   const pathname = usePathname();
   const params = useParams();
   const { user } = useAuthStore();
+
+  const [isClient, setIsClient] = useState(false);
+
 
   const slug = params?.slug as string;
   const friendId = slug?.split("-").pop();
@@ -34,6 +38,12 @@ const UserCard = ({ connectionType,}: {  connectionType: "followers" | "followin
   };
   const slugify = (fullname: string) => fullname.toLowerCase().replace(/\s+/g, "-");
 
+  useEffect(()=> {
+    setIsClient(true)
+  },[])
+
+  if (!isClient) return null; 
+
   return (
     <div className="w-full flex flex-col items-center md:p-4 gap-6 max-w-7xl mx-auto">
       <div className="w-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
@@ -47,8 +57,10 @@ const UserCard = ({ connectionType,}: {  connectionType: "followers" | "followin
               className="md:block hidden w-full max-w-[250px] bg-white dark:bg-gray-800 border dark:border-gray-600 shadow-lg rounded-lg p-6"
             >
               <div className="flex flex-col items-center space-y-4">
-                <img
+                <Image
                   src={person.profilePicture || "/person-demo.jpg"}
+                  height={80}
+                  width={80}
                   className="h-20 w-20 border-4 border-gray-300 rounded-full object-cover"
                   alt="Profile"
                 />

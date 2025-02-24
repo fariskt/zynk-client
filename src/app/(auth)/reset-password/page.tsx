@@ -1,43 +1,41 @@
-"use client"
+"use client";
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import AxiosInstance from '@/src/lib/axiosInstance';
 import { useMutation } from '@tanstack/react-query';
 import { PulseLoader } from 'react-spinners';
 
-const resetPasswordFn = async(resetForm: {newPassword: string, token: string| null})=> {
-  const {data} = await AxiosInstance.post("/auth/reset-password", resetForm)
-  console.log(data)
-  return data
-} 
+const resetPasswordFn = async (resetForm: { newPassword: string; token: string | null }) => {
+  const { data } = await AxiosInstance.post("/auth/reset-password", resetForm);
+  return data;
+};
 
-const ResetPassword = () => {
+const ResetPasswordForm = () => {
   const [newPassword, setNewPassword] = useState<string>('');
   const [confirmPassword, setConfirmPassword] = useState<string>('');
   const [message, setMessage] = useState<string>('');
 
-  const {mutate , isPending}  = useMutation({
+  const { mutate, isPending } = useMutation({
     mutationFn: resetPasswordFn,
-    onSuccess: (data)=> {
-      setMessage(data.message)
+    onSuccess: (data) => {
+      setMessage(data.message);
     },
-    onError: (error: any)=> {
-      setMessage(error.response?.data?.message || "Cannot reset password")
+    onError: (error: any) => {
+      setMessage(error.response?.data?.message || "Cannot reset password");
     }
-  })
+  });
 
   const searchParams = useSearchParams();
   const token = searchParams ? searchParams.get('token') : null;
 
-
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if(newPassword !== confirmPassword){
+    if (newPassword !== confirmPassword) {
       setMessage("Passwords do not match");
       return;
     }
-    mutate({newPassword, token})
+    mutate({ newPassword, token });
   };
 
   return (
@@ -72,14 +70,19 @@ const ResetPassword = () => {
             disabled={isPending}
             className="w-full p-3 bg-black text-white rounded-md hover:bg-gray-700 disabled:bg-gray-300"
           >
-            {isPending ? <PulseLoader color="#ffffff" size={5} />  : 'Reset Password'}
+            {isPending ? <PulseLoader color="#ffffff" size={5} /> : 'Reset Password'}
           </button>
         </form>
-        {message && <div className="mt-2 mb-4">{message}</div>}
-
+        {message && <div className="mt-2 mb-4 text-center text-red-500">{message}</div>}
       </div>
     </div>
   );
 };
+
+const ResetPassword = () => (
+  <Suspense fallback={<div className="flex justify-center items-center min-h-screen">Loading...</div>}>
+    <ResetPasswordForm />
+  </Suspense>
+);
 
 export default ResetPassword;

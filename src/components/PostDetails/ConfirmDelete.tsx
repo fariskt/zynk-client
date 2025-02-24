@@ -53,9 +53,8 @@ const ConfirmDelete: React.FC<PostEditForm> = ({ onClose, post }) => {
           animate={{ scale: 1, opacity: 1 }}
           exit={{ scale: 0.8, opacity: 0 }}
           transition={{ type: "spring", stiffness: 300, damping: 25 }}
-          onClick={(e) => e.stopPropagation()} // Prevent close on inner click
+          onClick={(e) => e.stopPropagation()}
         >
-          {/* Header */}
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-xl font-semibold">Confirm</h2>
             <button onClick={onClose}>
@@ -63,14 +62,12 @@ const ConfirmDelete: React.FC<PostEditForm> = ({ onClose, post }) => {
             </button>
           </div>
 
-          {/* Message */}
           <p className="dark:text-gray-300 mb-4">
             Are you sure you want to delete this post?
           </p>
 
           <hr className="border-gray-700 mb-4" />
 
-          {/* Action Buttons */}
           <div className="flex justify-end gap-3">
             <button
               className="px-4 py-2 rounded-lg bg-gray-800 text-gray-300 hover:bg-gray-700 transition"

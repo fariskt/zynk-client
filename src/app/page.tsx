@@ -4,7 +4,6 @@ import React, { useState } from "react";
 import PostCard from "../components/PostDetails/PostCard";
 import AxiosInstance from "../lib/axiosInstance";
 import { useQuery } from "@tanstack/react-query";
-import useAuthStore from "../store/useAuthStore";
 import SuggestedFreinds from "../components/Profile/SuggestedFreinds";
 import UploadPost from "../components/UploadPost/UploadPost";
 import MobileSideBar from "../components/Sidebar/MobileSideBar";
@@ -16,12 +15,7 @@ const fetchAllUsers = async () => {
 
 export default function Home() {
   const [showUpload, setShowUplaod] = useState<boolean>(false);
-  const { user: loggedUser } = useAuthStore();
-  const {
-    data: users,
-    isLoading,
-    error,
-  } = useQuery({
+  const { data: users, isLoading } = useQuery({
     queryKey: ["fetchUsers"],
     queryFn: fetchAllUsers,
   });
@@ -35,7 +29,7 @@ export default function Home() {
         </div>
         <div>
           {!isLoading && (
-            <SuggestedFreinds users={users} isLoading={isLoading} />
+            <SuggestedFreinds users={users} />
           )}
         </div>
       </div>

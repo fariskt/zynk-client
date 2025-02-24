@@ -1,4 +1,5 @@
 import { User } from "@/src/types";
+import Image from "next/image";
 import Link from "next/link";
 import React from "react";
 
@@ -41,7 +42,9 @@ const Suggestion = ({setShowModal,loggedUser, handleFollowReq,users}: {
                   href={`/members/${slugify(user.fullname)}-${user._id}`}
                 >
                   <div className="flex items-center gap-3">
-                    <img
+                    <Image
+                    height={48}
+                    width={48}
                       src={user.profilePicture || "/person-demo.jpg"}
                       className="w-12 h-12 object-cover border dark:border-gray-500 rounded-full"
                       alt=""

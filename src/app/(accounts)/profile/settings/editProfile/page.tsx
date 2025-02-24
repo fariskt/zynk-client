@@ -6,8 +6,10 @@ import { PulseLoader } from "react-spinners";
 import { useMutation } from "@tanstack/react-query";
 import React, { useEffect, useState } from "react";
 import { useUpdateProfilePhotos } from "@/src/hooks/useUser";
+import Image from "next/image";
 
 const EditProfile = () => {
+  const [isClient, setIsClient] = useState(false)
   const { user } = useAuthStore();
   const { fetchUser } = useAuthStore();
   const [isEditing, setIsEditing] = useState<boolean>(false);
@@ -20,6 +22,10 @@ const EditProfile = () => {
     country: string;
     bio: string;
   };
+
+  useEffect(()=> {
+    setIsClient(true)
+  },[])
 
   const [formData, setFormData] = useState<EditFormType>({
     fullname: "",
@@ -57,7 +63,7 @@ const EditProfile = () => {
         },
       });
     },
-    onSuccess: (data) => {
+    onSuccess: () => {
       fetchUser();
         setIsEditing(false);
     },
@@ -105,7 +111,9 @@ const EditProfile = () => {
       <h2 className="text-xl font-semibold text-gray-700 dark:text-gray-100">Edit Profile</h2>
       <div className="flex items-center justify-between gap-4 my-5">
         <div className="flex items-center gap-4">
-          <img
+          <Image
+          height={64}
+          width={64}
             src={profilePicture || "/person-demo.jpg"}
             className={`${isPending && "animate-pulse"} w-16 h-16 border rounded-full`}
             alt="profile-pic"

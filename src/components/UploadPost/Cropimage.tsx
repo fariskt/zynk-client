@@ -1,11 +1,14 @@
 const createImage = (url: string): Promise<HTMLImageElement> => {
   return new Promise((resolve, reject) => {
+    if (typeof window === "undefined") {
+      reject(new Error("Window is undefined"));
+      return;
+    }
+
     const image = new Image();
     image.crossOrigin = "anonymous"; 
     image.src = url;
-    image.onload = () => {
-      resolve(image);
-    };
+    image.onload = () => resolve(image);
     image.onerror = (error) => {
       console.error("Error loading image:", error);
       reject(error);
@@ -13,9 +16,10 @@ const createImage = (url: string): Promise<HTMLImageElement> => {
   });
 };
 
-
 export default async function getCroppedImg(imageSrc: string, croppedAreaPixels: any): Promise<File | null> {
   try {
+    if (typeof window === "undefined" || typeof document === "undefined") return null;
+
     const image = await createImage(imageSrc);
     const canvas = document.createElement("canvas");
     const ctx = canvas.getContext("2d");

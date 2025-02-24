@@ -2,6 +2,7 @@ import { formatMessageDate } from "@/src/utils/DateFormater/DateFormat";
 import React, { useEffect, useState } from "react";
 import useAuthStore from "../../store/useAuthStore";
 import { User } from "@/src/types";
+import Image from "next/image";
 
 interface Message {
   senderId: string;
@@ -47,9 +48,11 @@ const MessageArea: React.FC<MessageAreaProps> = ({ messages, selectChatUser, mes
           return (
             <div key={index} className={`flex gap-3 ${isSender ? "justify-end mb-2" : "mb-2"}`}>
               {!isSender && !isSameSender && (
-                <img
+                <Image
                   src={selectChatUser?.profilePicture || "/person-demo.jpg"}
                   className="h-8 w-8 rounded-full"
+                  height={32}
+                  width={32}
                   alt={selectChatUser?.fullname || "User"}
                 />
               )}

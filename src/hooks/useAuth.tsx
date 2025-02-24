@@ -1,11 +1,11 @@
+"use client" 
+
 import { useMutation } from "@tanstack/react-query";
 import AxiosInstance from "@/src/lib/axiosInstance";
 import useAuthStore from "../store/useAuthStore";
 
 const loginUser = async (userData: { email: string; password: string }) => {
-  const response = await AxiosInstance.post("/auth/login", userData);
-  console.log(response.data);
-  
+  const response = await AxiosInstance.post("/auth/login", userData);  
   return response.data;
 };
 

@@ -2,7 +2,7 @@ import { BsThreeDots } from "react-icons/bs";
 import { GoComment } from "react-icons/go";
 import useAuthStore from "../../store/useAuthStore";
 import { usePathname } from "next/navigation";
-import {  useFetchPosts, useLikePost} from "@/src/hooks/usePosts";
+import { useFetchPosts, useLikePost } from "@/src/hooks/usePosts";
 import SkeletonPostCard from "../../utils/SkeltonUi/PostSkelton";
 import { useEffect, useState } from "react";
 import dayjs from "dayjs";
@@ -13,6 +13,7 @@ import { AiFillHeart } from "react-icons/ai";
 import { getRelativeTime } from "@/src/utils/DateFormater/DateFormat";
 import { BiLike, BiSolidLike } from "react-icons/bi";
 import { Post } from "@/src/types";
+import Image from "next/image";
 
 const PostCard = () => {
   const { user } = useAuthStore();
@@ -30,20 +31,24 @@ const PostCard = () => {
     isLoading,
   } = useFetchPosts();
 
-  let postToShow = posts?.pages.flatMap((page: { posts: Post[] }) => page.posts) || [];
+  const postToShow = posts?.pages.flatMap((page: { posts: Post[] }) => page.posts) || [];
 
   const handleScroll = () => {
+    if (typeof window === "undefined" || typeof document === "undefined") return;
     if (!hasNextPage || isFetchingNextPage) return;
-    const scrollPosition =
-      window.innerHeight + document.documentElement.scrollTop;
+  
+    const scrollTop = window.scrollY || document.documentElement.scrollTop;
+    const scrollPosition = window.innerHeight + scrollTop;
     const bottomPosition = document.documentElement.offsetHeight;
-
+  
     if (scrollPosition >= bottomPosition - 100) {
       fetchNextPage();
     }
   };
 
   useEffect(() => {
+    if (typeof window === "undefined") return;
+
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, [hasNextPage, isFetchingNextPage]);
@@ -80,7 +85,9 @@ const PostCard = () => {
               >
                 <div className="flex justify-between items-center border-b dark:border-b-gray-600 p-2">
                   <div className="flex items-center gap-4 p-2 pl-3">
-                    <img
+                    <Image
+                    height={40}
+                    width={40}
                       src={post?.userId?.profilePicture || "/person-demo.jpg"}
                       alt={`${post?.userId?.fullname}'s profile`}
                       className="dark:border-gray-500 border rounded-full w-10 h-10 object-cover"
@@ -112,9 +119,11 @@ const PostCard = () => {
 
                 {post.image && (
                   <div className="relative m-4 flex justify-center">
-                    <img
+                    <Image
                       src={post.image}
                       onDoubleClick={() => handleLike(post._id)}
+                      width={650}
+                      height={400}
                       className="w-full max-w-[650px] max-h-[400px] aspect-square object-cover border dark:border-0 rounded-3xl"
                       alt="post-image"
                     />
@@ -148,7 +157,9 @@ const PostCard = () => {
                           <BiLike />
                         )}
                       </span>
-                      <p className="text-sm md:text-base">{post?.likes?.length || 0} Likes</p>
+                      <p className="text-sm md:text-base">
+                        {post?.likes?.length || 0} Likes
+                      </p>
                     </div>
                     {!post.hideComments && (
                       <div
@@ -158,7 +169,9 @@ const PostCard = () => {
                         <span className="text-base md:text-xl ">
                           <GoComment />
                         </span>
-                        <p className="md:text-base text-sm">{post?.commentCount || 0} Comments</p>
+                        <p className="md:text-base text-sm">
+                          {post?.commentCount || 0} Comments
+                        </p>
                       </div>
                     )}
                   </div>

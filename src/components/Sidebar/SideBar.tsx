@@ -12,15 +12,19 @@ import UploadPost from "../UploadPost/UploadPost";
 import { useLogoutMutation } from "@/src/hooks/useAuth";
 import useAuthStore from "../../store/useAuthStore";
 import ConfirmLogout from "./ConfirmLogout";
+import Image from "next/image";
 
 const SideBar = () => {
   const pathname = usePathname();
   const [confirmLogout, setConfirmLogout] = useState<boolean>(false);
   const [isUploadPost, setIsUploadPost] = useState<boolean>(false);
   const [resizeSideBar, setResizeSideBar] = useState<boolean>(false);
+  const [isLogin, setIsLogin] = useState<string>(""); // State for isLogin
+  const [theme, setTheme] = useState<string>("light");
+  
   const router = useRouter();
   const { mutate: logout } = useLogoutMutation();
-  const { user, fetchUser, isLoading } = useAuthStore();
+  const { user, fetchUser } = useAuthStore();
 
   useEffect(() => {
     setResizeSideBar(pathname === "/message" || pathname.startsWith("/profile") || pathname.startsWith("/members"));
@@ -34,8 +38,13 @@ const SideBar = () => {
     router.replace("/login");
   };
 
-  const isLogin = localStorage.getItem("isLogin");
-  const theme = localStorage.getItem("theme");
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      setIsLogin(localStorage.getItem("isLogin") || "");
+      setTheme(localStorage.getItem("theme") || "light");
+    }
+  }, []);
+
   useEffect(() => {
     if (isLogin) {
       fetchUser();
@@ -68,7 +77,7 @@ const SideBar = () => {
         <div className="flex flex-col justify-between h-[92%] mt-4 flex-wrap ml-3">
           <div className="flex flex-col gap-3 mx-4">
             <Link href="/">
-              <img
+              <Image
                 src={
                   resizeSideBar
                     ? theme === "light"
@@ -78,6 +87,8 @@ const SideBar = () => {
                     ? "/zynk-dark.png"
                     : "/zynk-white.png"
                 }
+                height={80}
+                width={112}
                 alt="Logo"
                 className={`h-20 w-28 object-cover text-gray-600 ${
                   pathname !== "/message" ? "" : ""
@@ -128,8 +139,10 @@ const SideBar = () => {
           <div className="flex justify-between items-center border-t border-t-gray-300 dark:border-t-gray-600 pt-5 mx-2 mr-5">
             {!resizeSideBar && (
               <div className="flex items-center  gap-2">
-                <img
+                <Image
                   src={user?.profilePicture || "/person-demo.jpg"}
+                  height={32}
+                  width={32}
                   className="h-8 rounded-full w-8 object-cover"
                   alt=""
                 />

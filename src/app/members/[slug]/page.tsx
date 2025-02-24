@@ -1,12 +1,8 @@
 "use client" 
 
 import { useParams, usePathname } from 'next/navigation';
-import AxiosInstance from '@/src/lib/axiosInstance';
-import { useQuery } from '@tanstack/react-query';
 import React from 'react';
-import { IoIosMail } from 'react-icons/io';
 import { FaBirthdayCake } from 'react-icons/fa';
-import { BsPersonStanding } from 'react-icons/bs';
 import { FaGlobe } from 'react-icons/fa6';
 import { RiUserFill } from 'react-icons/ri';
 import { useFetchUserById } from '@/src/hooks/useUser';
@@ -20,7 +16,7 @@ const MemberPage = () => {
   const slug = params?.slug as string;
   const userId = pathname.startsWith("/memebers") && slug?.split('-').pop() || "";  
   
-const {data: user, isLoading, error} = useFetchUserById(userId)
+const {data: user} = useFetchUserById(userId)
 
   return (
     <div >

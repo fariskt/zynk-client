@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import toast from "react-hot-toast";
 import { AiOutlineClose } from "react-icons/ai";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import Image from "next/image";
 
 interface Post {
   _id: string;
@@ -29,7 +30,7 @@ const PostEditForm: React.FC<PostEditFormProps> = ({ post, onClose  }) => {
   useEffect(() => {
     if (post) {
       setPostData({
-        _id: post._id, // ✅ Now we are sure post exists
+        _id: post._id,
         content: post.content,
         hideComments: post.hideComments || false,
         image: post.image,
@@ -63,7 +64,6 @@ const PostEditForm: React.FC<PostEditFormProps> = ({ post, onClose  }) => {
   return (
     <div className="fixed inset-0 flex justify-center items-center bg-gray-400 dark:bg-gray-950/5 bg-opacity-5 backdrop-blur-sm z-50 p-4" onClick={onClose}>
       <div onClick={(e)=> e.stopPropagation()} className="relative bg-white dark:bg-gray-800 shadow-lg rounded-lg p-8 w-full max-w-md">
-        {/* Close Button */}
         <button
           className="absolute top-2 right-2 text-gray-700 dark:text-gray-200 text-2xl"
           onClick={onClose}
@@ -82,7 +82,6 @@ const PostEditForm: React.FC<PostEditFormProps> = ({ post, onClose  }) => {
           }}
           className="space-y-6 mt-4"
         >
-          {/* Caption Field */}
           <div>
             <label className="block mb-2 text-gray-600 dark:text-white font-medium">
               Caption
@@ -100,7 +99,9 @@ const PostEditForm: React.FC<PostEditFormProps> = ({ post, onClose  }) => {
 
           {postData.image && (
             <div className="flex justify-center">
-              <img
+              <Image
+              height={200}
+              width={600}
                 src={postData.image}
                 className="h-[200px] w-[600px] object-cover rounded-lg"
                 alt="Post Image"
@@ -121,7 +122,6 @@ const PostEditForm: React.FC<PostEditFormProps> = ({ post, onClose  }) => {
             </label>
           </div>
 
-          {/* Submit Button */}
           <button
             type="submit"
             className="w-full bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600"

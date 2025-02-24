@@ -2,16 +2,15 @@ import React, { useState } from "react";
 import { Comment } from "@/src/types";
 import { getRelativeTime } from "@/src/utils/DateFormater/DateFormat";
 import AxiosInstance from "@/src/lib/axiosInstance";
+import Image from "next/image";
 
 interface CommentReplyProps {
   reply: Comment;
-  userID: string;
   refetchReplies: () => void;
 }
 
 const CommentReply: React.FC<CommentReplyProps> = ({
   reply,
-  userID,
   refetchReplies,
 }) => {
   const [showReplyInput, setShowReplyInput] = useState(false);
@@ -38,7 +37,9 @@ const CommentReply: React.FC<CommentReplyProps> = ({
 
   return (
     <div key={reply._id} className="flex gap-3 mt-2">
-      <img
+      <Image
+      height={24}
+      width={24}
         src={reply?.userId?.profilePicture || "/person-demo.jpg"}
         alt="profile"
         className="h-6 w-6 rounded-full object-cover"
