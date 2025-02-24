@@ -14,6 +14,7 @@ const UserPostCard = dynamic(()=> import("@/src/components/PostDetails/UserPostC
 
 const ProfilePage=()=> {
     const [isClient, setIsClient] = useState(false)
+    const {user} = useAuthStore()
 
     useEffect(()=> {
       setIsClient(true)
@@ -21,7 +22,6 @@ const ProfilePage=()=> {
 
     if(!isClient) return null
     
-  const {user} = useAuthStore()
 
   return (
     <div >
