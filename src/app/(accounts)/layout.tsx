@@ -40,8 +40,6 @@ export default function ProfileLayout({
       updatePhotos({ profilePicture: file });
     }
   };
-  
-
 
   return (
     <div className="md:max-w-6xl w-screen mt-24 mx-auto">
