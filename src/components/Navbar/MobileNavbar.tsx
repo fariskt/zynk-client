@@ -140,7 +140,7 @@ const MobileNavbar = () => {
               {user?.fullname}
             </h4>
             {user?.isVerified && (
-              <span className="text-blue-600 font-extrabold text-base pt-1 hover:text-blue-700">
+              <span className="text-blue-600 font-extrabold text-base hover:text-blue-700">
                 <RiVerifiedBadgeFill />
               </span>
             )}
