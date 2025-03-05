@@ -18,11 +18,13 @@ import { BiLike, BiSolidLike } from "react-icons/bi";
 import Image from "next/image";
 import { motion } from "framer-motion";
 import { AiFillHeart } from "react-icons/ai";
+import { RiVerifiedBadgeFill } from "react-icons/ri";
 
 const UserPostCard = () => {
   const params = useParams();
   const pathname = usePathname();
   const { user } = useAuthStore();
+  
 
   const slug = params?.slug as string;
 
@@ -49,32 +51,31 @@ const UserPostCard = () => {
   const postToShow =
     userPost?.pages.flatMap((page: { posts: Post[] }) => page.posts) || [];
 
-    useEffect(() => {
-      const handleScroll = () => {
-        if (!hasNextPage || isFetchingNextPage) return;
-    
-        if (typeof window !== "undefined" && typeof document !== "undefined") {
-          const scrollPosition =
-            window.innerHeight + document.documentElement.scrollTop;
-          const bottomPosition = document.documentElement.offsetHeight;
-    
-          if (scrollPosition >= bottomPosition - 100) {
-            fetchNextPage();
-          }
-        }
-      };
-    
+  useEffect(() => {
+    const handleScroll = () => {
+      if (!hasNextPage || isFetchingNextPage) return;
+
       if (typeof window !== "undefined" && typeof document !== "undefined") {
-        window.addEventListener("scroll", handleScroll);
-      }
-    
-      return () => {
-        if (typeof window !== "undefined" && typeof document !== "undefined") {
-          window.removeEventListener("scroll", handleScroll);
+        const scrollPosition =
+          window.innerHeight + document.documentElement.scrollTop;
+        const bottomPosition = document.documentElement.offsetHeight;
+
+        if (scrollPosition >= bottomPosition - 100) {
+          fetchNextPage();
         }
-      };
-    }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
-    
+      }
+    };
+
+    if (typeof window !== "undefined" && typeof document !== "undefined") {
+      window.addEventListener("scroll", handleScroll);
+    }
+
+    return () => {
+      if (typeof window !== "undefined" && typeof document !== "undefined") {
+        window.removeEventListener("scroll", handleScroll);
+      }
+    };
+  }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
 
   const likePostMutation = useLikePost(pathname || "");
 
@@ -119,7 +120,16 @@ const UserPostCard = () => {
                       className="h-10 w-10 dark:border-gray-500 border rounded-full object-cover"
                     />
                     <div>
-                      <h4 className="text-sm">{post?.userId?.fullname}</h4>
+                      <div className="flex items-center gap-2">
+                        <h4 className="text-sm font-medium cursor-pointer">
+                          {post?.userId?.fullname}
+                        </h4>
+                        {post?.userId?.isVerified && (
+                          <span className="text-blue-600 font-extrabold text-lg pt-1 hover:text-blue-700">
+                            <RiVerifiedBadgeFill />
+                          </span>
+                        )}
+                      </div>
                       <p className="text-xs">
                         {post.createdAt
                           ? getRelativeTime(post.createdAt)
@@ -193,7 +203,7 @@ const UserPostCard = () => {
 
                 {post.image && (
                   <div className="relative flex justify-center mx-2 md-mx-0">
-                     {showHeart && (
+                    {showHeart && (
                       <motion.div
                         initial={{ scale: 0, opacity: 1 }}
                         animate={{ scale: 2, opacity: 0 }}
@@ -211,7 +221,6 @@ const UserPostCard = () => {
                       className=" aspect-square object-cover border dark:border-0 rounded-3xl"
                       alt="post-image"
                     />
-                   
                   </div>
                 )}
 
@@ -262,7 +271,7 @@ const UserPostCard = () => {
             );
           })
       ) : (
-        <div className="dark:bg-gray-900 dark:text-white bg-white mt-5 shadow dark:border-0 border rounded-md py-1 max-w-xl min-w-[530px] min-h-44">
+        <div className="dark:bg-gray-900 dark:text-white bg-white mt-5 shadow dark:border-0 border rounded-md py-1 w-full md:mx-0 mx-5 md:max-w-xl md:min-w-[530px]  min-h-44">
           <NoPosts />
         </div>
       )}

@@ -11,6 +11,7 @@ export interface User {
   postCount: number;
   following: string[];
   followers: string[];
+  isVerified?: boolean;
   role: string;
   createdAt:string;
 }
@@ -35,6 +36,7 @@ export interface Post {
     _id: string;
     fullname: string;
     profilePicture: string;
+    isVerified?:boolean;
   };
   likes: string[];
   content: string;

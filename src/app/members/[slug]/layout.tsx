@@ -8,6 +8,7 @@ import { TbMessage } from "react-icons/tb";
 import { useChatStore } from "@/src/store/useChatStore";
 import { User } from "@/src/types";
 import Image from "next/image";
+import { RiVerifiedBadgeFill } from "react-icons/ri";
 
 export default function ProfileLayout({
   children,
@@ -57,7 +58,16 @@ export default function ProfileLayout({
               alt="Profile"
             />
             <div className="ml-6">
-              <h2 className="text-xl font-semibold">{user?.user?.fullname}</h2>
+              <div className="flex items-center gap-1">
+                <h2 className="text-xl font-semibold">
+                  {user?.user?.fullname}
+                </h2>
+                {user?.user?.isVerified && (
+                  <span className="text-blue-600 font-extrabold text-base pt- hover:text-blue-700">
+                    <RiVerifiedBadgeFill />
+                  </span>
+                )}
+              </div>
               <p className="text-gray-600 dark:text-gray-300 text-sm">
                 Joined :{" "}
                 {new Date(user?.user?.createdAt).toLocaleDateString("en-US", {
@@ -96,7 +106,6 @@ export default function ProfileLayout({
             </button>
           </div>
         </div>
-
 
         <div className="bg-white dark:bg-gray-900 dark:text-white flex items-center border-t border-t-gray-700 justify-between px-6 py-1">
           <div className="flex gap-8">

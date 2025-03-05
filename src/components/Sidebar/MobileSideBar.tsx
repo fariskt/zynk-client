@@ -13,12 +13,12 @@ import { useFetchLoggedUser, useLogoutMutation } from "@/src/hooks/useAuth";
 import useAuthStore from "../../store/useAuthStore";
 import ConfirmLogout from "./ConfirmLogout";
 import { IoSearch } from "react-icons/io5";
-import SearchedUsers from "../Chat/SearchedUsers";
 import Image from "next/image";
 import ConnectionListSkeleton from "@/src/utils/SkeltonUi/ConnectionListSkelton";
 import { AiOutlineClose } from "react-icons/ai";
 import { useSearchUsers } from "@/src/hooks/useUser";
 import { User } from "@/src/types";
+import { RiVerifiedBadgeFill } from "react-icons/ri";
 
 const MobileSideBar = () => {
   const pathname = usePathname();
@@ -28,7 +28,8 @@ const MobileSideBar = () => {
   const [isLogin, setIsLogin] = useState<string>("");
   const [searchUser, setSearchUser] = useState<string>("");
 
-  const { data: searchedUsers, isLoading: searchIsLoading } = useSearchUsers(searchUser);
+  const { data: searchedUsers, isLoading: searchIsLoading } =
+    useSearchUsers(searchUser);
 
   const router = useRouter();
   const { mutate: logout } = useLogoutMutation();
@@ -54,10 +55,14 @@ const MobileSideBar = () => {
     }
   }, [isLogin, setUser]);
 
-  const slugify = (fullname: string) => fullname.toLowerCase().replace(/\s+/g, "-");
+  const slugify = (fullname: string) =>
+    fullname.toLowerCase().replace(/\s+/g, "-");
 
-
-  if (["/login", "/register", "/forgot-password", "/reset-password"].includes(pathname)) {
+  if (
+    ["/login", "/register", "/forgot-password", "/reset-password"].includes(
+      pathname
+    )
+  ) {
     return null;
   }
 
@@ -85,7 +90,10 @@ const MobileSideBar = () => {
             <FiPlusCircle className="text-xl text-gray-200" />
           </div>
           {showSearch && (
-            <div onClick={()=> setShowSearch(false)} className="fixed inset-0 flex justify-center items-center bg-gray-400 dark:bg-gray-900/80 bg-opacity-5 backdrop-blur-sm z-50 p-4">
+            <div
+              onClick={() => setShowSearch(false)}
+              className="fixed inset-0 flex justify-center items-center bg-gray-400 dark:bg-gray-900/80 bg-opacity-5 backdrop-blur-sm z-50 p-4"
+            >
               <button
                 className="absolute top-60 right-7 text-gray-700 dark:text-gray-200 text-2xl"
                 onClick={() => setShowSearch(false)}
@@ -93,7 +101,10 @@ const MobileSideBar = () => {
                 <AiOutlineClose />
               </button>
 
-              <div className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-md w-full max-w-md " onClick={(e)=> e.stopPropagation()}>
+              <div
+                className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-md w-full max-w-md "
+                onClick={(e) => e.stopPropagation()}
+              >
                 <h2 className="text-center my-4 text-lg">Search Users</h2>
                 <input
                   type="text"
@@ -107,23 +118,34 @@ const MobileSideBar = () => {
                     <ConnectionListSkeleton />
                   ) : searchedUsers?.data && searchedUsers.data.length > 0 ? (
                     searchedUsers.data.map((person: User) => (
-                      <Link href={`/members/${slugify(person.fullname)}-${person._id}`}>
-                      <div
-                        key={person._id}
-                        className="flex items-center gap-3 py-3 px-5 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-900/20 rounded-lg"
+                      <Link
+                        href={`/members/${slugify(person.fullname)}-${
+                          person._id
+                        }`}
+                      >
+                        <div
+                          key={person._id}
+                          className="flex items-center gap-3 py-3 px-5 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-900/20 rounded-lg"
                         >
-                        <Image
-                          height={40}
-                          width={40}
-                          src={person.profilePicture || "/person-demo.jpg"}
-                          alt="User"
-                          className="h-10 w-10 object-cover rounded-full"
+                          <Image
+                            height={40}
+                            width={40}
+                            src={person.profilePicture || "/person-demo.jpg"}
+                            alt="User"
+                            className="h-10 w-10 object-cover rounded-full"
                           />
-                        <span className="text-sm font-medium">
-                          {person.fullname || "Username"}
-                        </span>
-                      </div>
-                          </Link>
+                          <div className="flex items-center gap-1">
+                            <span className="text-sm font-medium">
+                              {person.fullname || "Username"}
+                            </span>
+                            {person?.isVerified && (
+                              <span className="text-blue-600 font-extrabold text-base pt- hover:text-blue-700">
+                                <RiVerifiedBadgeFill />
+                              </span>
+                            )}
+                          </div>
+                        </div>
+                      </Link>
                     ))
                   ) : searchUser && !searchIsLoading ? (
                     <div className="text-center text-gray-500">

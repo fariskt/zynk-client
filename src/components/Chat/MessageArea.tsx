@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import useAuthStore from "../../store/useAuthStore";
 import { User } from "@/src/types";
 import Image from "next/image";
+import { RiVerifiedBadgeFill } from "react-icons/ri";
 
 interface Message {
   senderId: string;
@@ -62,6 +63,7 @@ const MessageArea: React.FC<MessageAreaProps> = ({ messages, selectChatUser, mes
                     {selectChatUser?.fullname || "Unknown User"}
                   </p>
                 )}
+
                 <div
                   className={`flex flex-row items-end gap-2 max-w-xs ${isSameSender && !isSender && "ml-10"}  px-2 py-2 ${isSender ? "bg-blue-500 dark:bg-blue-900 text-white rounded-tl-lg rounded-tr-none rounded-bl-lg rounded-br-2xl" : "bg-gray-100 dark:bg-gray-800 dark:text-gray-200  text-black rounded-tl-none rounded-tr-lg rounded-bl-2xl rounded-br-lg"}`}
                 >

@@ -17,7 +17,8 @@ import { getSocket } from "@/src/lib/socket";
 import { IoMdArrowBack } from "react-icons/io";
 import Link from "next/link";
 import Image from "next/image";
-import EmojiPicker from "emoji-picker-react"
+import EmojiPicker from "emoji-picker-react";
+import { RiVerifiedBadgeFill } from "react-icons/ri";
 
 interface Message {
   senderId: string;
@@ -49,7 +50,8 @@ const ChatApp = () => {
   const messageRef = useRef<HTMLDivElement | null>(null);
   const [showPicker, setShowPicker] = useState(false);
 
-  const { data: searchedUsers, isLoading: searchIsLoading } = useSearchUsers(searchUser);
+  const { data: searchedUsers, isLoading: searchIsLoading } =
+    useSearchUsers(searchUser);
 
   useEffect(() => {
     if (!user?._id) return;
@@ -169,12 +171,15 @@ const ChatApp = () => {
     setNewMessage("");
   };
 
-  const handleEmojiClick = (emoji:any) => {
+  const handleEmojiClick = (emoji: any) => {
     setNewMessage((prev) => prev + emoji.emoji);
   };
 
   return (
-    <div className="h-screen  fixed md:w-[95%] w-full flex md:ml-20 md:mt-16" onClick={()=> setShowPicker(false)}>
+    <div
+      className="h-screen  fixed md:w-[95%] w-full flex md:ml-20 md:mt-16"
+      onClick={() => setShowPicker(false)}
+    >
       <div
         className={`${
           selectChatUser ? "hidden md:block" : "block"
@@ -230,9 +235,16 @@ const ChatApp = () => {
                 </div>
                 <div className="flex justify-between w-full">
                   <div className="flex flex-col">
-                    <span className="text-sm font-medium">
-                      {user.fullname || "Unknown"}
-                    </span>
+                    <div className="flex items-center gap-1">
+                      <span className="text-sm font-medium">
+                        {user.fullname || "Unknown"}
+                      </span>
+                      {user?.isVerified && (
+                        <span className="text-blue-600 font-extrabold text-sm pt-1 hover:text-blue-700">
+                          <RiVerifiedBadgeFill />
+                        </span>
+                      )}
+                    </div>
                     <span className="text-xs text-gray-500 max-w-[200px] truncate">
                       {messages[user._id]?.[messages[user._id].length - 1].text}
                     </span>
@@ -291,9 +303,16 @@ const ChatApp = () => {
               </div>
 
               <div className="flex flex-col">
+                <div className="flex items-center gap-1">
                 <h2 className="text-base font-semibold">
                   {selectChatUser?.fullname}
                 </h2>
+                {selectChatUser?.isVerified && (
+                  <span className="text-blue-600 font-extrabold text-base pt- hover:text-blue-700">
+                    <RiVerifiedBadgeFill />
+                  </span>
+                )}
+                </div>
                 {selectChatUser?._id &&
                   onlineUsers.includes(selectChatUser._id) && (
                     <span className="text-xs text-green-500 font-medium">
@@ -323,13 +342,16 @@ const ChatApp = () => {
           <div className="absolute bg-gray-100 md:bg-transparent bottom-12 w-full md:w-auto p-4 border-t dark:border-t-gray-600 md:static flex items-center md:mr-8 md:ml-4">
             <GrEmoji
               onClick={(e) => {
-                e.stopPropagation()
-                setShowPicker(!showPicker)
+                e.stopPropagation();
+                setShowPicker(!showPicker);
               }}
               className="text-xl text-gray-500 mr-3 cursor-pointer dark:text-gray-400"
             />
             {showPicker && (
-              <div className="absolute md:bottom-32 bottom-20 z-10" onClick={(e)=> e.stopPropagation()}>
+              <div
+                className="absolute md:bottom-32 bottom-20 z-10"
+                onClick={(e) => e.stopPropagation()}
+              >
                 <EmojiPicker onEmojiClick={handleEmojiClick} />
               </div>
             )}

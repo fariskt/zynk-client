@@ -15,6 +15,7 @@ import { BiLike, BiSolidLike } from "react-icons/bi";
 import { Post } from "@/src/types";
 import Image from "next/image";
 import Link from "next/link";
+import { RiVerifiedBadgeFill } from "react-icons/ri";
 
 const PostCard = () => {
   const { user } = useAuthStore();
@@ -107,9 +108,14 @@ const PostCard = () => {
                               }`
                         }
                       >
-                        <h4 className="text-sm font-medium cursor-pointer">
-                          {post?.userId?.fullname}
-                        </h4>
+                        <div className="flex items-center gap-2">
+                          <h4 className="text-sm font-medium cursor-pointer">
+                            {post?.userId?.fullname}
+                          </h4>
+                          {post?.userId?.isVerified && <span className="text-blue-600 font-extrabold text-lg pt-1 hover:text-blue-700">
+                            <RiVerifiedBadgeFill />
+                          </span>}
+                        </div>
                       </Link>
                       <p className="text-sm text-gray-500">
                         {post.createdAt

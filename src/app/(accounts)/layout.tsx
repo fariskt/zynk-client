@@ -6,6 +6,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { LuPencilLine } from "react-icons/lu";
+import { RiVerifiedBadgeFill } from "react-icons/ri";
 
 export default function ProfileLayout({
   children,
@@ -18,20 +19,23 @@ export default function ProfileLayout({
   const [coverPreview, setCoverPreview] = useState("");
   const [profilePreview, setProfilePreview] = useState("");
 
-  const {mutate:updatePhotos} = useUpdateProfilePhotos()
+  const { mutate: updatePhotos } = useUpdateProfilePhotos();
 
   useEffect(() => {
     setCoverPreview(user?.coverPhoto || "/cover-sample.jpg");
     setProfilePreview(user?.profilePicture || "/person-demo.jpg");
   }, [user]);
 
-  const handleFileChange = ( e: React.ChangeEvent<HTMLInputElement>, type: 'cover' | 'profile') => {
+  const handleFileChange = (
+    e: React.ChangeEvent<HTMLInputElement>,
+    type: "cover" | "profile"
+  ) => {
     const file = e.target.files?.[0];
-  
+
     if (!file) return;
-  
+
     const previewURL = URL.createObjectURL(file);
-  
+
     if (type === "cover") {
       setCoverPreview(previewURL);
       updatePhotos({ coverPhoto: file });
@@ -45,14 +49,15 @@ export default function ProfileLayout({
     <div className="md:max-w-6xl w-screen mt-24 mx-auto">
       <div className="w-full border dark:border-0 shadow-md rounded-xl">
         <div className="">
-          <button 
-          onClick={()=> coverInputRef?.current?.click()}
-           className="absolute md:right-52 right-5 mt-5 bg-gray-200 border border-gray-400 dark:border-0 h-8 px-2 rounded-md">
+          <button
+            onClick={() => coverInputRef?.current?.click()}
+            className="absolute md:right-52 right-5 mt-5 bg-gray-200 border border-gray-400 dark:border-0 h-8 px-2 rounded-md"
+          >
             <LuPencilLine />
           </button>
           <Image
-          height={224}
-          width={100}
+            height={224}
+            width={100}
             src={coverPreview || "/cover-sample.jpg"}
             className="w-full h-56 rounded-md object-cover"
             alt="Cover"
@@ -69,10 +74,10 @@ export default function ProfileLayout({
         <div className="flex md:flex-row flex-col justify-between px-6 py-4 bg-white dark:bg-gray-900 dark:text-white">
           <div className="flex items-center">
             <Image
-            height={128}
-            width={128}
-            onClick={()=> profileInputRef?.current?.click()}
-            title="change picture"
+              height={128}
+              width={128}
+              onClick={() => profileInputRef?.current?.click()}
+              title="change picture"
               src={profilePreview || "/person-demo.jpg"}
               className="rounded-full h-32 w-32 object-cover z-10 bg-white -mt-16 border-4 border-gray-900 cursor-pointer"
               alt="Profile"
@@ -85,7 +90,14 @@ export default function ProfileLayout({
               className="hidden"
             />
             <div className="ml-6">
-              <h2 className="text-xl font-semibold">{user?.fullname}</h2>
+              <div className="flex items-center gap-2">
+                <h2 className="text-xl font-semibold">{user?.fullname}</h2>
+                {user?.isVerified && (
+                  <span className="text-blue-600 font-extrabold text-base pt- hover:text-blue-700">
+                    <RiVerifiedBadgeFill />
+                  </span>
+                )}
+              </div>
               <p className="text-gray-600 dark:text-gray-300 text-sm">
                 Joined :{" "}
                 {new Date(user?.createdAt || "").toLocaleDateString("en-US", {
