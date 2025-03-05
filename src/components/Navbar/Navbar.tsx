@@ -5,7 +5,7 @@ import { FaCircleUser } from "react-icons/fa6";
 import { IoMdNotificationsOutline } from "react-icons/io";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { RiUser3Line } from "react-icons/ri";
+import { RiUser3Line, RiVerifiedBadgeFill } from "react-icons/ri";
 import { IoSearch, IoSettingsOutline } from "react-icons/io5";
 import { IoLogOutOutline } from "react-icons/io5";
 import { useLogoutMutation } from "@/src/hooks/useAuth";
@@ -175,9 +175,16 @@ const Navbar = () => {
                   className="border rounded-full object-cover w-10 h-10"
                 />
               </div>
-              <h4 className="text-blue-900 dark:text-gray-200 font-semibold text-sm">
-                {user?.fullname}
-              </h4>
+              <div className="flex items-center gap-1">
+                <h4 className="text-blue-900 dark:text-gray-200 font-semibold text-sm">
+                  {user?.fullname}
+                </h4>
+                {user?.isVerified && (
+                  <span className="text-blue-600 font-extrabold text-sm pt-1 hover:text-blue-700">
+                    <RiVerifiedBadgeFill />
+                  </span>
+                )}
+              </div>
             </div>
           </Link>
 
