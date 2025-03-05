@@ -165,7 +165,7 @@ const Navbar = () => {
       {showProfile && (
         <div className="absolute right-3 mt-[70px] w-56 bg-gray-50 dark:bg-gray-800 shadow-lg rounded-xl border border-gray-200 dark:border-gray-600 p-3">
           <Link href="/profile">
-            <div className="flex items-center gap-3 p-3 rounded-lg bg-gray-200 dark:bg-gray-600">
+            <div className="flex items-center gap-3 p-2 rounded-lg bg-gray-200 dark:bg-gray-600">
               <div className="w-10 h-10 bg-blue-500 text-white flex items-center justify-center rounded-full text-lg font-bold">
                 <Image
                   src={user?.profilePicture || "/person-demo.jpg"}
@@ -180,7 +180,7 @@ const Navbar = () => {
                   {user?.fullname}
                 </h4>
                 {user?.isVerified && (
-                  <span className="text-blue-600 font-extrabold text-sm pt-1 hover:text-blue-700">
+                  <span className="text-blue-600 font-extrabold text-base pt-1 hover:text-blue-700">
                     <RiVerifiedBadgeFill />
                   </span>
                 )}
