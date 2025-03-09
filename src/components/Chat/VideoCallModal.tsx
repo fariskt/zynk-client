@@ -35,7 +35,7 @@ const VideoCallModal: React.FC<VideoCallModalProps> = ({
 }) => {
   const { user } = useAuthStore();
 
-  const [stream, setStream] = useState<MediaStream | null>(null);
+  const [stream, setStream] = useState<MediaStream | undefined>(undefined);
   const [callAccepted, setCallAccepted] = useState(false);
   const [callStarted, setCallStarted] = useState(false);
   const [micMuted, setMicMuted] = useState(false);
