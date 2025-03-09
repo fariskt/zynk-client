@@ -19,6 +19,7 @@ import Link from "next/link";
 import Image from "next/image";
 import EmojiPicker from "emoji-picker-react";
 import { RiVerifiedBadgeFill } from "react-icons/ri";
+import VideoCallModal from "@/src/components/Chat/VideoCallModal";
 
 interface Message {
   senderId: string;
@@ -49,6 +50,8 @@ const ChatApp = () => {
   const [showSearchModal, setShowSearchUserModal] = useState<boolean>(false);
   const messageRef = useRef<HTMLDivElement | null>(null);
   const [showPicker, setShowPicker] = useState(false);
+  const [incomingCall, setIncomingCall] = useState(null);
+  const [showVideoCallModal, setShowVideoCallModal] = useState(false);
 
   const { data: searchedUsers, isLoading: searchIsLoading } =
     useSearchUsers(searchUser);
@@ -139,6 +142,24 @@ const ChatApp = () => {
     fetchSingleChat();
   }, [selectChatUser, user?._id, setMessages]);
 
+  //video call
+  useEffect(() => {
+    if (!user?._id) return;
+
+    socket.connect();
+    socket.emit("register", user._id);
+
+    socket.on("incoming-call", (data) => {
+      console.log("Incoming call:", data);
+      setIncomingCall(data);
+      setShowVideoCallModal(true);
+    });
+
+    return () => {
+      socket.off("incoming-call");
+    };
+  }, [user]);
+
   const sendMessage = async () => {
     if (!newMessage.trim() || !selectChatUser || !user?._id) return;
 
@@ -175,11 +196,26 @@ const ChatApp = () => {
     setNewMessage((prev) => prev + emoji.emoji);
   };
 
+  const handleClickCall = (user: User) => {
+    setSelectChatUser(user);
+    setShowVideoCallModal(true);
+  };
+
   return (
     <div
       className="h-screen  fixed md:w-[95%] w-full flex md:ml-20 md:mt-16"
       onClick={() => setShowPicker(false)}
     >
+      {showVideoCallModal && (
+        <VideoCallModal
+          incomingCall={incomingCall}
+          caller={selectChatUser}
+          onClose={() => {
+            setIncomingCall(null);
+            setShowVideoCallModal(false);
+          }}
+        />
+      )}
       <div
         className={`${
           selectChatUser ? "hidden md:block" : "block"
@@ -304,14 +340,14 @@ const ChatApp = () => {
 
               <div className="flex flex-col">
                 <div className="flex items-center gap-1">
-                <h2 className="text-base font-semibold">
-                  {selectChatUser?.fullname}
-                </h2>
-                {selectChatUser?.isVerified && (
-                  <span className="text-blue-600 font-extrabold text-base pt- hover:text-blue-700">
-                    <RiVerifiedBadgeFill />
-                  </span>
-                )}
+                  <h2 className="text-base font-semibold">
+                    {selectChatUser?.fullname}
+                  </h2>
+                  {selectChatUser?.isVerified && (
+                    <span className="text-blue-600 font-extrabold text-base pt- hover:text-blue-700">
+                      <RiVerifiedBadgeFill />
+                    </span>
+                  )}
                 </div>
                 {selectChatUser?._id &&
                   onlineUsers.includes(selectChatUser._id) && (
@@ -321,6 +357,12 @@ const ChatApp = () => {
                   )}
               </div>
             </div>
+            <div className="space-x-5">
+              <button onClick={() => handleClickCall(selectChatUser)}>
+                Video call
+              </button>
+              <button className="rotate-90 font-semibold text-lg">...</button>
+            </div>
           </div>
         ) : (
           <div className="flex items-center justify-center h-full">
@@ -329,7 +371,6 @@ const ChatApp = () => {
             </h2>
           </div>
         )}
-
         {selectChatUser && (
           <MessageArea
             messageRef={messageRef}
