@@ -3,9 +3,11 @@
 import useAuthStore from "@/src/store/useAuthStore";
 import { useFetchUserById, useSendFolllowReq } from "@/src/hooks/useUser";
 import Link from "next/link";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { LuPencilLine } from "react-icons/lu";
 import { TbMessage } from "react-icons/tb";
+import { useChatStore } from "@/src/store/useChatStore";
+import { User } from "@/src/types";
 
 export default function ProfileLayout({
   children,
@@ -13,12 +15,16 @@ export default function ProfileLayout({
   children: React.ReactNode;
 }) {
   const params = useParams();
+  const router = useRouter()
   const { user: loggedUser, fetchUser } = useAuthStore();
   const slug = params?.slug as string;
   const friendId = slug?.split("-").pop() || "";
+  
   const { data: user, isLoading, error } = useFetchUserById(friendId || "");
 
   const { mutate: sendFollowReqMutation } = useSendFolllowReq();
+  const {setSelectChatUser} = useChatStore()
+
 
   const handleFollowReq = (freindId: string) => {
     sendFollowReqMutation(freindId, {
@@ -30,6 +36,11 @@ export default function ProfileLayout({
       },
     });
   };
+
+  const handleMessgeUser = (user: User)=> {
+    setSelectChatUser(user)
+    router.push(`/message`)
+  }
 
   return (
     <div className="max-w-6xl mt-24 mx-auto">
@@ -78,7 +89,7 @@ export default function ProfileLayout({
                 : "Follow"}
             </button>
 
-            <button className="flex gap-2 items-center ml-auto px-4 py-2 rounded-md bg-background text-white hover:bg-blue-800">
+            <button onClick={()=> handleMessgeUser(user?.user)} className="flex gap-2 items-center ml-auto px-4 py-2 rounded-md bg-background text-white hover:bg-blue-800">
               <span>
                 <TbMessage />
               </span>

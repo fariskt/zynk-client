@@ -7,7 +7,6 @@ import { useQuery } from "@tanstack/react-query";
 import useAuthStore from "../store/useAuthStore";
 import SuggestedFreinds from "../components/Profile/SuggestedFreinds";
 import UploadPost from "../components/UploadPost/UploadPost";
-import Navbar from "../components/Navbar/Navbar";
 
 const fetchAllUsers = async () => {
   const res = await AxiosInstance.get("/user/users?limit=10");
@@ -25,8 +24,6 @@ export default function Home() {
     queryKey: ["fetchUsers"],
     queryFn: fetchAllUsers,
   });
-
-  console.log(loggedUser?.followers);
 
   return (
     <>

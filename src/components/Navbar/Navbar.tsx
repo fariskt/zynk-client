@@ -48,7 +48,7 @@ const Navbar = () => {
     pathName === "/login" ||
     pathName === "/register" ||
     pathName === "/forgot-password" ||
-    pathName === "/reset-password"
+    pathName === "/reset-password" || pathName === "/verify"
   ) {
     return null;
   }
@@ -69,7 +69,7 @@ const Navbar = () => {
             placeholder="search here..."
             value={searchInput}
             onChange={(e) => setSearchInput(e.target.value)}
-            className="border border-[#b5b3b3] pl-4 pb-1 h-10 dark:bg-gray-600 dark:border-gray-500 w-full rounded-full outline-none"
+            className="border border-[#b5b3b3] pl-4 pb-1 h-10 dark:bg-gray-800 dark:border-gray-500 w-full rounded-full outline-none"
           />
           <span className="relative right-8 text-xl text-gray-600">
             <IoSearch />
@@ -112,7 +112,7 @@ const Navbar = () => {
             <IoMdNotificationsOutline />
           </span>
           <span className="text-2xl cursor-pointer border rounded-full p-2 hover:bg-gray-100 dark:hover:bg-gray-700">
-            <Link href="/settings">
+            <Link href="/profile/settings">
               <CiSettings />
             </Link>
           </span>
@@ -127,6 +127,7 @@ const Navbar = () => {
                 setShowNotification(false);
               }}
             >
+              <span className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-white rounded-full"></span>
               {user?.profilePicture ? (
                 <img
                   src={user?.profilePicture}
@@ -136,16 +137,15 @@ const Navbar = () => {
               ) : (
                 <FaCircleUser className="w-10 h-10" />
               )}
-              <span className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-white rounded-full"></span>
             </span>
           )}
         </div>
       </div>
 
-      {showNotification && <Notification />}
+      {showNotification && <Notification onClose={()=> setShowNotification(false)}/>}
       {showProfile && (
-        <div className="absolute right-3 mt-[70px] w-56 bg-white/30 backdrop-blur-md shadow-lg rounded-xl border border-gray-200 p-3">
-          <div className="flex items-center gap-3 p-3 rounded-lg bg-gray-100">
+        <div className="absolute right-3 mt-[70px] w-56 bg-gray-50 dark:bg-gray-800 shadow-lg rounded-xl border border-gray-200 dark:border-gray-600 p-3">
+          <div className="flex items-center gap-3 p-3 rounded-lg bg-gray-200 dark:bg-gray-600">
             <div className="w-10 h-10 bg-blue-500 text-white flex items-center justify-center rounded-full text-lg font-bold">
               <img
                 src={user?.profilePicture || "/person-demo.jpg"}
@@ -153,14 +153,14 @@ const Navbar = () => {
                 className="border rounded-full object-cover w-10 h-10"
               />
             </div>
-            <h4 className="text-blue-900 font-semibold text-sm">
+            <h4 className="text-blue-900 dark:text-gray-200 font-semibold text-sm">
               {user?.fullname}
             </h4>
           </div>
 
           <div className="flex flex-col mt-3">
             <Link href="/profile">
-              <div className="flex items-center gap-3 px-4 py-2 rounded-lg  hover:bg-gray-200 dark:hover:bg-gray-400   transition">
+              <div className="flex items-center gap-3 px-4 py-2 rounded-lg  hover:bg-gray-200 dark:hover:bg-gray-700   transition">
                 <RiUser3Line className="text-gray-600 dark:text-white text-lg" />
                 <h5 className="text-gray-800 dark:text-white text-sm">
                   View Profile
@@ -168,7 +168,7 @@ const Navbar = () => {
               </div>
             </Link>
             <Link href="/settings">
-              <div className="flex items-center gap-3 px-4 py-2 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-400  transition">
+              <div className="flex items-center gap-3 px-4 py-2 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700  transition">
                 <IoSettingsOutline className="text-gray-600 dark:text-white text-lg" />
                 <h5 className="text-gray-800 dark:text-white text-sm">
                   Settings

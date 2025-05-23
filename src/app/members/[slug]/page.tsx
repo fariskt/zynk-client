@@ -1,6 +1,6 @@
 "use client" 
 
-import { useParams } from 'next/navigation';
+import { useParams, usePathname } from 'next/navigation';
 import AxiosInstance from '@/src/lib/axiosInstance';
 import { useQuery } from '@tanstack/react-query';
 import React from 'react';
@@ -16,10 +16,11 @@ import Activity from '@/src/components/Profile/Activity';
 
 const MemberPage = () => {
   const params = useParams();
+  const pathname = usePathname()
   const slug = params?.slug as string;
-  const userId = slug?.split('-').pop();
+  const userId = pathname.startsWith("/memebers") && slug?.split('-').pop() || "";  
   
-const {data: user, isLoading, error} = useFetchUserById(userId || "")
+const {data: user, isLoading, error} = useFetchUserById(userId)
 
   return (
     <div >

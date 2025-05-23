@@ -1,12 +1,7 @@
 import { formatMessageDate } from "@/src/utils/DateFormater/DateFormat";
 import React, { useEffect, useState } from "react";
 import useAuthStore from "../../store/useAuthStore";
-
-interface User {
-  _id: string;
-  fullname: string;
-  profilePicture?: string;
-}
+import { User } from "@/src/types";
 
 interface Message {
   senderId: string;

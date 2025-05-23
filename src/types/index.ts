@@ -1,6 +1,7 @@
 export interface User {
   _id: string;
   profilePicture: string | null;
+  coverPhoto?: string | null;
   fullname: string;
   email: string;
   birthday: string;

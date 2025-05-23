@@ -9,6 +9,7 @@ import Activity from "./Activity";
 
 const SuggestedFriends = ({ isLoading, users}: { isLoading: boolean; users: any}) => {
   const { fetchUser , user: loggedUser} = useAuthStore();
+  const [showModal, setShowModal] = useState(false);
 
   const { mutate: sendFollowReqMutation } = useSendFolllowReq();
 
@@ -23,7 +24,6 @@ const SuggestedFriends = ({ isLoading, users}: { isLoading: boolean; users: any}
     });
   };
 
-  const [showModal, setShowModal] = useState(false);
   const slugify = (fullname: string) => fullname.toLowerCase().replace(/\s+/g, "-");
 
   const { data: recentActivities, isLoading: activityIsLoading } = useFetchUserActivity(loggedUser?._id || "");
@@ -107,8 +107,8 @@ const SuggestedFriends = ({ isLoading, users}: { isLoading: boolean; users: any}
                     key={index}
                     className="flex items-center gap-2   p-3 rounded-lg "
                   >
-                    <Image
-                      src={activity.user.profilePicture || "/person-demo.jpg"}
+                    <img
+                      src={activity?.user?.profilePicture || "/person-demo.jpg"}
                       alt="profile-pic"
                       width={40}
                       height={40}
@@ -121,11 +121,11 @@ const SuggestedFriends = ({ isLoading, users}: { isLoading: boolean; users: any}
                           <p className="text-gray-600 dark:text-gray-300 font-semibold max-w-[300px] line-clamp-3 leading-snug break-words">
                             You commented on{" "}
                             <i className="text-blue-500 mx-1">
-                              {activity.postTitle}
+                              {activity?.postTitle}
                             </i>
                             :{" "}
                             <span className="font-semibold text-black dark:text-gray-300">
-                              {activity.content}
+                              {activity?.content}
                             </span>
                           </p>
                         </>
@@ -136,14 +136,14 @@ const SuggestedFriends = ({ isLoading, users}: { isLoading: boolean; users: any}
                             <i className="text-blue-500">
                               {" "}
                               {`${
-                                activity.postTitle.length > 10
-                                  ? activity.postTitle.slice(0, 20)
-                                  : activity.postTitle
+                                activity?.postTitle.length > 10
+                                  ? activity?.postTitle.slice(0, 20)
+                                  : activity?.postTitle
                               }`}
                             </i>{" "}
                             by{" "}
                             <span className="font-semibold text-black dark:text-gray-300 ">
-                              {activity.postOwner?.fullname}
+                              {activity?.postOwner?.fullname}
                             </span>
                           </p>
                         </>

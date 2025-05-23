@@ -8,32 +8,21 @@ import useAuthStore from "../../store/useAuthStore";
 import { useParams, usePathname } from "next/navigation";
 import Link from "next/link";
 
-const UserCard = ({
-  connectionType,
-}: {
-  connectionType: "followers" | "following";
-}) => {
+const UserCard = ({ connectionType,}: {  connectionType: "followers" | "following"}) => {
   const pathname = usePathname();
   const params = useParams();
   const { user } = useAuthStore();
 
   const slug = params?.slug as string;
   const friendId = slug?.split("-").pop();
-  const userID = pathname.startsWith("/members")
-    ? friendId || ""
-    : user?._id || "";
+  const userID = pathname.startsWith("/members") ? friendId || "" : user?._id || "";
 
   const [page, setPage] = useState(1);
   const limit = 4;
 
-  const { data: connectionsData, isLoading } = useUserConnections(
-    userID,
-    limit,
-    page
-  );
+  const { data: connectionsData, isLoading } = useUserConnections( userID, limit, page);
 
-  const currentConnections = connectionsData?.[connectionType]?.length || 0;
-  const disableNextPage = currentConnections < limit;
+  const disableNextPage = page * limit >= connectionsData?.[connectionType]?.length;
 
   const handlePrev = () => setPage((prev) => Math.max(prev - 1, 1));
 

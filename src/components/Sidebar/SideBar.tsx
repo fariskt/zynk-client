@@ -1,6 +1,5 @@
 "use client";
 
-import { LuLayoutDashboard } from "react-icons/lu";
 import { SlHome } from "react-icons/sl";
 import { LuMessageSquareText } from "react-icons/lu";
 import { FaRegUser } from "react-icons/fa6";
@@ -13,7 +12,6 @@ import UploadPost from "../UploadPost/UploadPost";
 import { useLogoutMutation } from "@/src/hooks/useAuth";
 import useAuthStore from "../../store/useAuthStore";
 import ConfirmLogout from "./ConfirmLogout";
-import DarkModeToggle from "../Navbar/DarkMode";
 
 const SideBar = () => {
   const pathname = usePathname();
@@ -45,7 +43,7 @@ const SideBar = () => {
   }, [isLogin]);
 
   if (
-    ["/login", "/register", "/forgot-password", "/reset-password"].includes(
+    ["/login", "/register", "/forgot-password", "/reset-password", "/verify"].includes(
       pathname
     )
   ) {
@@ -80,7 +78,7 @@ const SideBar = () => {
                     : "/zynk-white.png"
                 }
                 alt="Logo"
-                className={`h-20 w-24 object-cover text-gray-600 ${
+                className={`h-20 w-28 object-cover text-gray-600 ${
                   pathname !== "/message" ? "" : ""
                 }`}
               />

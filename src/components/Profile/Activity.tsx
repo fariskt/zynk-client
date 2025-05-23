@@ -25,7 +25,8 @@ const Activity = () => {
   
   const slug = params?.slug as string;
   
-  const friendId = slug?.split('-').pop(); // e.g., 'john-doe-12345' => '12345'
+  const friendId = slug?.split('-').pop();
+  const freindName = slug?.split('-').slice(0, -1).join('-');
   const userID = pathname.startsWith("/members") ? friendId || "" : user?._id || "";
   const { data: recentActivities, isLoading: activityIsLoading } =  useFetchUserActivity(userID);
 
@@ -43,7 +44,7 @@ const Activity = () => {
         </p>
       ) : (
         <div>
-          {recentActivities.activities
+          {recentActivities?.activities
             .slice(0, 4)
             .map((activity: Activity, index: number) => (
               <div
@@ -62,7 +63,7 @@ const Activity = () => {
                   {activity.type === "comment" ? (
                     <>
                      <p className="text-gray-600 dark:text-gray-300 font-semibold max-w-[300px] line-clamp-3 leading-snug break-words">
-                            You commented on{" "}
+                            {pathname.startsWith("/members") ? freindName : "You"} commented on{" "}
                             <i className="text-blue-500 mx-1">
                               {activity.postTitle}
                             </i>
@@ -75,7 +76,7 @@ const Activity = () => {
                   ) : (
                     <>
                       <p className="text-gray-600 dark:text-gray-300 font-semibold">
-                        You liked{" "}
+                      {pathname.startsWith("/members") ? freindName.charAt(0).toUpperCase() + freindName.slice(1): "You"}  liked{" "}
                         <i className="text-blue-500">
                           {" "}
                           {`${
