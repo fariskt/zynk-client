@@ -11,6 +11,7 @@ import { PulseLoader } from "react-spinners";
 import { useRegisterMutation } from "@/src/hooks/useAuth";
 import toast from "react-hot-toast";
 import AxiosInstance from "@/src/lib/axiosInstance";
+import { Loader } from "lucide-react";
 
 const Register = () => {
   const router = useRouter();
@@ -42,7 +43,9 @@ const Register = () => {
   }) => {
     register(formInputs, {
       onSuccess: async () => {
-        toast.success("We have sent an OTP to your email to verify your Account");
+        toast.success(
+          "We have sent an OTP to your email to verify your Account"
+        );
         router.replace("/verify");
         setSignupError(null);
       },
@@ -87,20 +90,20 @@ const Register = () => {
             onSubmit={handleSubmit}
           >
             {({ isSubmitting, touched, errors }) => (
-              <Form className="space-y-4 mt-6">
+              <Form className="space-y-3 mt-6">
                 {/* Fullname */}
                 <div>
                   <Field
                     type="text"
                     name="fullname"
                     placeholder="Your Name"
-                    className={`w-full px-3 py-2 bg-white/10 text-white text-sm border ${
+                    className={`w-full px-3 py-2 bg-blue-700/30 text-white text-sm border ${
                       errors.fullname && touched.fullname
                         ? "border-red-500"
                         : "border-transparent"
                     } rounded-md focus:outline-none focus:ring-2 focus:ring-purple-400 placeholder-gray-300`}
                   />
-                  <div className="h-4 mt-1">
+                  <div className="h-4 mt-0">
                     <span
                       className={`text-red-400 text-xs ${
                         errors.fullname && touched.fullname
@@ -119,13 +122,13 @@ const Register = () => {
                     type="email"
                     name="email"
                     placeholder="Email Address"
-                    className={`w-full px-3 py-2 bg-white/10 text-white text-sm border ${
+                    className={`w-full px-3 py-2 bg-blue-800/30 text-white text-sm border ${
                       errors.email && touched.email
                         ? "border-red-500"
                         : "border-transparent"
                     } rounded-md focus:outline-none focus:ring-2 focus:ring-purple-400 placeholder-gray-300`}
                   />
-                  <div className="h-4 mt-1">
+                  <div className="h-4 mt-0">
                     <span
                       className={`text-red-400 text-xs ${
                         errors.email && touched.email ? "visible" : "invisible"
@@ -142,13 +145,13 @@ const Register = () => {
                     type="password"
                     name="password"
                     placeholder="Password"
-                    className={`w-full px-3 py-2 bg-white/10 text-white text-sm border ${
+                    className={`w-full px-3 py-2 bg-blue-800/30 text-white text-sm border ${
                       errors.password && touched.password
                         ? "border-red-500"
                         : "border-transparent"
                     } rounded-md focus:outline-none focus:ring-2 focus:ring-purple-400 placeholder-gray-300`}
                   />
-                  <div className="h-4 mt-1">
+                  <div className="h-4 mt-0">
                     <span
                       className={`text-red-400 text-xs ${
                         errors.password && touched.password
@@ -166,13 +169,13 @@ const Register = () => {
                     type="password"
                     name="confirmPassword"
                     placeholder="Confirm Password"
-                    className={`w-full px-3 py-2 bg-white/10 text-white text-sm border ${
+                    className={`w-full px-3 py-2 bg-blue-800/30 text-white text-sm border ${
                       errors.confirmPassword && touched.confirmPassword
                         ? "border-red-500"
                         : "border-transparent"
                     } rounded-md focus:outline-none focus:ring-2 focus:ring-purple-400 placeholder-gray-300`}
                   />
-                  <div className="h-4 mt-1">
+                  <div className="h-4 mt-0">
                     <span
                       className={`text-red-400 text-xs ${
                         errors.confirmPassword && touched.confirmPassword
@@ -190,7 +193,7 @@ const Register = () => {
                   className="w-full bg-purple-600 hover:bg-purple-700 transition duration-300 text-white py-2 rounded-md text-sm shadow-md"
                   disabled={isPending}
                 >
-                  {isPending ? "Signing up..." : "Sign Up"}
+                  {isPending ? <Loader /> : "Sign Up"}
                 </button>
               </Form>
             )}

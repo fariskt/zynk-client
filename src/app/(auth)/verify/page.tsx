@@ -6,22 +6,26 @@ import { useRouter } from "next/navigation";
 import React, { useRef, useState } from "react";
 import toast from "react-hot-toast";
 import ResendEmailModal from "./ResentEmail";
+import Loader from "@/src/utils/Loading";
 
 const Form: React.FC = () => {
   const [otp, setOtp] = useState<string[]>(Array(6).fill(""));
   const router = useRouter();
   const inputLength = 6;
   const inputRefs = useRef<Array<HTMLInputElement | null>>([]);
-  const [resentotpModal, setOpenResent] = useState(false)
+  const [resentotpModal, setOpenResent] = useState(false);
 
-  const { mutate: verifyOtp, isPaused } = useMutation({
-    mutationFn: async (otp) => {
-      const res = await AxiosInstance.post("/auth/verifyotp", otp);
+  const { mutate: verifyOtp, isPending } = useMutation({
+    mutationFn: async () => {
+      const joinedOtp = otp.join("");
+      const res = await AxiosInstance.post("/auth/verifyotp", {
+        otp: joinedOtp,
+      });
       return res.data;
     },
     onSuccess: () => {
       toast.success("OTP verified successfully");
-      router.replace("/login");
+      router.replace("/");
     },
     onError: () => {
       toast.error("OTP verification failed!");
@@ -36,8 +40,6 @@ const Form: React.FC = () => {
       const newOtp = [...otp];
       newOtp[index] = value;
       setOtp(newOtp);
-
-      // Move to next input if not the last one
       if (value && index < inputLength - 1) {
         inputRefs.current[index + 1]?.focus();
       }
@@ -58,9 +60,9 @@ const Form: React.FC = () => {
     verifyOtp();
   };
 
-  const { mutate: resentOTP } = useMutation({
-    mutationFn: async (email:string) => {
-      await AxiosInstance.post("/auth/resentotp",{email});
+  const { mutate: resentOTP, isPending: resentOtpPending } = useMutation({
+    mutationFn: async (email: string) => {
+      await AxiosInstance.post("/auth/resentotp", { email });
     },
     onSuccess: () => {
       toast.success("OTP resent");
@@ -70,7 +72,7 @@ const Form: React.FC = () => {
     },
   });
 
-  const handleResent = (email:string) => {
+  const handleResent = (email: string) => {
     resentOTP(email);
   };
 
@@ -106,15 +108,15 @@ const Form: React.FC = () => {
 
             <button
               type="submit"
-              className="w-full h-[30px] bg-indigo-500 text-white font-semibold rounded-lg hover:bg-indigo-400 transition-colors"
+              className="w-full py-1 bg-indigo-500 text-white font-semibold rounded-lg hover:bg-indigo-400 transition-colors"
             >
-              Verify
+              {isPending ? <Loader /> : "Verify"}
             </button>
 
             <p className="text-xs text-black text-center flex flex-col items-center gap-1 w-full">
               Didn't receive the code?
               <button
-                onClick={()=> setOpenResent(true)}
+                onClick={() => setOpenResent(true)}
                 type="button"
                 className="text-indigo-500 font-bold text-sm hover:underline"
               >
@@ -124,7 +126,14 @@ const Form: React.FC = () => {
           </form>
         </div>
       </div>
-      {resentotpModal && <ResendEmailModal onResend={handleResent} isOpen={resentotpModal} setOpenResent={setOpenResent}/>}
+      {resentotpModal && (
+        <ResendEmailModal
+          resentOtpPending={resentOtpPending}
+          onResend={handleResent}
+          isOpen={resentotpModal}
+          setOpenResent={setOpenResent}
+        />
+      )}
     </div>
   );
 };
