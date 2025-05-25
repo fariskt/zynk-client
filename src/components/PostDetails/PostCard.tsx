@@ -2,7 +2,7 @@ import { BsThreeDots } from "react-icons/bs";
 import { GoComment } from "react-icons/go";
 import useAuthStore from "../../store/useAuthStore";
 import { usePathname } from "next/navigation";
-import {  useFetchPosts, useLikePost} from "@/src/hooks/usePosts";
+import { useFetchPosts, useLikePost } from "@/src/hooks/usePosts";
 import SkeletonPostCard from "../../utils/SkeltonUi/PostSkelton";
 import { useEffect, useState } from "react";
 import dayjs from "dayjs";
@@ -13,6 +13,9 @@ import { AiFillHeart } from "react-icons/ai";
 import { getRelativeTime } from "@/src/utils/DateFormater/DateFormat";
 import { BiLike, BiSolidLike } from "react-icons/bi";
 import { Post } from "@/src/types";
+import Image from "next/image";
+import Link from "next/link";
+import { RiVerifiedBadgeFill } from "react-icons/ri";
 
 const PostCard = () => {
   const { user } = useAuthStore();
@@ -30,12 +33,16 @@ const PostCard = () => {
     isLoading,
   } = useFetchPosts();
 
-  let postToShow = posts?.pages.flatMap((page: { posts: Post[] }) => page.posts) || [];
+  const postToShow =
+    posts?.pages.flatMap((page: { posts: Post[] }) => page.posts) || [];
 
   const handleScroll = () => {
+    if (typeof window === "undefined" || typeof document === "undefined")
+      return;
     if (!hasNextPage || isFetchingNextPage) return;
-    const scrollPosition =
-      window.innerHeight + document.documentElement.scrollTop;
+
+    const scrollTop = window.scrollY || document.documentElement.scrollTop;
+    const scrollPosition = window.innerHeight + scrollTop;
     const bottomPosition = document.documentElement.offsetHeight;
 
     if (scrollPosition >= bottomPosition - 100) {
@@ -44,6 +51,8 @@ const PostCard = () => {
   };
 
   useEffect(() => {
+    if (typeof window === "undefined") return;
+
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, [hasNextPage, isFetchingNextPage]);
@@ -62,6 +71,8 @@ const PostCard = () => {
       }, 1000);
     }
   };
+  const slugify = (fullname: string) =>
+    fullname.toLowerCase().replace(/\s+/g, "-");
 
   return (
     <div>
@@ -76,19 +87,36 @@ const PostCard = () => {
             return (
               <div
                 key={post._id}
-                className="dark:bg-gray-900 dark:text-white mb-10 bg-white mt-0 shadow dark:border-0 border rounded-2xl py-1 max-w-4xl min-w-[700px] min-h-44"
+                className="dark:bg-gray-900 dark:text-white mb-10 bg-white mt-0 shadow dark:border-0 border rounded-2xl py-1 m-3 max-w-4xl md:min-w-[700px] min-h-44"
               >
                 <div className="flex justify-between items-center border-b dark:border-b-gray-600 p-2">
                   <div className="flex items-center gap-4 p-2 pl-3">
-                    <img
+                    <Image
+                      height={40}
+                      width={40}
                       src={post?.userId?.profilePicture || "/person-demo.jpg"}
                       alt={`${post?.userId?.fullname}'s profile`}
                       className="dark:border-gray-500 border rounded-full w-10 h-10 object-cover"
                     />
                     <div>
-                      <h4 className="text-sm font-medium">
-                        {post?.userId?.fullname}
-                      </h4>
+                      <Link
+                        href={
+                          post.userId._id === userID
+                            ? "/profile"
+                            : `/members/${slugify(post.userId.fullname)}-${
+                                post.userId?._id
+                              }`
+                        }
+                      >
+                        <div className="flex items-center gap-2">
+                          <h4 className="text-sm font-medium cursor-pointer">
+                            {post?.userId?.fullname}
+                          </h4>
+                          {post?.userId?.isVerified && <span className="text-blue-600 font-extrabold text-lg pt-1 hover:text-blue-700">
+                            <RiVerifiedBadgeFill />
+                          </span>}
+                        </div>
+                      </Link>
                       <p className="text-sm text-gray-500">
                         {post.createdAt
                           ? getRelativeTime(post.createdAt)
@@ -112,9 +140,11 @@ const PostCard = () => {
 
                 {post.image && (
                   <div className="relative m-4 flex justify-center">
-                    <img
+                    <Image
                       src={post.image}
                       onDoubleClick={() => handleLike(post._id)}
+                      width={650}
+                      height={400}
                       className="w-full max-w-[650px] max-h-[400px] aspect-square object-cover border dark:border-0 rounded-3xl"
                       alt="post-image"
                     />
@@ -133,7 +163,7 @@ const PostCard = () => {
                 )}
 
                 <div className="flex justify-between gap-4 my-4 pl-3">
-                  <div className="flex items-center gap-7 px-5">
+                  <div className="flex items-center gap-3 md:gap-7 px-5">
                     <div className="flex items-center gap-1">
                       <span
                         className={`${
@@ -148,17 +178,21 @@ const PostCard = () => {
                           <BiLike />
                         )}
                       </span>
-                      <p>{post?.likes?.length || 0} Likes</p>
+                      <p className="text-sm md:text-base">
+                        {post?.likes?.length || 0} Likes
+                      </p>
                     </div>
                     {!post.hideComments && (
                       <div
                         className="flex items-center gap-1 cursor-pointer"
                         onClick={() => setSelectedPost(post)}
                       >
-                        <span className="text-xl ">
+                        <span className="text-base md:text-xl ">
                           <GoComment />
                         </span>
-                        <p>{post?.commentCount || 0} Comments</p>
+                        <p className="md:text-base text-sm">
+                          {post?.commentCount || 0} Comments
+                        </p>
                       </div>
                     )}
                   </div>

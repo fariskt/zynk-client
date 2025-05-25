@@ -1,5 +1,6 @@
 import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import AxiosInstance from "../lib/axiosInstance";
+import { Post } from "../types";
 
 const fetchAllPosts = async ({ pageParam = 1 }) => {
     const res = await AxiosInstance.get(`/post/posts?page=${pageParam}&limit=10`);
@@ -40,7 +41,7 @@ export const useFetchPosts = () => {
         queryKey: ["allPosts"],
         queryFn: fetchAllPosts,
         initialPageParam: 1,
-        getNextPageParam: (lastPage, allPages) => {
+        getNextPageParam: (lastPage) => {
             if (lastPage.currentPage < lastPage.pageLength) {
                 return lastPage.currentPage + 1;
             }
@@ -54,7 +55,7 @@ export const useFetchUserPosts = (userId: string) => {
         queryKey: ["userPosts", userId],
         queryFn: ({ pageParam = 1 }) => fetchUserPost({ userId, pageParam }),
         initialPageParam: 1,
-        getNextPageParam: (lastPage, allPages) => {            
+        getNextPageParam: (lastPage) => {            
             if (lastPage.currentPage < lastPage.pageLength) {
                 return lastPage.currentPage + 1;
             }
@@ -87,65 +88,68 @@ export const useFetchCommentsById = (postId: string) => {
     });
 };
 
-//simple one =>  rely on backend update 
-// export const useLikePost = (pathname: string) => {
-//     const queryClient = useQueryClient();
-//     return useMutation({
-//       mutationFn: likePost,
-//       onSuccess: () => {
-//         queryClient.invalidateQueries({ queryKey: ["allPosts"] });
-//         if (pathname === "/profile") {
-//           queryClient.invalidateQueries({ queryKey: ["userPosts"] });
-//         }
-//       },
-//     });
-//   };
 
+
+type Page = {
+  posts: Post[];
+};
+
+type MutationVariables = {
+  userId: string;
+  postId: string;
+};
+type QueryData = {
+  pages: Page[];
+};
 
 export const useLikePost = (pathname: string) => {
-    const queryClient = useQueryClient();
-  
-    return useMutation({
-      mutationFn: likePost,
-      onMutate: async ({ userId, postId }) => {        
-        const queryKey = pathname === "/profile" ? ["userPosts"] : ["allPosts"];
-        await queryClient.cancelQueries({ queryKey });
-        const previousData = queryClient.getQueryData(queryKey);
-        queryClient.setQueryData(queryKey, (oldData: any) => {
-          if (!oldData) return oldData;
-          console.log(oldData);
-          return {
-            ...oldData,
-            pages: oldData.pages.map((page: any) => ({
-              ...page,
-              posts: page.posts.map((post: any) =>
-                post._id === postId
-                  ? {
-                      ...post,
-                      likes: post.likes.includes(userId)
-                        ? post.likes.filter((id: string) => id !== userId)
-                        : [...post.likes, userId],
-                    }
-                  : post
-              ),
-            })),
-          };
-        });
-  
-        return { previousData, queryKey };
-      },
-      onError: (_error, _variables, context) => {
-        if (context?.previousData) {
-          queryClient.setQueryData(context.queryKey, context.previousData);
-        }
-      },
-      onSettled: () => {
-        queryClient.invalidateQueries({ queryKey: ["allPosts"] });
-        queryClient.invalidateQueries({ queryKey: ["userPosts"] });
-      },
-    });
-  };
-  
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: likePost,
+    onMutate: async ({ userId, postId }: MutationVariables) => {
+      const queryKey = pathname === "/profile" ? ["userPosts"] : ["allPosts"];
+      await queryClient.cancelQueries({ queryKey });
+
+      const previousData = queryClient.getQueryData<QueryData>(queryKey);
+
+      queryClient.setQueryData<QueryData>(queryKey, (oldData) => {
+        if (!oldData) return oldData;
+
+        return {
+          ...oldData,
+          pages: oldData.pages.map((page) => ({
+            ...page,
+            posts: page.posts.map((post) =>
+              post._id === postId
+                ? {
+                    ...post,
+                    likes: post.likes.includes(userId)
+                      ? post.likes.filter((id) => id !== userId)
+                      : [...post.likes, userId],
+                  }
+                : post
+            ),
+          })),
+        };
+      });
+
+      return { previousData, queryKey };
+    },
+
+    onError: (_error, _variables, context) => {
+      if (context?.previousData) {
+        queryClient.setQueryData(context.queryKey, context.previousData);
+      }
+    },
+
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ["allPosts"] });
+      queryClient.invalidateQueries({ queryKey: ["userPosts"] });
+    },
+  });
+};
+
 
 
 export const useCommentOnPost = (pathname: string) => {

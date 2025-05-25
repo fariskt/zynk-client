@@ -1,4 +1,4 @@
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import AxiosInstance from "@/src/lib/axiosInstance";
 import useAuthStore from "../store/useAuthStore";
 
@@ -47,3 +47,14 @@ export const useLogoutMutation = () => {
     }
   });
 };
+
+export const useFetchLoggedUser = ()=> {
+  return useQuery({
+    queryKey: ["loggedUser"],
+    queryFn: async()=> {
+      const { data } = await AxiosInstance.get("/auth/me");
+      return data.user
+      
+    },
+  })
+}

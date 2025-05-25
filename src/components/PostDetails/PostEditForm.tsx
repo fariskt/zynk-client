@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import toast from "react-hot-toast";
 import { AiOutlineClose } from "react-icons/ai";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import axios from "axios";
 
 interface Post {
   _id: string;
@@ -29,7 +30,7 @@ const PostEditForm: React.FC<PostEditFormProps> = ({ post, onClose  }) => {
   useEffect(() => {
     if (post) {
       setPostData({
-        _id: post._id, // ✅ Now we are sure post exists
+        _id: post._id,
         content: post.content,
         hideComments: post.hideComments || false,
         image: post.image,
@@ -56,7 +57,11 @@ const PostEditForm: React.FC<PostEditFormProps> = ({ post, onClose  }) => {
       onClose();
     },
     onError: (error: any) => {
-      toast.error(error.response?.data?.message || "Failed to update post");
+      if(axios.isAxiosError(error)){
+        toast.error(error.response?.data?.message || "Failed to update post");
+      }else{
+        toast.error("Unexpected error occurred")
+      }
     },
   });
 

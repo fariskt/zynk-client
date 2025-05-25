@@ -1,3 +1,5 @@
+"use client"
+
 import Image from "next/image";
 import React from "react";
 import useAuthStore from "../../store/useAuthStore";
@@ -31,7 +33,7 @@ const Activity = () => {
   const { data: recentActivities, isLoading: activityIsLoading } =  useFetchUserActivity(userID);
 
   return (
-    <div className="mt-5 dark:bg-gray-900 p-3 rounded-lg h-fit w-3/6 shadow border dark:border-0">
+    <div className="mt-5 dark:bg-gray-900 p-3 rounded-lg h-fit md:w-3/6 mx-5 md:mx-0 shadow border dark:border-0">
       <h2 className="text-base border-b dark:border-b-gray-600 font-semibold text-gray-900 dark:text-gray-300  pb-4">
         Recent Activity
       </h2>

@@ -17,17 +17,14 @@ const Comments: React.FC<CommentProps> = ({ comment, userID }) => {
   const [showReplies, setShowReplies] = useState<boolean>(false);
   const queryClient = useQueryClient();
 
-  // Fetch replies when "Show Replies" is clicked
   const { data: replies, refetch, isFetching } = useQuery({
     queryKey: ["replies", comment._id],
     queryFn: async () => {
       const res = await AxiosInstance.get(`/post/comment/replies/${comment._id}`);
       return res.data.replies;
     },
-    enabled: false, // Don't auto-fetch
+    enabled: false,
   });
-
-  console.log("replies ", replies);
   
 
   const handleReplyComment = async () => {
@@ -38,8 +35,8 @@ const Comments: React.FC<CommentProps> = ({ comment, userID }) => {
       setReplyValue("");
       setShowReplyInput(false);
       refetch(); // Refetch replies after adding
-    } catch (error: any) {
-      console.error("Error posting reply:", error.response?.data || error.message);
+    } catch (error) {
+      console.error("Error posting reply");
     }
   };
 
@@ -47,8 +44,8 @@ const Comments: React.FC<CommentProps> = ({ comment, userID }) => {
     try {
       await AxiosInstance.put(`/post/comment/like/${comment._id}`);
       queryClient.invalidateQueries({ queryKey: ["comments"] });
-    } catch (error: any) {
-      console.error("Error toggling like:", error.response?.data || error.message);
+    } catch (error) {
+      console.error("Error toggling like");
     }
   };
 

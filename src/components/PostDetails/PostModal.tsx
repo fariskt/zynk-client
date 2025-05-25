@@ -12,8 +12,8 @@ import { useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { usePathname } from "next/navigation";
 import Comments from "./Comments";
-import { Post,Comment } from "@/src/types";
-
+import { Post, Comment } from "@/src/types";
+import Image from "next/image";
 
 interface ModalProps {
   post: Post | null;
@@ -21,18 +21,16 @@ interface ModalProps {
   handleLike: (postId: string) => void;
 }
 
-const PostModal: React.FC<ModalProps> = ({
-  post,
-  onClose,
-  handleLike,
-}) => {
-  const { data: comments, isLoading: commentIsLoading } = useFetchCommentsById( post?._id || "");
-    
+const PostModal: React.FC<ModalProps> = ({ post, onClose, handleLike }) => {
+  const { data: comments, isLoading: commentIsLoading } = useFetchCommentsById(
+    post?._id || ""
+  );
+
   const pathname = usePathname();
   const queryClient = useQueryClient();
   const [commentText, setCommentText] = useState<{ [key: string]: string }>({});
   const { user } = useAuthStore();
-  const userID = user?._id || ""
+  const userID = user?._id || "";
   const commentPostMutation = useCommentOnPost(pathname);
 
   const handleComment = (postId: string) => {
@@ -47,18 +45,25 @@ const PostModal: React.FC<ModalProps> = ({
     );
   };
 
-
   return (
-    <div className="fixed inset-0 flex justify-center items-center bg-gray-400 dark:bg-gray-950/5 bg-opacity-5 backdrop-blur-sm z-50 p-4 ">
-      <div className="bg-white dark:bg-gray-900 mt-10 rounded-lg shadow-lg max-w-4xl w-full p-5 relative flex">
+    <div
+      className="fixed inset-0 flex justify-center md:items-center items-end bg-gray-400 dark:bg-gray-950/5 bg-opacity-5 backdrop-blur-sm z-50 md:p-4 "
+      onClick={onClose}
+    >
+      <div
+        className="bg-white dark:bg-gray-900 md:mt-10 mt-28 md:rounded-lg shadow-lg max-w-4xl w-full md:p-5 relative flex rounded-2xl"
+        onClick={(e) => e.stopPropagation()}
+      >
         {post?.image && (
-          <div className="w-1/2 flex-shrink-0">
+          <div className="hidden md:block w-1/2 flex-shrink-0">
             <div className="flex justify-between items-center gap-4 pb-2">
               <div className="flex items-center gap-4">
-                <img
+                <Image
                   src={post?.userId?.profilePicture || "/person-demo.jpg"}
                   alt="profile"
-                  className="border rounded-full w-10 h-10 object-cover"
+                  width={40}
+                  height={40}
+                  className="border h-10 w-10 rounded-full object-cover"
                 />
                 <h4 className="text-sm font-semibold">
                   {post?.userId?.fullname}
@@ -66,25 +71,29 @@ const PostModal: React.FC<ModalProps> = ({
               </div>
               <button className="mr-5">...</button>
             </div>
-            <img
+            <Image
               src={post?.image}
-              className="w-full h-[450px] rounded-md object-cover"
               alt="post-image"
+              width={800}
+              height={800}
+              className="h-[450px] rounded-md object-cover"
             />
             <p className="text-sm my-2">{post?.content}</p>
           </div>
         )}
 
-        <div className="w-1/2 flex flex-col p-4">
+        <div className="md:w-1/2 flex flex-col md:p-4 md:py-4 py-4">
           <button
-            className="absolute top-2 right-2 text-gray-700 dark:text-gray-200 text-2xl"
+            className="hidden md:block absolute top-2 right-2 text-gray-700 dark:text-gray-200 text-2xl"
             onClick={onClose}
           >
             <AiOutlineClose />
           </button>
 
-          <div className="flex flex-col gap-2 overflow-y-auto custom-scrollbar h-96">
-            <h2 className="fixed dark:bg-gray-900 min-w-96 bg-white z-10">Comments</h2>
+          <div className="flex flex-col gap-2 overflow-y-auto custom-scrollbar md:h-96 h-[550px] md:w-auto w-screen">
+            <h2 className="fixed dark:bg-gray-900 min-w-96 md:h-auto h-10 bg-white z-1 text-center">
+              Comments
+            </h2>
             <div className="mt-8">
               {comments?.data?.length === 0 ? (
                 <div>
@@ -99,17 +108,13 @@ const PostModal: React.FC<ModalProps> = ({
                 <CommentSkelton />
               ) : (
                 comments?.data?.map((comment: Comment, index: number) => (
-                  <Comments
-                    key={index}
-                    comment={comment}
-                    userID={userID}
-                  />
+                  <Comments key={index} comment={comment} userID={userID} />
                 ))
               )}
             </div>
           </div>
 
-          <div className="flex gap-4 mt-auto pt-4 border-t border-t-gray-300 dark:border-t-gray-600">
+          <div className="hidden md:flex gap-4 mt-auto pt-4 border-t border-t-gray-300 dark:border-t-gray-600">
             <div
               className="flex items-center gap-1 cursor-pointer"
               onClick={() => handleLike(post?._id || "")}
@@ -129,11 +134,13 @@ const PostModal: React.FC<ModalProps> = ({
             </div>
           </div>
           {!post?.hideComments && (
-            <div className="flex items-center gap-2 py-4 dark:bg-gray-900 dark:text-white dark:border-t-0 ">
-              <img
+            <div className="flex items-center gap-2 md:py-4 px-4 md:px-0 dark:bg-gray-900 dark:text-white dark:border-t-0 ">
+              <Image
                 src={user?.profilePicture || "/person-demo.jpg"}
                 alt="profile"
-                className="border dark:border-gray-700 rounded-full object-cover w-10 h-10"
+                height={40}
+                width={40}
+                className="border w-14 h-10 dark:border-gray-700 rounded-full object-cover"
               />
               <input
                 type="text"
@@ -150,7 +157,7 @@ const PostModal: React.FC<ModalProps> = ({
               />
               <button
                 onClick={() => handleComment(post?._id || "")}
-                className="relative right-1 border text-blue-800 p-2 rounded-full"
+                className={`${commentPostMutation.isPending ? "animate-pulse" : ""} relative right-1 border text-blue-800 p-2 rounded-full`}
               >
                 <BiSend />
               </button>

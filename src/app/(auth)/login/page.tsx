@@ -2,18 +2,16 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Formik, Form, Field, ErrorMessage } from "formik";
+import { Formik, Form, Field } from "formik";
 import * as Yup from "yup";
-import { PulseLoader } from "react-spinners";
 import toast from "react-hot-toast";
 import { useLoginMutation } from "@/src/hooks/useAuth";
-import { useState } from "react";
 import Loader from "@/src/utils/Loading";
 import AxiosInstance from "@/src/lib/axiosInstance";
+import axios from "axios";
 
 const Login = () => {
   const router = useRouter();
-  const [loginError, setError] = useState<string | null>("");
   const validationSchema = Yup.object({
     email: Yup.string()
       .email("Invalid email format")
@@ -32,20 +30,25 @@ const Login = () => {
         router.replace("/");
         localStorage.setItem("isLogin", "true");
       },
-      onError: async (error: any) => {
-        toast.error(error.response?.data?.message || "Login failed");
-        if (error.response?.data.message === "Please verify your account to login") {
-          setTimeout(() => {
-            router.push("/verify");
-          }, 3000);
-          if (formInputs.email) {
-            await AxiosInstance.post("/auth/resentotp", {
-              email: formInputs.email,
-            });
+      onError: async (error: unknown) => {
+        if (axios.isAxiosError(error)) {
+          const message = error.response?.data?.message || "Login failed";
+          toast.error(message);
+
+          if (message === "Please verify your account to login") {
+            setTimeout(() => {
+              router.push("/verify");
+            }, 3000);
+
+            if (formInputs.email) {
+              await AxiosInstance.post("/auth/resentotp", {
+                email: formInputs.email,
+              });
+            }
           }
         } else {
+          toast.error("An unexpected error occurred");
         }
-        setError(error.response?.data?.message || "Login failed");
       },
     });
   };
@@ -75,7 +78,7 @@ const Login = () => {
             validationSchema={validationSchema}
             onSubmit={handleSubmit}
           >
-            {({ isSubmitting, errors, touched }) => (
+            {({ errors, touched }) => (
               <Form className="space-y-4 mt-6">
                 {/* Email */}
                 <div>
@@ -153,10 +156,9 @@ const Login = () => {
               </Form>
             )}
           </Formik>
-
           {/* Create Account Link */}
           <p className="mt-4 text-center text-gray-200 text-sm">
-            Don't have an account?{" "}
+            Don't have an account? &nbsp;
             <Link href="/register" className="text-purple-300 hover:underline">
               Sign Up
             </Link>

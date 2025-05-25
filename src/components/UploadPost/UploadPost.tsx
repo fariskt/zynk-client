@@ -149,7 +149,7 @@ const UploadPost: React.FC<UploadPostProps> = ({ onClose }) => {
               className="w-full p-3 border border-gray-600 rounded-lg dark:bg-gray-900 dark:text-white outline-none resize-none"
               placeholder="Write your caption..."
               value={postData.content}
-              onChange={(e) => setPostData((prev: any) => ({ ...prev, content: e.target.value }))}
+              onChange={(e) => setPostData((prev) => ({ ...prev, content: e.target.value }))}
             />
 
             <div className="flex justify-between items-center">
@@ -158,7 +158,7 @@ const UploadPost: React.FC<UploadPostProps> = ({ onClose }) => {
                   <input
                     type="checkbox"
                     checked={postData.isScheduled}
-                    onChange={(e) => setPostData((prev: any) => ({ ...prev, isScheduled: e.target.checked }))}
+                    onChange={(e) => setPostData((prev) => ({ ...prev, isScheduled: e.target.checked }))}
                     className="h-5 w-5"
                   />
                   <span>Schedule</span>
@@ -168,7 +168,7 @@ const UploadPost: React.FC<UploadPostProps> = ({ onClose }) => {
                   <input
                     type="checkbox"
                     checked={postData.hideComments}
-                    onChange={(e) => setPostData((prev: any) => ({ ...prev, hideComments: e.target.checked }))}
+                    onChange={(e) => setPostData((prev) => ({ ...prev, hideComments: e.target.checked }))}
                     className="h-5 w-5"
                   />
                   <span>Disable Comments</span>
@@ -197,7 +197,7 @@ const UploadPost: React.FC<UploadPostProps> = ({ onClose }) => {
 
             {postData.isScheduled && (
               <DateTimePickerComponent
-                onChange={(date) => setPostData((prev: any) => ({ ...prev, scheduleTime: date || "" }))}
+                onChange={(date) => setPostData((prev) => ({ ...prev, scheduleTime: date || "" }))}
               />
             )}
           </form>

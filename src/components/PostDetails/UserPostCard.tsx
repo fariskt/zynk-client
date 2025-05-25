@@ -1,15 +1,11 @@
-import { BsThreeDots, BsThreeDotsVertical } from "react-icons/bs";
-import { CiHeart } from "react-icons/ci";
+"use client";
+
+import { BsThreeDotsVertical } from "react-icons/bs";
 import { GoComment } from "react-icons/go";
-import { IoMdHeart } from "react-icons/io";
 import { useEffect, useState } from "react";
 import useAuthStore from "../../store/useAuthStore";
 import { useParams, usePathname } from "next/navigation";
-import {
-  useFetchAllComments,
-  useFetchUserPosts,
-  useLikePost,
-} from "@/src/hooks/usePosts";
+import { useFetchUserPosts, useLikePost } from "@/src/hooks/usePosts";
 import SkeletonUserPostCard from "../../utils/SkeltonUi/PostSkelton";
 import NoPosts from "../../utils/Animations/NoPostAnimation";
 import dayjs from "dayjs";
@@ -19,15 +15,20 @@ import PostEditForm from "./PostEditForm";
 import ConfirmDelete from "./ConfirmDelete";
 import { Post } from "@/src/types";
 import { BiLike, BiSolidLike } from "react-icons/bi";
+import Image from "next/image";
+import { motion } from "framer-motion";
+import { AiFillHeart } from "react-icons/ai";
+import { RiVerifiedBadgeFill } from "react-icons/ri";
 
 const UserPostCard = () => {
   const params = useParams();
   const pathname = usePathname();
   const { user } = useAuthStore();
+  
 
   const slug = params?.slug as string;
 
-  const friendId = slug?.split("-").pop(); // e.g., 'john-doe-12345' => '12345'
+  const friendId = slug?.split("-").pop();
   const userID = pathname.startsWith("/members")
     ? friendId || ""
     : user?._id || "";
@@ -37,6 +38,7 @@ const UserPostCard = () => {
   const [showPostModal, setShowPostModal] = useState<boolean>(false);
   const [showEditForm, setShowEditForm] = useState<boolean>(false);
   const [showDeleteModal, setShowDeleteModal] = useState<boolean>(false);
+  const [showHeart, setShowHeart] = useState(false);
 
   const {
     data: userPost,
@@ -49,32 +51,49 @@ const UserPostCard = () => {
   const postToShow =
     userPost?.pages.flatMap((page: { posts: Post[] }) => page.posts) || [];
 
-  const handleScroll = () => {
-    if (!hasNextPage || isFetchingNextPage) return;
-
-    const scrollPosition =
-      window.innerHeight + document.documentElement.scrollTop;
-    const bottomPosition = document.documentElement.offsetHeight;
-
-    if (scrollPosition >= bottomPosition - 100) {
-      fetchNextPage();
-    }
-  };
-
   useEffect(() => {
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, [hasNextPage, isFetchingNextPage]);
+    const handleScroll = () => {
+      if (!hasNextPage || isFetchingNextPage) return;
+
+      if (typeof window !== "undefined" && typeof document !== "undefined") {
+        const scrollPosition =
+          window.innerHeight + document.documentElement.scrollTop;
+        const bottomPosition = document.documentElement.offsetHeight;
+
+        if (scrollPosition >= bottomPosition - 100) {
+          fetchNextPage();
+        }
+      }
+    };
+
+    if (typeof window !== "undefined" && typeof document !== "undefined") {
+      window.addEventListener("scroll", handleScroll);
+    }
+
+    return () => {
+      if (typeof window !== "undefined" && typeof document !== "undefined") {
+        window.removeEventListener("scroll", handleScroll);
+      }
+    };
+  }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
 
   const likePostMutation = useLikePost(pathname || "");
 
   const handleLike = (postId: string) => {
     likePostMutation.mutate({ userId: userID, postId });
+    const post = postToShow.find((item) => item._id === postId);
+    const postIsLiked = post?.likes?.includes(userID);
+    if (!postIsLiked) {
+      setShowHeart(true);
+      setTimeout(() => {
+        setShowHeart(false);
+      }, 1000);
+    }
   };
 
-  const toggleDotMenu = (postId: string)=> {
-    setShowOpenDot((prevID)=> prevID === postId ? null : postId)
-  }
+  const toggleDotMenu = (postId: string) => {
+    setShowOpenDot((prevID) => (prevID === postId ? null : postId));
+  };
 
   return (
     <div>
@@ -89,17 +108,28 @@ const UserPostCard = () => {
             return (
               <div
                 key={post._id}
-                className="dark:bg-gray-900 dark:text-white bg-white mt-5 shadow dark:border-0 border rounded-xl py-1 max-w-xl min-w-[530px] min-h-44 mb-5"
+                className="dark:bg-gray-900 dark:text-white bg-white mt-5 shadow dark:border-0 border rounded-xl py-1 max-w-xl md:min-w-[530px] min-h-44 mb-5 mx-4 md:mx-0"
               >
                 <div className="flex justify-between items-center p-2 border-b dark:border-b-gray-600">
                   <div className="flex items-center gap-4 pl-3">
-                    <img
+                    <Image
+                      height={60}
+                      width={60}
                       src={post?.userId?.profilePicture || "/person-demo.jpg"}
                       alt={`${post?.userId?.fullname}'s profile`}
-                      className="dark:border-gray-500 border rounded-full w-14 h-14 object-cover"
+                      className="h-10 w-10 dark:border-gray-500 border rounded-full object-cover"
                     />
                     <div>
-                      <h4 className="text-sm">{post?.userId?.fullname}</h4>
+                      <div className="flex items-center gap-2">
+                        <h4 className="text-sm font-medium cursor-pointer">
+                          {post?.userId?.fullname}
+                        </h4>
+                        {post?.userId?.isVerified && (
+                          <span className="text-blue-600 font-extrabold text-lg pt-1 hover:text-blue-700">
+                            <RiVerifiedBadgeFill />
+                          </span>
+                        )}
+                      </div>
                       <p className="text-xs">
                         {post.createdAt
                           ? getRelativeTime(post.createdAt)
@@ -120,40 +150,42 @@ const UserPostCard = () => {
                     >
                       <BsThreeDotsVertical />
                     </span>
-                    {showOpenDot === post._id && !pathname.startsWith("/members") && (
-                      <div className="absolute w-28 -ml-20 mb-4 space-y-3 p-2 rounded-xl bg-gray-100 border dark:border-0  dark:bg-gray-600">
-                        <h3
-                          className="cursor-pointer hover:text-gray-700 dark:hover:text-gray-300"
-                          onClick={() => {
-                            setShowEditForm(true);
-                            setSelectedPost(post);
-                            setShowOpenDot(null);
-                          }}
-                        >
-                          Edit
-                        </h3>
-                        <h3
-                          className="cursor-pointer hover:text-gray-700 dark:hover:text-gray-300"
-                          onClick={() => {
-                            setSelectedPost(post);
-                            setShowDeleteModal(true);
-                            setShowOpenDot(null);
-                          }}
-                        >
-                          Delete
-                        </h3>
-                        <h3 className="hover:text-gray-700 dark:hover:text-gray-300">
-                          Report
-                        </h3>
-                      </div>
-                    )}
-                    {showOpenDot === post._id && pathname.startsWith("/members") && (
-                      <div className="absolute w-28 -ml-20 mb-4 space-y-3 p-2 rounded-xl bg-gray-100 border dark:border-0  dark:bg-gray-600">
-                        <h3 className="hover:text-gray-700 dark:hover:text-gray-300">
-                          Report
-                        </h3>
-                      </div>
-                    )}
+                    {showOpenDot === post._id &&
+                      !pathname.startsWith("/members") && (
+                        <div className="absolute z-20 w-28 -ml-20 mb-4 space-y-3 p-2 rounded-xl bg-gray-100 border dark:border-0  dark:bg-gray-600">
+                          <h3
+                            className="cursor-pointer hover:text-gray-700 dark:hover:text-gray-300"
+                            onClick={() => {
+                              setShowEditForm(true);
+                              setSelectedPost(post);
+                              setShowOpenDot(null);
+                            }}
+                          >
+                            Edit
+                          </h3>
+                          <h3
+                            className="cursor-pointer hover:text-gray-700 dark:hover:text-gray-300"
+                            onClick={() => {
+                              setSelectedPost(post);
+                              setShowDeleteModal(true);
+                              setShowOpenDot(null);
+                            }}
+                          >
+                            Delete
+                          </h3>
+                          <h3 className="hover:text-gray-700 dark:hover:text-gray-300">
+                            Report
+                          </h3>
+                        </div>
+                      )}
+                    {showOpenDot === post._id &&
+                      pathname.startsWith("/members") && (
+                        <div className="absolute w-28 -ml-20 mb-4 space-y-3 p-2 rounded-xl bg-gray-100 border dark:border-0  dark:bg-gray-600">
+                          <h3 className="hover:text-gray-700 dark:hover:text-gray-300">
+                            Report
+                          </h3>
+                        </div>
+                      )}
                     {showDeleteModal && (
                       <ConfirmDelete
                         onClose={() => setShowDeleteModal(false)}
@@ -170,11 +202,23 @@ const UserPostCard = () => {
                 </div>
 
                 {post.image && (
-                  <div className="flex justify-center">
-                    <img
+                  <div className="relative flex justify-center mx-2 md-mx-0">
+                    {showHeart && (
+                      <motion.div
+                        initial={{ scale: 0, opacity: 1 }}
+                        animate={{ scale: 2, opacity: 0 }}
+                        transition={{ duration: 0.8, ease: "easeOut" }}
+                        className="absolute inset-0 flex items-center justify-center"
+                      >
+                        <AiFillHeart className="text-red-600 text-6xl" />
+                      </motion.div>
+                    )}
+                    <Image
                       src={post.image}
+                      height={450}
+                      width={500}
                       onDoubleClick={() => handleLike(post._id)}
-                      className="w-[500px] max-h-[450px] aspect-square object-cover border dark:border-0 rounded-3xl"
+                      className=" aspect-square object-cover border dark:border-0 rounded-3xl"
                       alt="post-image"
                     />
                   </div>
@@ -195,7 +239,9 @@ const UserPostCard = () => {
                         <BiLike />
                       )}
                     </span>
-                    <p>{post?.likes?.length || 0} Likes</p>
+                    <p className="text-sm md:text-base">
+                      {post?.likes?.length || 0} Likes
+                    </p>
                   </div>
 
                   <div
@@ -208,7 +254,9 @@ const UserPostCard = () => {
                     <span className="text-xl">
                       <GoComment />
                     </span>
-                    <p>{post?.commentCount || 0} Comments</p>
+                    <p className="text-sm md:text-base">
+                      {post?.commentCount || 0} Comments
+                    </p>
                   </div>
                 </div>
 
@@ -223,7 +271,7 @@ const UserPostCard = () => {
             );
           })
       ) : (
-        <div className="dark:bg-gray-900 dark:text-white bg-white mt-5 shadow dark:border-0 border rounded-md py-1 max-w-xl min-w-[530px] min-h-44">
+        <div className="dark:bg-gray-900 dark:text-white bg-white mt-5 shadow dark:border-0 border rounded-md py-1 w-full md:mx-0 mx-5 md:max-w-xl md:min-w-[530px]  min-h-44">
           <NoPosts />
         </div>
       )}

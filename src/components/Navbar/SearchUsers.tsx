@@ -23,7 +23,7 @@ const SearchUsers : React.FC<SearchUsersProps>= ({searchLoading,setSearchInput, 
           {searchLoading ? (
             <ConnectionListSkeleton />
           ) : searchedUsers?.data && searchedUsers.data.length > 0 ? (
-            searchedUsers.data.map((person: any) => (
+            searchedUsers.data.map((person: User) => (
               <Link
                 key={person._id}
                 href={`/members/${slugify(person.fullname)}-${person._id}`}

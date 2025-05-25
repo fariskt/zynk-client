@@ -57,7 +57,7 @@ const EditProfile = () => {
         },
       });
     },
-    onSuccess: (data) => {
+    onSuccess: () => {
       fetchUser();
         setIsEditing(false);
     },

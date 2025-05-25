@@ -1,7 +1,6 @@
 "use client";
 import AxiosInstance from "@/src/lib/axiosInstance";
 import { useMutation } from "@tanstack/react-query";
-import axios from "axios";
 import { useRouter } from "next/navigation";
 import React, { useRef, useState } from "react";
 import toast from "react-hot-toast";
@@ -113,7 +112,7 @@ const Form: React.FC = () => {
               {isPending ? <Loader /> : "Verify"}
             </button>
 
-            <p className="text-xs text-black text-center flex flex-col items-center gap-1 w-full">
+            <div className="text-xs text-black text-center flex flex-col items-center gap-1 w-full">
               Didn't receive the code?
               <button
                 onClick={() => setOpenResent(true)}
@@ -122,7 +121,7 @@ const Form: React.FC = () => {
               >
                 Resend Code
               </button>
-            </p>
+            </div>
           </form>
         </div>
       </div>

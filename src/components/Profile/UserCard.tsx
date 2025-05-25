@@ -7,6 +7,7 @@ import { useUserConnections } from "@/src/hooks/useUser";
 import useAuthStore from "../../store/useAuthStore";
 import { useParams, usePathname } from "next/navigation";
 import Link from "next/link";
+import { User } from "@/src/types";
 
 const UserCard = ({ connectionType,}: {  connectionType: "followers" | "following"}) => {
   const pathname = usePathname();
@@ -39,7 +40,7 @@ const UserCard = ({ connectionType,}: {  connectionType: "followers" | "followin
         {isLoading && <UserCardSkelton />}
 
         {connectionsData?.[connectionType].length > 0 ? (
-          connectionsData?.[connectionType]?.map((person: any) => (
+          connectionsData?.[connectionType]?.map((person: User) => (
             <div
               key={person._id}
               className="w-full max-w-[250px] bg-white dark:bg-gray-800 border dark:border-gray-600 shadow-lg rounded-lg p-6"
@@ -69,7 +70,7 @@ const UserCard = ({ connectionType,}: {  connectionType: "followers" | "followin
                       Followers
                     </h5>
                     <p className="text-xl font-bold text-blue-500">
-                      {person.followersCount || 0}
+                      {person.followers.length || 0}
                     </p>
                   </div>
                   <div>
@@ -77,7 +78,7 @@ const UserCard = ({ connectionType,}: {  connectionType: "followers" | "followin
                       Following
                     </h5>
                     <p className="text-xl font-bold text-blue-500">
-                      {person.followingCount || 0}
+                      {person.following.length || 0}
                     </p>
                   </div>
                 </div>

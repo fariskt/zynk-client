@@ -5,11 +5,10 @@ import { FaCircleUser } from "react-icons/fa6";
 import { IoMdNotificationsOutline } from "react-icons/io";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { RiUser3Line } from "react-icons/ri";
+import { RiUser3Line, RiVerifiedBadgeFill } from "react-icons/ri";
 import { IoSearch, IoSettingsOutline } from "react-icons/io5";
 import { IoLogOutOutline } from "react-icons/io5";
 import { useLogoutMutation } from "@/src/hooks/useAuth";
-import useAuthStore from "../../store/useAuthStore";
 import DarkModeToggle from "./DarkMode";
 import Notification from "./Notification";
 import { CiSettings } from "react-icons/ci";
@@ -17,6 +16,8 @@ import { FiPlus } from "react-icons/fi";
 import UploadPost from "../UploadPost/UploadPost";
 import { useSearchUsers } from "@/src/hooks/useUser";
 import SearchUsers from "./SearchUsers";
+import Image from "next/image";
+import useAuthStore from "@/src/store/useAuthStore";
 
 const Navbar = () => {
   const [showProfile, setShowProfile] = useState(false);
@@ -26,8 +27,6 @@ const Navbar = () => {
   const router = useRouter();
   const [searchInput, setSearchInput] = useState<string>("");
   const { mutate: logout } = useLogoutMutation();
-
-  const isLogin = localStorage.getItem("isLogin") || "";
 
   const { user, isLoading } = useAuthStore();
 
@@ -41,22 +40,26 @@ const Navbar = () => {
     setShowProfile(false);
   }, [pathName]);
 
-  const { data: searchedUsers, isLoading: searchLoading } = useSearchUsers(searchInput);
-
+  const { data: searchedUsers, isLoading: searchLoading } =
+    useSearchUsers(searchInput);
 
   if (
     pathName === "/login" ||
     pathName === "/register" ||
     pathName === "/forgot-password" ||
-    pathName === "/reset-password" || pathName === "/verify"
+    pathName === "/reset-password"
   ) {
     return null;
   }
 
   return (
     <nav
-      className={` fixed top-0 ${
-        pathName === "/message" || pathName.startsWith("/profile") || pathName.startsWith("/members") ? "left-[80px] w-[95%]" : "w-[85%]"
+      className={`hidden md:flex fixed top-0 ${
+        pathName === "/message" ||
+        pathName.startsWith("/profile") ||
+        pathName.startsWith("/members")
+          ? "left-[80px] w-[95%]"
+          : "w-[85%]"
       } left-[230px] z-20 bg-gray-50 dark:bg-gray-900 dark:text-white dark:border-gray-800 border flex justify-between pl-3`}
     >
       {showUploadModal && (
@@ -93,7 +96,12 @@ const Navbar = () => {
       </div>
 
       {searchInput && (
-        <SearchUsers searchInput={searchInput} searchLoading={searchLoading} setSearchInput={setSearchInput} searchedUsers={searchedUsers}/>
+        <SearchUsers
+          searchInput={searchInput}
+          searchLoading={searchLoading}
+          setSearchInput={setSearchInput}
+          searchedUsers={searchedUsers}
+        />
       )}
 
       <div className="flex items-center justify-between w-[40%] gap-4 mr-5 p-3 border-l dark:border-l-gray-800">
@@ -119,7 +127,7 @@ const Navbar = () => {
         </div>
 
         <div className="relative">
-          {isLogin !== "" && (
+          {user && (
             <span
               className={isLoading ? "animate-pulse" : "cursor-pointer"}
               onClick={() => {
@@ -129,7 +137,9 @@ const Navbar = () => {
             >
               <span className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-white rounded-full"></span>
               {user?.profilePicture ? (
-                <img
+                <Image
+                  height={40}
+                  width={40}
                   src={user?.profilePicture}
                   alt="profile"
                   className="w-10 h-10 border-2 border-gray-400 rounded-full object-cover"
@@ -142,21 +152,34 @@ const Navbar = () => {
         </div>
       </div>
 
-      {showNotification && <Notification onClose={()=> setShowNotification(false)}/>}
+      {showNotification && (
+        <Notification onClose={() => setShowNotification(false)} />
+      )}
       {showProfile && (
         <div className="absolute right-3 mt-[70px] w-56 bg-gray-50 dark:bg-gray-800 shadow-lg rounded-xl border border-gray-200 dark:border-gray-600 p-3">
-          <div className="flex items-center gap-3 p-3 rounded-lg bg-gray-200 dark:bg-gray-600">
-            <div className="w-10 h-10 bg-blue-500 text-white flex items-center justify-center rounded-full text-lg font-bold">
-              <img
-                src={user?.profilePicture || "/person-demo.jpg"}
-                alt="profile"
-                className="border rounded-full object-cover w-10 h-10"
-              />
+          <Link href="/profile">
+            <div className="flex items-center gap-3 p-2 rounded-lg bg-gray-200 dark:bg-gray-600">
+              <div className="w-10 h-10 bg-blue-500 text-white flex items-center justify-center rounded-full text-lg font-bold">
+                <Image
+                  src={user?.profilePicture || "/person-demo.jpg"}
+                  alt="profile"
+                  width={40}
+                  height={40}
+                  className="border rounded-full object-cover w-10 h-10"
+                />
+              </div>
+              <div className="flex items-center gap-1">
+                <h4 className="text-blue-900 dark:text-gray-200 font-semibold text-sm">
+                  {user?.fullname}
+                </h4>
+                {user?.isVerified && (
+                  <span className="text-blue-600 font-extrabold text-base pt-1 hover:text-blue-700">
+                    <RiVerifiedBadgeFill />
+                  </span>
+                )}
+              </div>
             </div>
-            <h4 className="text-blue-900 dark:text-gray-200 font-semibold text-sm">
-              {user?.fullname}
-            </h4>
-          </div>
+          </Link>
 
           <div className="flex flex-col mt-3">
             <Link href="/profile">
@@ -167,7 +190,7 @@ const Navbar = () => {
                 </h5>
               </div>
             </Link>
-            <Link href="/settings">
+            <Link href="/profile/settings">
               <div className="flex items-center gap-3 px-4 py-2 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700  transition">
                 <IoSettingsOutline className="text-gray-600 dark:text-white text-lg" />
                 <h5 className="text-gray-800 dark:text-white text-sm">

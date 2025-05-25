@@ -4,9 +4,9 @@ import React from "react";
 
 const Suggestion = ({setShowModal,loggedUser, handleFollowReq,users}: {
   setShowModal: (value: boolean) => void;
-  loggedUser: any;
+  loggedUser: User | null;
   handleFollowReq: (userId: string) => void;
-  users: any;
+  users: User[];
 }) => {
   const slugify = (fullname: string) => fullname.toLowerCase().replace(/\s+/g, "-");
 
@@ -30,7 +30,7 @@ const Suggestion = ({setShowModal,loggedUser, handleFollowReq,users}: {
         </div>
 
         <div className="max-h-[400px] overflow-y-auto space-y-4 custom-scrollbar">
-          {users?.data.map(
+          {users?.map(
             (user: User) => (
               <div
                 className="flex items-center justify-between p-3 rounded-lg bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition"
@@ -58,7 +58,7 @@ const Suggestion = ({setShowModal,loggedUser, handleFollowReq,users}: {
                 >
                   {loggedUser?.following?.includes(user._id)
                     ? "Unfollow"
-                    : user?.following?.includes(loggedUser?._id)
+                    : user?.following?.includes(loggedUser?._id || "")
                     ? "Follow back"
                     : "Follow"}
                 </button>

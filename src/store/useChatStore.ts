@@ -10,7 +10,7 @@ interface Message {
 
 interface ChatStore {
     selectChatUser:User| null;
-    setSelectChatUser: (user:User)=> void;
+    setSelectChatUser: (user:User | null)=> void;
     messages: Record<string, Message[]>;
     setMessages:(userId: string, messages: Message[])=> void;
     addMessage:(userId:string,message: Message)=> void;

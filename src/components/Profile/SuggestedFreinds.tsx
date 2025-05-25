@@ -2,31 +2,34 @@ import React, { useState } from "react";
 import useAuthStore from "../../store/useAuthStore";
 import Suggestion from "../SuggestList/Suggestion";
 import Image from "next/image";
-import { FaArrowRightLong, FaPlus } from "react-icons/fa6";
-import { useFetchUserActivity, useSendFolllowReq } from "@/src/hooks/useUser";
+import { FaArrowRightLong } from "react-icons/fa6";
+import { useFetchUserActivity, useSendFollowReq } from "@/src/hooks/useUser";
 import Link from "next/link";
 import Activity from "./Activity";
+import { User } from "@/src/types";
 
-const SuggestedFriends = ({ isLoading, users}: { isLoading: boolean; users: any}) => {
-  const { fetchUser , user: loggedUser} = useAuthStore();
+const SuggestedFriends = ({ users }: { users: User[] }) => {
+  const { fetchUser, user: loggedUser } = useAuthStore();
   const [showModal, setShowModal] = useState(false);
 
-  const { mutate: sendFollowReqMutation } = useSendFolllowReq();
+  const { mutate: sendFollowReqMutation } = useSendFollowReq();
 
   const handleFollowReq = (userId: string) => {
     sendFollowReqMutation(userId, {
       onSuccess: () => {
         fetchUser();
       },
-      onError: (error: any) => {
+      onError: (error) => {
         console.error("Error sending follow request ", error);
       },
     });
   };
 
-  const slugify = (fullname: string) => fullname.toLowerCase().replace(/\s+/g, "-");
+  const slugify = (fullname: string) =>
+    fullname.toLowerCase().replace(/\s+/g, "-");
 
-  const { data: recentActivities, isLoading: activityIsLoading } = useFetchUserActivity(loggedUser?._id || "");
+  const { data: recentActivities, isLoading: activityIsLoading } =
+    useFetchUserActivity(loggedUser?._id || "");
 
   return (
     <>
@@ -46,16 +49,16 @@ const SuggestedFriends = ({ isLoading, users}: { isLoading: boolean; users: any}
         </div>
 
         <ul className="border-b dark:border-b-gray-600 pb-4">
-          {users?.data?.slice(0, 4).map((friend: any) => (
+          {users?.slice(0, 4).map((friend: User) => (
             <div
               key={friend._id}
               className="flex items-center justify-between py-2 last:border-b-0"
             >
-                <Link
-                  key={friend._id}
-                  href={`/members/${slugify(friend.fullname)}-${friend._id}`}
-                >
-              <div className="flex items-center gap-3">
+              <Link
+                key={friend._id}
+                href={`/members/${slugify(friend.fullname)}-${friend._id}`}
+              >
+                <div className="flex items-center gap-3">
                   <Image
                     src={friend.profilePicture || "/person-demo.jpg"}
                     alt={friend.fullname}
@@ -63,20 +66,20 @@ const SuggestedFriends = ({ isLoading, users}: { isLoading: boolean; users: any}
                     height={40}
                     className="rounded-full w-10 h-10 object-cover"
                   />
-                <div>
-                  <p className="text-gray-900 dark:text-white text-sm font-medium">
-                    {friend.fullname}
-                  </p>
+                  <div>
+                    <p className="text-gray-900 dark:text-white text-sm font-medium">
+                      {friend.fullname}
+                    </p>
+                  </div>
                 </div>
-              </div>
-                </Link>
+              </Link>
               <button
                 className="p-2 bg-blue-500 text-white min-w-20 text-xs hover:bg-blue-700 rounded-2xl font-medium"
                 onClick={() => handleFollowReq(friend._id)}
               >
                 {loggedUser?.following?.includes(friend._id)
                   ? "Unfollow"
-                  : friend?.following?.includes(loggedUser?._id)
+                  : friend?.following?.includes(loggedUser?._id || "")
                   ? "Follow back"
                   : "Follow"}
               </button>

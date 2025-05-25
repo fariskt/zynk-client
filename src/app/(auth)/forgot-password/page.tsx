@@ -2,6 +2,7 @@
 
 import AxiosInstance from "@/src/lib/axiosInstance";
 import { useMutation } from "@tanstack/react-query";
+import { AxiosError } from "axios";
 import React, { useState } from "react";
 import { PulseLoader } from "react-spinners";
 
@@ -19,11 +20,15 @@ const ForgotPassword = () => {
     onSuccess: (data) => {
       setMessage(data.message);
     },
-    onError: (error: any) => {
-      setMessage(error.response?.data?.message || "Error sending password")
+    onError: (error: unknown) => {
+      if (error instanceof AxiosError) {
+        setMessage(error.response?.data?.message || "Error sending password");
+      } else {
+        setMessage("Unexpected error");
+      }
     },
   });
-  
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     mutate({ email: email });

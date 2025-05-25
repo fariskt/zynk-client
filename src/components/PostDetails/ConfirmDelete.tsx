@@ -29,8 +29,8 @@ const ConfirmDelete: React.FC<PostEditForm> = ({ onClose, post }) => {
       queryClient.invalidateQueries({ queryKey: ["userPosts"] });
       onClose();
     },
-    onError: (error: any) => {
-      toast.error(error.response?.data?.message || "Failed to delete post");
+    onError: () => {
+      toast.error("Failed to delete post");
     },
   });
 

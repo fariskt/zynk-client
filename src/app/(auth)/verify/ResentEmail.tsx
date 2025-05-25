@@ -14,7 +14,6 @@ const ResendEmailModal: React.FC<ResentEmailProps> = ({
   onResend,
   resentOtpPending,
 }) => {
-  if (!isOpen) return null;
 
   const [email, setEmail] = React.useState("");
 
@@ -22,6 +21,9 @@ const ResendEmailModal: React.FC<ResentEmailProps> = ({
     e.preventDefault();
     onResend(email);
   };
+  
+  if (!isOpen) return null;
+
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">

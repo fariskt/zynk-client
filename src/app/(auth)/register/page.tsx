@@ -2,21 +2,15 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import React, { useState } from "react";
-import { FaUser } from "react-icons/fa";
-import { RiLockPasswordFill } from "react-icons/ri";
-import { Formik, Form, Field, ErrorMessage } from "formik";
+import React from "react";
+import { Formik, Form, Field } from "formik";
 import * as Yup from "yup";
-import { PulseLoader } from "react-spinners";
 import { useRegisterMutation } from "@/src/hooks/useAuth";
 import toast from "react-hot-toast";
-import AxiosInstance from "@/src/lib/axiosInstance";
 import { Loader } from "lucide-react";
 
 const Register = () => {
   const router = useRouter();
-  const [signupError, setSignupError] = useState(null);
-
   const registerUserSchema = Yup.object({
     fullname: Yup.string()
       .min(3, "Full name must be at least 3 characters")
@@ -47,14 +41,12 @@ const Register = () => {
           "We have sent an OTP to your email to verify your Account"
         );
         router.replace("/verify");
-        setSignupError(null);
       },
       onError: (error: any) => {
         console.log(error);
         const catchError =
           error.response?.data?.message || "Registration failed";
         toast.error(catchError);
-        setSignupError(catchError);
       },
     });
   };
@@ -89,7 +81,7 @@ const Register = () => {
             validationSchema={registerUserSchema}
             onSubmit={handleSubmit}
           >
-            {({ isSubmitting, touched, errors }) => (
+            {({ touched, errors }) => (
               <Form className="space-y-3 mt-6">
                 {/* Fullname */}
                 <div>

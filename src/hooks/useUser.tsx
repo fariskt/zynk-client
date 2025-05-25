@@ -1,4 +1,4 @@
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import AxiosInstance from "../lib/axiosInstance";
 import useAuthStore from "../store/useAuthStore";
 import { AxiosError, AxiosResponse } from "axios";
@@ -60,11 +60,50 @@ export const useFetchUserById = (userId: string) => {
   });
 };
 
-export const useSendFolllowReq = () => {
+export const useSendFollowReq = () => {
+  const queryClient = useQueryClient();
+
   return useMutation({
     mutationFn: async (userId: string) => {
       const res = await AxiosInstance.post("/user/follow-request", { userId });
       return res.data;
+    },
+
+    onMutate: async (userId: string) => {
+      // Cancel any ongoing queries for the logged-in user
+      await queryClient.cancelQueries({ queryKey: ["loggedUser"] });
+
+      // Get the current cached data
+      const previousUserData = queryClient.getQueryData(["loggedUser"]);
+
+      // Optimistically update the cache
+      queryClient.setQueryData(["loggedUser"], (oldData: any) => {
+        if (!oldData) return oldData;
+
+        const isFollowing = oldData.following.includes(userId);
+
+        return {
+          ...oldData,
+          following: isFollowing
+            ? oldData.following.filter((id: string) => id !== userId) // Unfollow
+            : [...oldData.following, userId], // Follow
+        };
+      });
+
+      // Return context for rollback on error
+      return { previousUserData };
+    },
+
+    onError: (_error, _userId, context) => {
+      // Rollback to previous data on error
+      if (context?.previousUserData) {
+        queryClient.setQueryData(["loggedUser"], context.previousUserData);
+      }
+    },
+
+    onSettled: () => {
+      // Refetch the logged user data to sync with backend
+      queryClient.invalidateQueries({ queryKey: ["loggedUser"] });
     },
   });
 };

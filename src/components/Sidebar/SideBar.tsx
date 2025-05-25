@@ -12,6 +12,9 @@ import UploadPost from "../UploadPost/UploadPost";
 import { useLogoutMutation } from "@/src/hooks/useAuth";
 import useAuthStore from "../../store/useAuthStore";
 import ConfirmLogout from "./ConfirmLogout";
+import { useQuery } from "@tanstack/react-query";
+import AxiosInstance from "@/src/lib/axiosInstance";
+import { getSocket } from "@/src/lib/socket";
 
 const SideBar = () => {
   const pathname = usePathname();
@@ -20,19 +23,48 @@ const SideBar = () => {
   const [resizeSideBar, setResizeSideBar] = useState<boolean>(false);
   const router = useRouter();
   const { mutate: logout } = useLogoutMutation();
-  const { user, fetchUser, isLoading } = useAuthStore();
-
+  const { user, fetchUser } = useAuthStore();
+  const socket = getSocket();
   useEffect(() => {
-    setResizeSideBar(pathname === "/message" || pathname.startsWith("/profile") || pathname.startsWith("/members"));
+    setResizeSideBar(
+      pathname === "/message" ||
+        pathname.startsWith("/profile") ||
+        pathname.startsWith("/members")
+    );
   }, [pathname]);
 
   const handleLogout = () => setConfirmLogout(true);
 
   const sureLogout = () => {
     logout();
-    setConfirmLogout(false)
+    setConfirmLogout(false);
     router.replace("/login");
   };
+
+  const { data: unread, refetch } = useQuery({
+    queryKey: ["unreadchatcount"],
+    queryFn: async () => {
+      const res = await AxiosInstance.get("/chat/unread");
+      console.log(res.data);
+
+      return res.data;
+    },
+    enabled: !!user,
+  });
+
+  useEffect(() => {
+    if (!user?._id) return;
+
+    const handleReceiveMessage = () => {
+      refetch();
+    };
+
+    socket.on("receive_message", handleReceiveMessage);
+
+    return () => {
+      socket.off("receive_message", handleReceiveMessage);
+    };
+  }, [user?._id, refetch]);
 
   const isLogin = localStorage.getItem("isLogin");
   const theme = localStorage.getItem("theme");
@@ -43,9 +75,13 @@ const SideBar = () => {
   }, [isLogin]);
 
   if (
-    ["/login", "/register", "/forgot-password", "/reset-password", "/verify"].includes(
-      pathname
-    )
+    [
+      "/login",
+      "/register",
+      "/forgot-password",
+      "/reset-password",
+      "/verify",
+    ].includes(pathname)
   ) {
     return null;
   }
@@ -60,11 +96,11 @@ const SideBar = () => {
         />
       )}
       <div
-        className={`z-10 fixed border-r ${
+        className={`z-10 fixed hidden md:block border-r ${
           resizeSideBar ? "w-20 shadow-md" : "w-[230px]"
         } h-full top-0 transition-all ease-in-out bg-background dark:bg-gray-900 text-white dark:border-0`}
       >
-        <div className="flex flex-col justify-between h-[92%] mt-4 flex-wrap ml-3">
+        <div className="flex flex-col justify-between h-[92%] flex-wrap ml-3">
           <div className="flex flex-col gap-3 mx-4">
             <Link href="/">
               <img
@@ -104,7 +140,15 @@ const SideBar = () => {
             {/* Chat Link */}
             <Link href="/message">
               <div className="flex items-center p-2 rounded-md gap-3 h-10 cursor-pointer">
+                {unread && unread.count > 0 && (
+                  <div className="absolute bg-green-500 rounded-full ml-4 mb-8 h-4 w-4 flex items-center justify-center">
+                    <span className="text-xs text-white">
+                      {unread?.count || 0}
+                    </span>
+                  </div>
+                )}
                 <LuMessageSquareText className="text-lg text-gray-200" />
+
                 {!resizeSideBar && (
                   <h3 className="text-base font-medium">Message</h3>
                 )}

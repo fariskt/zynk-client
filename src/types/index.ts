@@ -11,6 +11,8 @@ export interface User {
   postCount: number;
   following: string[];
   followers: string[];
+  isVerified:boolean;
+  isPremium:boolean;
   role: string;
   createdAt:string;
 }
@@ -31,10 +33,7 @@ export interface Activity {
 
 export interface Post {
   _id: string;
-  userId: {
-    fullname: string;
-    profilePicture: string;
-  };
+  userId:User;
   likes: string[];
   content: string;
   image?: string;
@@ -52,6 +51,7 @@ export interface Comment {
   text: string;
   user: {
     fullname: string;
+    username?: string;
     profilePicture: string;
   };
   replyCount?:number
