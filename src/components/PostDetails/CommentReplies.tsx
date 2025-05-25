@@ -28,7 +28,7 @@ const CommentReply: React.FC<CommentReplyProps> = ({
       setShowReplyInput(false);
       refetchReplies();
     } catch (error) {
-      console.error("Error posting nested reply:");
+      console.error("Error posting nested reply:",error);
     }
   };
 
