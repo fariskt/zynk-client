@@ -49,10 +49,11 @@ export interface Comment {
   createdAt: string;
   likes: string[];
   text: string;
-  user: {
+  userId: {
     fullname: string;
     username?: string;
     profilePicture: string;
   };
+  parentCommentId:string;
   replyCount?:number
 }

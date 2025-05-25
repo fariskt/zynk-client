@@ -166,4 +166,48 @@ export const useCommentOnPost = (pathname: string) => {
     });
 };
 
+export const useLikeComment = () => {
+  const queryClient = useQueryClient();
 
+  return useMutation({
+    mutationFn: async ({ userId, commentId }: { userId: string; commentId: string }) => {
+      return await AxiosInstance.put(`/post/comment/like/${commentId}`);
+    },
+    onMutate: async ({ userId, commentId }) => {
+      const queryKey = ["comments"];
+      await queryClient.cancelQueries({ queryKey });
+
+      const previousData = queryClient.getQueryData(queryKey);
+
+      queryClient.setQueryData(queryKey, (oldData: any) => {
+        if (!oldData) return oldData;
+        return {
+          ...oldData,
+          pages: oldData.pages.map((page: any) => ({
+            ...page,
+            comments: page.comments.map((comment: any) =>
+              comment._id === commentId
+                ? {
+                    ...comment,
+                    likes: comment.likes.includes(userId)
+                      ? comment.likes.filter((id: string) => id !== userId) // Unlike
+                      : [...comment.likes, userId], // Like
+                  }
+                : comment
+            ),
+          })),
+        };
+      });
+
+      return { previousData, queryKey };
+    },
+    onError: (_error, _variables, context) => {
+      if (context?.previousData) {
+        queryClient.setQueryData(context.queryKey, context.previousData);
+      }
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ["comments"] });
+    },
+  });
+};
