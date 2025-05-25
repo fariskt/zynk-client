@@ -15,7 +15,6 @@ import ConfirmLogout from "./ConfirmLogout";
 import { IoSearch } from "react-icons/io5";
 import Image from "next/image";
 import ConnectionListSkeleton from "@/src/utils/SkeltonUi/ConnectionListSkelton";
-import { AiOutlineClose } from "react-icons/ai";
 import { useSearchUsers } from "@/src/hooks/useUser";
 import { User } from "@/src/types";
 import { RiVerifiedBadgeFill } from "react-icons/ri";
@@ -112,12 +111,12 @@ const MobileSideBar = () => {
                   ) : searchedUsers?.data && searchedUsers.data.length > 0 ? (
                     searchedUsers.data.map((person: User) => (
                       <Link
+                      key={person._id}
                         href={`/members/${slugify(person.fullname)}-${
                           person._id
                         }`}
                       >
                         <div
-                          key={person._id}
                           className="flex items-center gap-3 py-3 px-5 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-900/20 rounded-lg"
                         >
                           <Image

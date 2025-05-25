@@ -113,7 +113,7 @@ const Form: React.FC = () => {
             </button>
 
             <div className="text-xs text-black text-center flex flex-col items-center gap-1 w-full">
-              Didn't receive the code?
+              Didn&rsquo;t receive the code?
               <button
                 onClick={() => setOpenResent(true)}
                 type="button"

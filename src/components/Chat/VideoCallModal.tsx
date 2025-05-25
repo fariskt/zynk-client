@@ -83,11 +83,11 @@ const VideoCallModal: React.FC<VideoCallModalProps> = ({
 
     const peer = new SimplePeer({ initiator: true, trickle: false, stream });
 
-    peer.on("signal", (offer: any) => {
+    peer.on("signal", (offer: unknown) => {
       socket.emit("call-user", { from: user?._id, to: caller._id, offer });
     });
 
-    peer.on("stream", (remoteStream: any) => {
+    peer.on("stream", (remoteStream: MediaProvider | null) => {
       if (remoteVideo.current) remoteVideo.current.srcObject = remoteStream;
     });
 
@@ -107,13 +107,13 @@ const VideoCallModal: React.FC<VideoCallModalProps> = ({
 
     const peer = new SimplePeer({ initiator: false, trickle: false, stream });
 
-    peer.on("signal", (answer: any) => {
+    peer.on("signal", (answer: unknown) => {
       socket.emit("answer-call", { from: incomingCall.from, answer });
     });
 
     peer.signal(incomingCall.offer);
 
-    peer.on("stream", (remoteStream: any) => {
+    peer.on("stream", (remoteStream: MediaProvider | null) => {
       if (remoteVideo.current) remoteVideo.current.srcObject = remoteStream;
     });
 

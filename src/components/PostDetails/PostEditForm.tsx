@@ -56,7 +56,7 @@ const PostEditForm: React.FC<PostEditFormProps> = ({ post, onClose  }) => {
       queryClient.invalidateQueries({ queryKey: ["userPosts"] });
       onClose();
     },
-    onError: (error: any) => {
+    onError: (error: unknown) => {
       if(axios.isAxiosError(error)){
         toast.error(error.response?.data?.message || "Failed to update post");
       }else{

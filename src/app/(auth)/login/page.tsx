@@ -158,7 +158,7 @@ const Login = () => {
           </Formik>
           {/* Create Account Link */}
           <p className="mt-4 text-center text-gray-200 text-sm">
-            Don't have an account? &nbsp;
+            Don&rsquo;t have an account?
             <Link href="/register" className="text-purple-300 hover:underline">
               Sign Up
             </Link>

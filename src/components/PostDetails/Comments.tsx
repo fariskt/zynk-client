@@ -36,7 +36,7 @@ const Comments: React.FC<CommentProps> = ({ comment, userID }) => {
       setShowReplyInput(false);
       refetch(); // Refetch replies after adding
     } catch (error) {
-      console.error("Error posting reply");
+      console.error("Error posting reply", error);
     }
   };
 
@@ -45,7 +45,7 @@ const Comments: React.FC<CommentProps> = ({ comment, userID }) => {
       await AxiosInstance.put(`/post/comment/like/${comment._id}`);
       queryClient.invalidateQueries({ queryKey: ["comments"] });
     } catch (error) {
-      console.error("Error toggling like");
+      console.error("Error toggling like", error);
     }
   };
 

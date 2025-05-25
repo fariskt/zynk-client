@@ -191,7 +191,7 @@ const ChatApp = () => {
     setNewMessage("");
   };
 
-  const handleEmojiClick = (emoji: any) => {
+  const handleEmojiClick = (emoji: { emoji: string; }) => {
     setNewMessage((prev) => prev + emoji.emoji);
   };
 

@@ -8,6 +8,7 @@ import * as Yup from "yup";
 import { useRegisterMutation } from "@/src/hooks/useAuth";
 import toast from "react-hot-toast";
 import { Loader } from "lucide-react";
+import axios from "axios";
 
 const Register = () => {
   const router = useRouter();
@@ -42,11 +43,11 @@ const Register = () => {
         );
         router.replace("/verify");
       },
-      onError: (error: any) => {
-        console.log(error);
-        const catchError =
-          error.response?.data?.message || "Registration failed";
-        toast.error(catchError);
+      onError: (error: unknown) => {
+        if(axios.isAxiosError(error)){
+          const catchError = error.response?.data?.message || "Registration failed";
+          toast.error(catchError);
+        }
       },
     });
   };
