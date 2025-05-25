@@ -1,6 +1,6 @@
 import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import AxiosInstance from "../lib/axiosInstance";
-import { Post } from "../types";
+import { Comment, Post } from "../types";
 
 const fetchAllPosts = async ({ pageParam = 1 }) => {
     const res = await AxiosInstance.get(`/post/posts?page=${pageParam}&limit=10`);
@@ -166,6 +166,14 @@ export const useCommentOnPost = (pathname: string) => {
     });
 };
 
+interface OldDataType {
+  pages: PageType[]
+}
+
+interface PageType {
+  comments: Comment[]
+}
+
 export const useLikeComment = () => {
   const queryClient = useQueryClient();
 
@@ -179,13 +187,13 @@ export const useLikeComment = () => {
 
       const previousData = queryClient.getQueryData(queryKey);
 
-      queryClient.setQueryData(queryKey, (oldData: any) => {
+      queryClient.setQueryData(queryKey, (oldData: OldDataType) => {
         if (!oldData) return oldData;
         return {
           ...oldData,
-          pages: oldData.pages.map((page: any) => ({
+          pages: oldData.pages.map((page: PageType) => ({
             ...page,
-            comments: page.comments.map((comment: any) =>
+            comments: page.comments.map((comment: Comment) =>
               comment._id === commentId
                 ? {
                     ...comment,
