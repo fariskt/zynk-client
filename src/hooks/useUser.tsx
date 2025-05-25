@@ -2,6 +2,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import AxiosInstance from "../lib/axiosInstance";
 import useAuthStore from "../store/useAuthStore";
 import { AxiosError, AxiosResponse } from "axios";
+import { User } from "../types";
 
 export const useUserConnections = (userId: string, limit = 10, page = 1) => {
   return useQuery({
@@ -77,7 +78,7 @@ export const useSendFollowReq = () => {
       const previousUserData = queryClient.getQueryData(["loggedUser"]);
 
       // Optimistically update the cache
-      queryClient.setQueryData(["loggedUser"], (oldData: any) => {
+      queryClient.setQueryData(["loggedUser"], (oldData: User) => {
         if (!oldData) return oldData;
 
         const isFollowing = oldData.following.includes(userId);
