@@ -178,10 +178,10 @@ export const useLikeComment = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async ({ userId, commentId }: { userId: string; commentId: string }) => {
+    mutationFn: async ({  commentId }: {commentId: string }) => {
       return await AxiosInstance.put(`/post/comment/like/${commentId}`);
     },
-    onMutate: async ({ userId, commentId }) => {
+    onMutate: async ({ userId, commentId }: {userId :string, commentId: string}) => {
       const queryKey = ["comments"];
       await queryClient.cancelQueries({ queryKey });
 
