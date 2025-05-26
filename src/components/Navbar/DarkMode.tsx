@@ -4,17 +4,17 @@ import { MdDarkMode, MdOutlineDarkMode } from "react-icons/md";
 
 export default function DarkModeToggle() {
     const router = useRouter()
-  const [darkMode, setDarkMode] = useState(
-    localStorage.getItem("theme") === "dark"
-  );
+  const [darkMode, setDarkMode] = useState(typeof window !=="undefined" && localStorage.getItem("theme") === "dark");
 
   useEffect(() => {
-    if (darkMode) {
-      document.documentElement.classList.add("dark");
-      localStorage.setItem("theme", "dark");
-    } else {
-      document.documentElement.classList.remove("dark");
-      localStorage.setItem("theme", "light");
+    if(typeof window !== "undefined"){
+      if (darkMode) {
+        document.documentElement.classList.add("dark");
+        localStorage.setItem("theme", "dark");
+      } else {
+        document.documentElement.classList.remove("dark");
+        localStorage.setItem("theme", "light");
+      }
     }
   }, [darkMode]);
 

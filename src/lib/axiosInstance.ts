@@ -16,7 +16,9 @@ AxiosInstance.interceptors.response.use(
       if (!isLoginPage) {
         window.location.href = "/login";
       }
-      localStorage.removeItem("isLogin")
+      if(typeof window !== "undefined"){
+        localStorage.removeItem("isLogin")
+      }
     }
     return Promise.reject(error);
   }

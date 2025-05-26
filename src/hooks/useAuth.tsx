@@ -43,7 +43,9 @@ export const useLogoutMutation = () => {
   return useMutation({
     mutationFn: logoutUser,
     onSuccess: () => {
-      localStorage.removeItem("isLogin")
+      if(typeof window !== "undefined"){
+        localStorage.removeItem("isLogin")
+      }
     }
   });
 };

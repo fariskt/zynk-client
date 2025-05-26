@@ -28,7 +28,9 @@ const Login = () => {
       onSuccess: () => {
         toast.success("Login Sucessfull");
         router.replace("/");
-        localStorage.setItem("isLogin", "true");
+        if(typeof window !== "undefined"){
+          localStorage.setItem("isLogin", "true");
+        }
       },
       onError: async (error: unknown) => {
         if (axios.isAxiosError(error)) {

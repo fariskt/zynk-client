@@ -66,8 +66,8 @@ const SideBar = () => {
     };
   }, [user?._id, refetch]);
 
-  const isLogin = localStorage.getItem("isLogin");
-  const theme = localStorage.getItem("theme");
+  const isLogin = typeof window !== "undefined" && localStorage.getItem("isLogin");
+  const theme = typeof window !== "undefined" &&  localStorage.getItem("theme");
   useEffect(() => {
     if (isLogin) {
       fetchUser();
