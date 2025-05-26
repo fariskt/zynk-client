@@ -5,7 +5,6 @@ import React, { useState, useEffect } from "react";
 import toast from "react-hot-toast";
 import { AiOutlineClose } from "react-icons/ai";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import axios from "axios";
 
 interface Post {
   _id: string;
