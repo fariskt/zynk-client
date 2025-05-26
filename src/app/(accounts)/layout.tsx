@@ -3,7 +3,7 @@
 import { useUpdateProfilePhotos } from "@/src/hooks/useUser";
 import useAuthStore from "@/src/store/useAuthStore";
 import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { LuPencilLine } from "react-icons/lu";
 
 export default function ProfileLayout({

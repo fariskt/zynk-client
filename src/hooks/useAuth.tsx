@@ -1,3 +1,5 @@
+"use client"
+
 import { useMutation, useQuery } from "@tanstack/react-query";
 import AxiosInstance from "@/src/lib/axiosInstance";
 import useAuthStore from "../store/useAuthStore";

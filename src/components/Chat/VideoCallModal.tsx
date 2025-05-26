@@ -1,7 +1,7 @@
 "use client";
 
 import SimplePeer, { Instance as SimplePeerInstance } from "simple-peer";
-import { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import useAuthStore from "@/src/store/useAuthStore";
 import { getSocket } from "@/src/lib/socket";
 import {

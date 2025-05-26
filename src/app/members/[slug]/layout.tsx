@@ -1,5 +1,6 @@
 "use client";
 
+import React from "react";
 import useAuthStore from "@/src/store/useAuthStore";
 import { useFetchUserById, useSendFollowReq } from "@/src/hooks/useUser";
 import Link from "next/link";

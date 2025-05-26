@@ -1,5 +1,6 @@
 "use client";
 
+import React from "react";
 import { useCommentOnPost, useFetchCommentsById } from "@/src/hooks/usePosts";
 import { AiOutlineClose } from "react-icons/ai";
 import { CiHeart } from "react-icons/ci";

@@ -6,7 +6,7 @@ import { FaRegUser } from "react-icons/fa6";
 import { FiLogOut, FiPlusCircle } from "react-icons/fi";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import UploadPost from "../UploadPost/UploadPost";
 import { useLogoutMutation } from "@/src/hooks/useAuth";

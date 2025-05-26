@@ -1,5 +1,6 @@
 "use client"
 
+import React from "react";
 import { BsThreeDots } from "react-icons/bs";
 import { GoComment } from "react-icons/go";
 import useAuthStore from "../../store/useAuthStore";
@@ -56,7 +57,7 @@ const PostCard = () => {
 
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
-  }, [hasNextPage, isFetchingNextPage]);
+  }, [handleScroll, hasNextPage, isFetchingNextPage]);
 
   const likePostMutation = useLikePost(pathname || "");
 

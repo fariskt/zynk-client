@@ -1,10 +1,10 @@
+import React from "react";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import QueryProvider from "@/src/providers/QueryProvider";
 import SideBar from "@/src/components/Sidebar/SideBar";
 import Navbar from "@/src/components/Navbar/Navbar";
 import MobileNavbar from "../components/Navbar/MobileNavbar";
-
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],

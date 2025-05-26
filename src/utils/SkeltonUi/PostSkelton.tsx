@@ -1,3 +1,5 @@
+import React from "react";
+
 const SkeletonPostCard = ({ count }: { count: number }) => {
   return (
     <>

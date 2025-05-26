@@ -4,7 +4,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { FaCircleUser } from "react-icons/fa6";
 import { IoMdNotificationsOutline } from "react-icons/io";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { RiUser3Line, RiVerifiedBadgeFill } from "react-icons/ri";
 import { IoSearch, IoSettingsOutline } from "react-icons/io5";
 import { IoLogOutOutline } from "react-icons/io5";

@@ -1,5 +1,6 @@
 "use client";
 
+import React from "react";
 import UserPostCard from "@/src/components/PostDetails/UserPostCard";
 import Activity from "@/src/components/Profile/Activity";
 import useAuthStore from "@/src/store/useAuthStore";

@@ -2,7 +2,7 @@
 
 import { BsThreeDotsVertical } from "react-icons/bs";
 import { GoComment } from "react-icons/go";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import useAuthStore from "../../store/useAuthStore";
 import { useParams, usePathname } from "next/navigation";
 import { useFetchUserPosts, useLikePost } from "@/src/hooks/usePosts";
@@ -66,7 +66,7 @@ const UserPostCard = () => {
 
   window.addEventListener("scroll", handleScroll);
   return () => window.removeEventListener("scroll", handleScroll);
-}, [hasNextPage, isFetchingNextPage]);
+}, [fetchNextPage, hasNextPage, isFetchingNextPage]);
 
 
   const likePostMutation = useLikePost(pathname || "");
