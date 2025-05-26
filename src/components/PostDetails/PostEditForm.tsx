@@ -49,7 +49,7 @@ const PostEditForm: React.FC<PostEditFormProps> = ({ post, onClose  }) => {
     }));
   };
 
-  const updatePostMutation = useMutation({
+  const {mutate: updatePostMutation, isPending} = useMutation({
     mutationFn: async () => {
       return AxiosInstance.put(`/post/update/${postData._id}`, postData);
     },
@@ -58,13 +58,10 @@ const PostEditForm: React.FC<PostEditFormProps> = ({ post, onClose  }) => {
       queryClient.invalidateQueries({ queryKey: ["userPosts"] });
       onClose();
     },
-    onError: (error: unknown) => {
-      if(axios.isAxiosError(error)){
-        toast.error(error.response?.data?.message || "Failed to update post");
-      }else{
-        toast.error("Unexpected error occurred")
+    onError: (error) => {
+        console.log(error);
+        toast.error("Failed to update post");
       }
-    },
   });
 
   return (
@@ -85,7 +82,7 @@ const PostEditForm: React.FC<PostEditFormProps> = ({ post, onClose  }) => {
         <form
           onSubmit={(e) => {
             e.preventDefault();
-            updatePostMutation.mutate();
+            updatePostMutation();
           }}
           className="space-y-6 mt-4"
         >
@@ -132,9 +129,9 @@ const PostEditForm: React.FC<PostEditFormProps> = ({ post, onClose  }) => {
           <button
             type="submit"
             className="w-full bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600"
-            disabled={updatePostMutation.isPending}
+            disabled={isPending}
           >
-            {updatePostMutation.isPending ? "Updating..." : "Update Post"}
+            {isPending ? "Updating..." : "Update Post"}
           </button>
         </form>
       </div>
