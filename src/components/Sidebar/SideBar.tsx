@@ -15,6 +15,7 @@ import ConfirmLogout from "./ConfirmLogout";
 import { useQuery } from "@tanstack/react-query";
 import AxiosInstance from "@/src/lib/axiosInstance";
 import { getSocket } from "@/src/lib/socket";
+import { Toaster } from "react-hot-toast";
 
 const SideBar = () => {
   const pathname = usePathname();
@@ -104,6 +105,8 @@ const SideBar = () => {
 
   return (
     <>
+                    <Toaster position="top-right" reverseOrder={false} />
+
       {isUploadPost && <UploadPost onClose={() => setIsUploadPost(false)} />}
       {confirmLogout && (
         <ConfirmLogout

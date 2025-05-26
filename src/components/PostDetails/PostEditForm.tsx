@@ -1,10 +1,11 @@
-"use client"
+"use client";
 
 import AxiosInstance from "@/src/lib/axiosInstance";
 import React, { useState, useEffect } from "react";
 import toast from "react-hot-toast";
 import { AiOutlineClose } from "react-icons/ai";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import useAuthStore from "@/src/store/useAuthStore";
 
 interface Post {
   _id: string;
@@ -18,9 +19,9 @@ interface PostEditFormProps {
   onClose: () => void;
 }
 
-const PostEditForm: React.FC<PostEditFormProps> = ({ post, onClose  }) => {
+const PostEditForm: React.FC<PostEditFormProps> = ({ post, onClose }) => {
   const queryClient = useQueryClient();
-
+  const { user } = useAuthStore();
   const [postData, setPostData] = useState<Post>({
     _id: post?._id || "",
     content: post?.content || "",
@@ -39,33 +40,48 @@ const PostEditForm: React.FC<PostEditFormProps> = ({ post, onClose  }) => {
     }
   }, [post]);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
     const { name, value, type } = e.target;
 
     setPostData((prev) => ({
-      ...prev, 
-      [name]: type === "checkbox" && e.target instanceof HTMLInputElement ? e.target.checked : value,
+      ...prev,
+      [name]:
+        type === "checkbox" && e.target instanceof HTMLInputElement
+          ? e.target.checked
+          : value,
     }));
   };
 
-  const {mutate: updatePostMutation, isPending} = useMutation({
+  const { mutate: updatePostMutation, isPending } = useMutation({
     mutationFn: async () => {
       return AxiosInstance.put(`/post/update/${postData._id}`, postData);
     },
     onSuccess: () => {
-      toast.success("Post updated successfully!");
-      queryClient.invalidateQueries({ queryKey: ["userPosts"] });
+      if (typeof window !== "undefined") {
+        toast.success("Post updated successfully!");
+        queryClient.invalidateQueries({ queryKey: ["userPosts", user?._id] });
+      }
       onClose();
     },
     onError: (error) => {
+      if (typeof window !== "undefined") {
         console.log(error);
         toast.error("Failed to update post");
       }
+    },
   });
 
   return (
-    <div className="fixed inset-0 flex justify-center items-center bg-gray-400 dark:bg-gray-950/5 bg-opacity-5 backdrop-blur-sm z-50 p-4" onClick={onClose}>
-      <div onClick={(e)=> e.stopPropagation()} className="relative bg-white dark:bg-gray-800 shadow-lg rounded-lg p-8 w-full max-w-md">
+    <div
+      className="fixed inset-0 flex justify-center items-center bg-gray-400 dark:bg-gray-950/5 bg-opacity-5 backdrop-blur-sm z-50 p-4"
+      onClick={onClose}
+    >
+      <div
+        onClick={(e) => e.stopPropagation()}
+        className="relative bg-white dark:bg-gray-800 shadow-lg rounded-lg p-8 w-full max-w-md"
+      >
         {/* Close Button */}
         <button
           className="absolute top-2 right-2 text-gray-700 dark:text-gray-200 text-2xl"

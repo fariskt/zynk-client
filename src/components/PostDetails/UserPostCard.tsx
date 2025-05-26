@@ -51,7 +51,7 @@ const UserPostCard = () => {
     userPost?.pages.flatMap((page: { posts: Post[] }) => page.posts) || [];
 
   useEffect(() => {
-  if (typeof window === "undefined") return;
+  if (typeof window === "undefined" || typeof document === "undefined") return;
 
   const handleScroll = () => {
     if (!hasNextPage || isFetchingNextPage) return;

@@ -43,7 +43,6 @@ export default function RootLayout({
               <Navbar />
               <MobileNavbar/>
               <div>
-                <Toaster position="top-right" reverseOrder={false} />
                 <main>{children}</main>
               </div>
             </div>
