@@ -1,3 +1,5 @@
+"use client"
+
 import AxiosInstance from "@/src/lib/axiosInstance";
 import React, { useState, useEffect } from "react";
 import toast from "react-hot-toast";

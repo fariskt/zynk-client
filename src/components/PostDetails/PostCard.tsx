@@ -1,3 +1,5 @@
+"use client"
+
 import { BsThreeDots } from "react-icons/bs";
 import { GoComment } from "react-icons/go";
 import useAuthStore from "../../store/useAuthStore";
@@ -37,8 +39,7 @@ const PostCard = () => {
     posts?.pages.flatMap((page: { posts: Post[] }) => page.posts) || [];
 
   const handleScroll = () => {
-    if (typeof window === "undefined" || typeof document === "undefined")
-      return;
+    if (typeof window === "undefined" || typeof document === "undefined") return;
     if (!hasNextPage || isFetchingNextPage) return;
 
     const scrollTop = window.scrollY || document.documentElement.scrollTop;

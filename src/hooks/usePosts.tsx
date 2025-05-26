@@ -1,3 +1,4 @@
+
 import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import AxiosInstance from "../lib/axiosInstance";
 import { Comment, Post } from "../types";
@@ -108,7 +109,7 @@ export const useLikePost = (pathname: string) => {
   return useMutation({
     mutationFn: likePost,
     onMutate: async ({ userId, postId }: MutationVariables) => {
-      const queryKey = pathname === "/profile" ? ["userPosts"] : ["allPosts"];
+      const queryKey = pathname === "/profile" ? ["userPosts", userId] : ["allPosts"];
       await queryClient.cancelQueries({ queryKey });
 
       const previousData = queryClient.getQueryData<QueryData>(queryKey);
@@ -144,8 +145,8 @@ export const useLikePost = (pathname: string) => {
     },
 
     onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ["allPosts"] });
-      queryClient.invalidateQueries({ queryKey: ["userPosts"] });
+      const queryKey = pathname === "/profile" ? ["userPosts"] : ["allPosts"];
+      queryClient.invalidateQueries({ queryKey });
     },
   });
 };

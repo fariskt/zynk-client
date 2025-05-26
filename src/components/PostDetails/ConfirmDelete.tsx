@@ -1,3 +1,5 @@
+"use client"
+
 import AxiosInstance from "@/src/lib/axiosInstance";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { motion, AnimatePresence } from "framer-motion";

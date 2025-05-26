@@ -22,9 +22,13 @@ const SideBar = () => {
   const [isUploadPost, setIsUploadPost] = useState<boolean>(false);
   const [resizeSideBar, setResizeSideBar] = useState<boolean>(false);
   const router = useRouter();
+  const [theme, setTheme] = useState<"light" | "dark" | null>(null);
+  const [isLogin, setIsLogin] = useState<boolean | null>(null);
+
   const { mutate: logout } = useLogoutMutation();
   const { user, fetchUser } = useAuthStore();
   const socket = getSocket();
+
   useEffect(() => {
     setResizeSideBar(
       pathname === "/message" ||
@@ -66,8 +70,20 @@ const SideBar = () => {
     };
   }, [user?._id, refetch]);
 
-  const isLogin = typeof window !== "undefined" && localStorage.getItem("isLogin");
-  const theme = typeof window !== "undefined" &&  localStorage.getItem("theme");
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const stored = localStorage.getItem("isLogin");
+      setIsLogin(stored === "true");
+    }
+  }, []);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const storedTheme = localStorage.getItem("theme") as| "light"| "dark" | null;
+      setTheme(storedTheme);
+    }
+  }, []);
+
   useEffect(() => {
     if (isLogin) {
       fetchUser();

@@ -24,7 +24,6 @@ const UserPostCard = () => {
   const params = useParams();
   const pathname = usePathname();
   const { user } = useAuthStore();
-  
 
   const slug = params?.slug as string;
 
@@ -52,30 +51,23 @@ const UserPostCard = () => {
     userPost?.pages.flatMap((page: { posts: Post[] }) => page.posts) || [];
 
   useEffect(() => {
-    const handleScroll = () => {
-      if (!hasNextPage || isFetchingNextPage) return;
+  if (typeof window === "undefined") return;
 
-      if (typeof window !== "undefined" && typeof document !== "undefined") {
-        const scrollPosition =
-          window.innerHeight + document.documentElement.scrollTop;
-        const bottomPosition = document.documentElement.offsetHeight;
+  const handleScroll = () => {
+    if (!hasNextPage || isFetchingNextPage) return;
 
-        if (scrollPosition >= bottomPosition - 100) {
-          fetchNextPage();
-        }
-      }
-    };
+    const scrollPosition = window.innerHeight + document.documentElement.scrollTop;
+    const bottomPosition = document.documentElement.offsetHeight;
 
-    if (typeof window !== "undefined" && typeof document !== "undefined") {
-      window.addEventListener("scroll", handleScroll);
+    if (scrollPosition >= bottomPosition - 100) {
+      fetchNextPage();
     }
+  };
 
-    return () => {
-      if (typeof window !== "undefined" && typeof document !== "undefined") {
-        window.removeEventListener("scroll", handleScroll);
-      }
-    };
-  }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
+  window.addEventListener("scroll", handleScroll);
+  return () => window.removeEventListener("scroll", handleScroll);
+}, [hasNextPage, isFetchingNextPage]);
+
 
   const likePostMutation = useLikePost(pathname || "");
 
@@ -124,7 +116,7 @@ const UserPostCard = () => {
                         <h4 className="text-sm font-medium cursor-pointer">
                           {post?.userId?.fullname}
                         </h4>
-                        {post?.userId?.isVerified && (
+                        {post?.userId?.isPremium && (
                           <span className="text-blue-600 font-extrabold text-lg pt-1 hover:text-blue-700">
                             <RiVerifiedBadgeFill />
                           </span>
