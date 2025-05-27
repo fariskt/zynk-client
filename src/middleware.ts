@@ -1,8 +1,9 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
+import type { NextRequest } from "next/server";
 
 export function middleware(req: NextRequest) {
   const token = req.cookies.get("token");
-  console.log("Middleware token:", token?.value); // See value in console
+  console.log("token from middleware:", token?.value);
 
   if (!token) {
     return NextResponse.redirect(new URL("/login", req.url));
@@ -10,3 +11,7 @@ export function middleware(req: NextRequest) {
 
   return NextResponse.next();
 }
+
+export const config = {
+  matcher: ["/"], // protect these
+};
