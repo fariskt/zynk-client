@@ -28,10 +28,8 @@ const Login = () => {
     login(formInputs, {
       onSuccess: () => {
         toast.success("Login Sucessfull");
+        localStorage.setItem("isLogin", "true");
         router.replace("/");
-        if(typeof window !== "undefined"){
-          localStorage.setItem("isLogin", "true");
-        }
       },
       onError: async (error: unknown) => {
         if (axios.isAxiosError(error)) {
