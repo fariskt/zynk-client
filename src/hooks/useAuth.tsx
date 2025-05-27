@@ -29,7 +29,7 @@ export const useLoginMutation = () => {
   return useMutation({
     mutationFn: loginUser, 
     onSuccess: (data) => {
-      console.log(data);
+      console.log("success mutation",data);
       setUser(data?.user); 
     }
   });

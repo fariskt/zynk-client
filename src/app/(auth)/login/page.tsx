@@ -25,8 +25,11 @@ const Login = () => {
   const { mutate: login, isPending } = useLoginMutation();
 
   const handleSubmit = (formInputs: { email: string; password: string }) => {
+    console.log("start");
     login(formInputs, {
+      
       onSuccess: () => {
+        console.log("start 2")
         toast.success("Login Sucessfull");
         localStorage.setItem("isLogin", "true");
         router.replace("/");
