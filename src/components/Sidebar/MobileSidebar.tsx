@@ -18,7 +18,6 @@ import ConnectionListSkeleton from "@/src/utils/SkeltonUi/ConnectionListSkelton"
 import { useSearchUsers } from "@/src/hooks/useUser";
 import { User } from "@/src/types";
 import { RiVerifiedBadgeFill } from "react-icons/ri";
-import { Toaster } from "react-hot-toast";
 
 const MobileSideBar = () => {
   const pathname = usePathname();
@@ -68,8 +67,6 @@ const MobileSideBar = () => {
 
   return (
     <>
-                    <Toaster position="top-right" reverseOrder={false} />
-
       {isUploadPost && <UploadPost onClose={() => setIsUploadPost(false)} />}
       {confirmLogout && (
         <ConfirmLogout

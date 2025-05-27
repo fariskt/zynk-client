@@ -5,6 +5,7 @@ import QueryProvider from "@/src/providers/QueryProvider";
 import SideBar from "@/src/components/Sidebar/SideBar";
 import Navbar from "@/src/components/Navbar/Navbar";
 import MobileNavbar from "../components/Navbar/MobileNavbar";
+import { Toaster } from "react-hot-toast";
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -40,8 +41,9 @@ export default function RootLayout({
             {/* Navbar - 5/6 width */}
             <div className="flex-1 dark:bg-gray-950">
               <Navbar />
-              <MobileNavbar/>
+              <MobileNavbar />
               <div>
+                <Toaster position="top-right" reverseOrder={false} />
                 <main>{children}</main>
               </div>
             </div>
