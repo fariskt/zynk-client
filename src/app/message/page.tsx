@@ -435,7 +435,7 @@ const ChatApp = () => {
               }}
               value={newMessage}
               onChange={(e) => setNewMessage(e.target.value)}
-              className="flex-1 px-4 py-2 border rounded-lg focus:outline-none dark:bg-gray-600 dark:border-gray-800"
+              className="flex-1 px-4 py-2 border rounded-lg focus:outline-none dark:bg-gray-800 dark:border-gray-800"
             />
             <button onClick={sendMessage} className="ml-4">
               <LuSend className="rotate-45 text-gray-500 text-xl dark:text-gray-300 " />

@@ -22,7 +22,9 @@ const SideBar = () => {
   const [isUploadPost, setIsUploadPost] = useState<boolean>(false);
   const [resizeSideBar, setResizeSideBar] = useState<boolean>(false);
   const router = useRouter();
-  const [theme, setTheme] = useState<"light" | "dark" | null>(null);
+  const initialTheme = typeof window !== "undefined" ? localStorage.getItem("theme") : null;
+
+
   const [isLogin, setIsLogin] = useState<boolean | null>(null);
 
   const { mutate: logout } = useLogoutMutation();
@@ -76,13 +78,7 @@ const SideBar = () => {
       setIsLogin(stored === "true");
     }
   }, []);
-
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      const storedTheme = localStorage.getItem("theme") as| "light"| "dark" | null;
-      setTheme(storedTheme);
-    }
-  }, []);
+  
 
   useEffect(() => {
     if (isLogin) {
@@ -116,16 +112,16 @@ const SideBar = () => {
           resizeSideBar ? "w-20 shadow-md" : "w-[230px]"
         } h-full top-0 transition-all ease-in-out bg-background dark:bg-gray-900 text-white dark:border-0`}
       >
-        <div className="flex flex-col justify-between h-[92%] flex-wrap ml-3">
+        <div className="flex flex-col justify-between h-[95%] flex-wrap ml-3">
           <div className="flex flex-col gap-3 mx-4">
             <Link href="/">
               <img
                 src={
                   resizeSideBar
-                    ? theme === "light"
+                    ? initialTheme === "light"
                       ? "/zk-white.png"
                       : "/zk-dark.png"
-                    : theme === "dark"
+                    : initialTheme === "dark"
                     ? "/zynk-dark.png"
                     : "/zynk-white.png"
                 }
