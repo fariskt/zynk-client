@@ -36,8 +36,8 @@ const Login = () => {
           toast.success("Login Successful");
           localStorage.setItem("isLogin", "true");
           setTimeout(() => {
-            router.push("/");
-          }, 1500);
+            router.replace("/");
+          }, 1000);
         }
       },
       onError: async (error: unknown) => {
