@@ -29,24 +29,15 @@ const Login = () => {
   const handleSubmit = (formInputs: { email: string; password: string }) => {
     console.log("start");
     login(formInputs, {
-      // onSuccess: () => {
-      //   if (typeof window !== "undefined") {
-      //     toast.success("Login Successful");
-      //     localStorage.setItem("isLogin", "true");
-      //     router.replace("/");
-      //   }
-      // },
       onSuccess: (data) => {
         console.log("success mutation", data);
         setUser(data?.user);
-
-        // Client-side checks
         if (typeof window !== "undefined") {
           toast.success("Login Successful");
           localStorage.setItem("isLogin", "true");
           setTimeout(() => {
-            router.replace("/");
-          }, 1000);
+            router.push("/");
+          }, 1500);
         }
       },
       onError: async (error: unknown) => {
