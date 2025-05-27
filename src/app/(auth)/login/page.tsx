@@ -10,6 +10,7 @@ import { useLoginMutation } from "@/src/hooks/useAuth";
 import Loader from "@/src/utils/Loading";
 import AxiosInstance from "@/src/lib/axiosInstance";
 import axios from "axios";
+import useAuthStore from "@/src/store/useAuthStore";
 
 const Login = () => {
   const router = useRouter();
@@ -23,21 +24,29 @@ const Login = () => {
   });
 
   const { mutate: login, isPending } = useLoginMutation();
+  const { setUser } = useAuthStore();
 
   const handleSubmit = (formInputs: { email: string; password: string }) => {
     console.log("start");
     login(formInputs, {
-      onSuccess: () => {
-        console.log("Login success callback called");
+      // onSuccess: () => {
+      //   if (typeof window !== "undefined") {
+      //     toast.success("Login Successful");
+      //     localStorage.setItem("isLogin", "true");
+      //     router.replace("/");
+      //   }
+      // },
+      onSuccess: (data) => {
+        console.log("success mutation", data);
+        setUser(data?.user);
+
+        // Client-side checks
         if (typeof window !== "undefined") {
           toast.success("Login Successful");
           localStorage.setItem("isLogin", "true");
-          try {
+          setTimeout(() => {
             router.replace("/");
-            console.log("Router replace called");
-          } catch (err) {
-            console.error("Router error:", err);
-          }
+          }, 1000);
         }
       },
       onError: async (error: unknown) => {
