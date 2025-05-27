@@ -1,14 +1,12 @@
-import { NextResponse } from "next/server";
-import type { NextRequest } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
 export function middleware(req: NextRequest) {
   const token = req.cookies.get("token");
-  console.log("token ",token);
-  
+  console.log("Middleware token:", token?.value); // See value in console
+
   if (!token) {
     return NextResponse.redirect(new URL("/login", req.url));
   }
+
   return NextResponse.next();
 }
-
-export const config = { matcher: ["/members", "/message", "/profile"]};
