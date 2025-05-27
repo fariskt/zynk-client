@@ -28,10 +28,16 @@ const Login = () => {
     console.log("start");
     login(formInputs, {
       onSuccess: () => {
+        console.log("Login success callback called");
         if (typeof window !== "undefined") {
           toast.success("Login Successful");
           localStorage.setItem("isLogin", "true");
-          router.replace("/");
+          try {
+            router.replace("/");
+            console.log("Router replace called");
+          } catch (err) {
+            console.error("Router error:", err);
+          }
         }
       },
       onError: async (error: unknown) => {
