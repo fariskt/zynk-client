@@ -28,11 +28,13 @@ const Login = () => {
     console.log("start");
     login(formInputs, {
       
-      onSuccess: () => {
+      onSuccess: (data) => {
         console.log("start 2")
         toast.success("Login Sucessfull");
         localStorage.setItem("isLogin", "true");
         router.replace("/");
+        console.log("start 3", data)
+
       },
       onError: async (error: unknown) => {
         if (axios.isAxiosError(error)) {
