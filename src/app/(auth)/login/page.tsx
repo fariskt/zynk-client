@@ -27,14 +27,12 @@ const Login = () => {
   const handleSubmit = (formInputs: { email: string; password: string }) => {
     console.log("start");
     login(formInputs, {
-      
-      onSuccess: (data) => {
-        console.log("start 2")
-        toast.success("Login Sucessfull");
-        localStorage.setItem("isLogin", "true");
-        router.replace("/");
-        console.log("start 3", data)
-
+      onSuccess: () => {
+        if (typeof window !== "undefined") {
+          toast.success("Login Successful");
+          localStorage.setItem("isLogin", "true");
+          router.replace("/");
+        }
       },
       onError: async (error: unknown) => {
         if (axios.isAxiosError(error)) {
